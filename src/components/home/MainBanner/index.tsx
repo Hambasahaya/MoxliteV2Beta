@@ -5,26 +5,76 @@ const texts = ["Nightclub", "Concert", "Architectural"];
 
 const MainBanner = () => {
   const [index, setIndex] = useState(0);
+  const [showOverlay, setShowOverlay] = useState(true); // State untuk overlay
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    // Interval untuk teks animasi
+    const textInterval = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % texts.length);
     }, 500);
-    return () => clearInterval(interval);
+
+    // Timer untuk menghilangkan overlay setelah 1 detik
+    const overlayTimeout = setTimeout(() => {
+      setShowOverlay(false);
+    }, 1000);
+
+    return () => {
+      clearInterval(textInterval);
+      clearTimeout(overlayTimeout);
+    };
   }, []);
 
   return (
-    <div className="h-[calc(100vh-65px)] bg-[url('/image/home_palceholder_hero.jpg')] bg-cover bg-no-repeat bg-center">
-      <div className="px-[24px] md:px-[120px] h-full w-full bg-gray-950/40 flex md:items-center pt-[168px] md:pt-0">
-        <div>
+    <>
+      {/* Overlay yang Menutupi Selama 1 Detik */}
+      <AnimatePresence>
+        {showOverlay && (
+          <motion.div
+            initial={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0.5, y: -700 }} // Efek tarik ke atas
+            transition={{ duration: 0.8, ease: "circOut" }}
+            className="absolute h-screen inset-0 flex justify-center items-center z-200"
+            style={{
+              background:
+                "radial-gradient(116.0069560407267% 139.71710502756912% at 50% 0%, #020617 33.16662609577179%, rgba(8, 31, 59, 1) 62.23050355911255%, rgba(62, 156, 146, 1) 100%)",
+            }}
+          >
+            {/* 🔵 Logo Animasi: Muncul dari bawah sebelum overlay naik */}
+            <motion.img
+              src="/icon/moxlite-icon-1.svg"
+              className="h-[36px] md:h-[58px]"
+              initial={{ opacity: 0, y: 50 }} // Muncul dari bawah
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }} // Delay sebelum overlay bergerak
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 🔵 Konten Utama Setelah Overlay Hilang */}
+      <div className="relative h-[calc(97vh-60px)] md:h-[calc(100vh-60px)]">
+        {/* Video Background */}
+        <video
+          className="absolute top-0 left-0 w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/video/main_hero_banner.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Overlay & Content */}
+        <div className="absolute inset-0 bg-gray-950/40 flex flex-col justify-between px-[24px] md:px-[120px] md:pt-0">
+          <div className="w-full h-10" />
           <div>
             <div className="flex flex-wrap items-center">
-              <div>
-                <h1 className="text-white text-[40px] md:text-[72px] font-bold mr-0 md:mr-[24px]">
-                  Reimagining
-                </h1>
-              </div>
-              <div className="bg-white w-fit px-[16px] md:px-[24px] ">
+              <h1 className="text-white text-[40px] md:text-[72px] font-bold mr-0 md:mr-[24px]">
+                Reimagining
+              </h1>
+              <div className="bg-white w-fit px-[16px] md:px-[24px]">
                 <AnimatePresence mode="wait">
                   <motion.h1
                     key={texts[index]}
@@ -40,19 +90,21 @@ const MainBanner = () => {
               </div>
             </div>
 
-            <div>
-              <h1 className="text-white text-[40px] md:text-[72px] font-bold">
-                with Moxlite
-              </h1>
-            </div>
+            <h1 className="text-white text-[40px] md:text-[72px] font-bold">
+              with Moxlite
+            </h1>
+
+            <button className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] md:my-[24px] rounded-md cursor-pointer text-[14px] font-medium">
+              Explore product
+            </button>
           </div>
 
-          <button className="bg-[#FAFAFA] py-[12px] px-[16px] mt-[40px] md:mt-[29px] rounded-md cursor-pointer text-[14px] font-medium">
-            Explore product
-          </button>
+          <div className="w-full flex justify-center">
+            <img src="/icon/chevrons-down.svg" className="h-[48px] pb-2" />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

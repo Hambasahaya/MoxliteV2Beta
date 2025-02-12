@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isExpand, setIsExpand] = useState(false);
 
   return (
     <>
-      <div className="sticky top-0">
+      <div className="fixed top-0 left-0 w-full z-[100]">
         <div className="bg-black text-[#f8fafc] px-[120px] py-[22px] hidden md:flex justify-between items-center">
           <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
           <div className="flex justify-between">
@@ -36,13 +37,33 @@ const Navbar = () => {
         <div className="bg-black text-[#f8fafc] px-[20px] py-[24px] flex-none md:hidden">
           <div className="flex justify-between items-center">
             <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
-            <img
-              src="/file.svg"
-              className="h-[20px]"
-              onClick={() => {
-                setIsExpand(!isExpand);
-              }}
-            />
+            <div className="relative h-[30px] w-[30px] overflow-hidden">
+              <AnimatePresence>
+                {!isExpand ? (
+                  <motion.img
+                    key="hamburger"
+                    src="/icon/hamburger.svg"
+                    className="absolute h-[30px] cursor-pointer"
+                    initial={{ x: 30, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -30, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={() => setIsExpand(true)}
+                  />
+                ) : (
+                  <motion.img
+                    key="close"
+                    src="/icon/x.svg"
+                    className="absolute h-[30px] cursor-pointer"
+                    initial={{ x: 30, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: -30, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={() => setIsExpand(false)}
+                  />
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           <div
