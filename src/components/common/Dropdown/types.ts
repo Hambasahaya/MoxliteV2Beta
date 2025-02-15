@@ -4,9 +4,8 @@ type iOption = {
 };
 
 export type iDropdown = {
-  selectedValue: iOption;
+  selectedValue: iOption | null;
   options: iOption[];
-  defaultValue?: boolean;
   placeholder?: string;
   onChange: (value: iOption) => void;
 };

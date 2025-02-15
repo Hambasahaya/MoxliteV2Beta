@@ -13,7 +13,10 @@ const ProductCard = ({ imgUrl, name, desc, url }: iProductCard) => {
       className="border border-[#CBD5E1] flex flex-col items-center cursor-pointer bg-white hover:bg-black text-black hover:text-white hover:shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)]"
     >
       <div className="bg-white w-full flex justify-center">
-        <img src={imgUrl} className="h-[200px] w-[200px] mt-[24px] mb-[40px]" />
+        <img
+          src={imgUrl}
+          className="h-[200px] w-[200px] mt-[24px] mb-[40px] object-contain"
+        />
       </div>
       <div className="p-[16px] w-full">
         <p className="font-bold text-[20px]">{name}</p>

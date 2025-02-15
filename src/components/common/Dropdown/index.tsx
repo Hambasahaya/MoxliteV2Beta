@@ -5,27 +5,23 @@ import { iDropdown } from "./types";
 const Dropdown = ({
   selectedValue,
   options,
-  defaultValue,
   placeholder = "Please select an option",
   onChange,
 }: iDropdown) => {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedLabel = options.filter((e) => e.value == selectedValue.value)[0]
-    ?.label;
+  const selectedLabel = selectedValue
+    ? options.filter((e) => e.value == selectedValue.value)[0]?.label
+    : null;
 
   return (
     <div className="relative w-full">
       <button
-        className={`cursor-pointer w-full px-4 py-2 ${
+        className={`cursor-pointer w-full px-4 py-2 text-[14px] ${
           selectedLabel ? "text-black" : "text-gray-500"
         }  bg-white border border-gray-300 rounded-lg flex justify-between items-center`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {selectedLabel
-          ? selectedLabel
-          : defaultValue
-          ? options[0].label
-          : placeholder}
+        {selectedLabel ? selectedLabel : placeholder}
 
         <motion.img
           src="/icon/chevron-down.svg"

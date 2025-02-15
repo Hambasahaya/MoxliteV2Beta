@@ -46,7 +46,6 @@ const TechDocs = () => {
         <Dropdown
           selectedValue={activeTab}
           options={tabs}
-          defaultValue
           onChange={(tab) => setActiveTab(tab)}
         />
       </div>
