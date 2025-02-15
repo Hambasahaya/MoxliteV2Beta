@@ -30,7 +30,7 @@ const Summary = () => {
             Scarlet I.
           </p>
 
-          <div className="grid grid-cols-3 lg:grid-cols-4 lg:grid-cols-6 gap-4 mt-[24px] lg:mt-[40px]">
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-[24px] lg:mt-[40px]">
             <div className="border border-[#CBD5E1] bg-white px-[14px] py-[13px] flex flex-col items-center">
               <img
                 src="/icon/signal.svg"

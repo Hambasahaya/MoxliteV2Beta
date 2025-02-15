@@ -40,7 +40,7 @@ const MainBanner = () => {
                 "radial-gradient(116.0069560407267% 139.71710502756912% at 50% 0%, #020617 33.16662609577179%, rgba(8, 31, 59, 1) 62.23050355911255%, rgba(62, 156, 146, 1) 100%)",
             }}
           >
-            {/* 🔵 Logo Animasi: Muncul dari bawah sebelum overlay naik */}
+            {/* Logo Animasi: Muncul dari bawah sebelum overlay naik */}
             <motion.img
               src="/icon/moxlite-icon-1.svg"
               className="h-[36px] lg:h-[58px]"
@@ -52,8 +52,8 @@ const MainBanner = () => {
         )}
       </AnimatePresence>
 
-      {/* 🔵 Konten Utama Setelah Overlay Hilang */}
-      <div className="relative h-[calc(97vh-60px)] lg:h-[calc(100vh-60px)]">
+      {/* Konten Utama Setelah Overlay Hilang */}
+      <div className="relative h-[calc(97vh-50px)] lg:h-[calc(100vh-60px)]">
         {/* Video Background */}
         <video
           className="absolute top-0 left-0 w-full h-full object-cover"
