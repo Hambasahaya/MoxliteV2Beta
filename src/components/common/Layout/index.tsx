@@ -10,7 +10,7 @@ const Layout = ({ children }: iLayoutProps) => {
   return (
     <>
       <Navbar />
-      <div className="mt-[85px] md:mt-[60px]">{children}</div>
+      <div className="mt-[85px] lg:mt-[60px]">{children}</div>
       <Footer />
     </>
   );

@@ -43,7 +43,7 @@ const MainBanner = () => {
             {/* 🔵 Logo Animasi: Muncul dari bawah sebelum overlay naik */}
             <motion.img
               src="/icon/moxlite-icon-1.svg"
-              className="h-[36px] md:h-[58px]"
+              className="h-[36px] lg:h-[58px]"
               initial={{ opacity: 0, y: 50 }} // Muncul dari bawah
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }} // Delay sebelum overlay bergerak
@@ -53,7 +53,7 @@ const MainBanner = () => {
       </AnimatePresence>
 
       {/* 🔵 Konten Utama Setelah Overlay Hilang */}
-      <div className="relative h-[calc(97vh-60px)] md:h-[calc(100vh-60px)]">
+      <div className="relative h-[calc(97vh-60px)] lg:h-[calc(100vh-60px)]">
         {/* Video Background */}
         <video
           className="absolute top-0 left-0 w-full h-full object-cover"
@@ -67,14 +67,14 @@ const MainBanner = () => {
         </video>
 
         {/* Overlay & Content */}
-        <div className="absolute inset-0 bg-gray-950/40 flex flex-col justify-between px-[24px] md:px-[120px] md:pt-0">
+        <div className="absolute inset-0 bg-gray-950/40 flex flex-col justify-between px-[24px] lg:px-[120px] lg:pt-0">
           <div className="w-full h-10" />
           <div>
             <div className="flex flex-wrap items-center">
-              <h1 className="text-white text-[40px] md:text-[72px] font-bold mr-0 md:mr-[24px]">
+              <h1 className="text-white text-[40px] lg:text-[72px] font-bold mr-0 lg:mr-[24px]">
                 Reimagining
               </h1>
-              <div className="bg-white w-fit px-[16px] md:px-[24px]">
+              <div className="bg-white w-fit px-[16px] lg:px-[24px]">
                 <AnimatePresence mode="wait">
                   <motion.h1
                     key={texts[index]}
@@ -82,7 +82,7 @@ const MainBanner = () => {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -10, opacity: 0 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="text-black text-[40px] md:text-[60px] font-bold"
+                    className="text-black text-[40px] lg:text-[60px] font-bold"
                   >
                     {texts[index]}
                   </motion.h1>
@@ -90,11 +90,11 @@ const MainBanner = () => {
               </div>
             </div>
 
-            <h1 className="text-white text-[40px] md:text-[72px] font-bold">
+            <h1 className="text-white text-[40px] lg:text-[72px] font-bold">
               with Moxlite
             </h1>
 
-            <button className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] md:my-[24px] rounded-md cursor-pointer text-[14px] font-medium">
+            <button className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] lg:my-[24px] rounded-md cursor-pointer text-[14px] font-medium">
               Explore product
             </button>
           </div>

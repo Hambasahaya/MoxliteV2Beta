@@ -3,14 +3,14 @@ import { cardMetadata } from "./schema";
 const VisualImgs = () => {
   return (
     <div
-      className="p-[24px] md:p-[120px] text-white"
+      className="p-[24px] lg:p-[120px] text-white"
       style={{
         background:
           "radial-gradient(116.01% 139.72% at 50% 100%, #020617 33.17%, #081F3B 62.23%, #3E9C92 100%)",
       }}
     >
       <div className="flex flex-col items-center">
-        <h2 className="text-[36px] md:text-[48px] font-bold mb-[24px]">
+        <h2 className="text-[36px] lg:text-[48px] font-bold mb-[24px]">
           Visualizing Imaginations
         </h2>
         <p className="text-[20px] font-medium text-center">
@@ -20,12 +20,12 @@ const VisualImgs = () => {
           ambiance for any venue. With Moxlite, every performance is a
           masterpiece.
         </p>
-        <button className="bg-[#FAFAFA] hover:bg-neutral-400 text-black py-[12px] px-[16px] mt-[40px] md:mt-[29px] rounded-md cursor-pointer text-[14px] font-medium">
+        <button className="bg-[#FAFAFA] hover:bg-neutral-400 text-black py-[12px] px-[16px] mt-[40px] lg:mt-[29px] rounded-md cursor-pointer text-[14px] font-medium">
           Explore product
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-[24px] md:mt-[40px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-[24px] lg:mt-[40px]">
         {cardMetadata.map((e, i) => (
           <div
             key={i}

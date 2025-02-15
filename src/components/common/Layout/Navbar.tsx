@@ -7,7 +7,7 @@ const Navbar = () => {
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-[100]">
-        <div className="bg-black text-[#f8fafc] px-[120px] py-[22px] hidden md:flex justify-between items-center">
+        <div className="bg-black text-[#f8fafc] px-[120px] py-[22px] hidden lg:flex justify-between items-center">
           <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
           <div className="flex justify-between">
             <div className="pl-[36px] font-[500] text-[15px] cursor-pointer leading-[16.94px]">
@@ -34,7 +34,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div className="bg-black text-[#f8fafc] px-[20px] py-[24px] flex-none md:hidden">
+        <div className="bg-black text-[#f8fafc] px-[20px] py-[24px] flex-none lg:hidden">
           <div className="flex justify-between items-center">
             <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
             <div className="relative h-[30px] w-[30px] overflow-hidden">
@@ -67,9 +67,9 @@ const Navbar = () => {
           </div>
 
           <div
-            className={`px-[20px] pb-[10px] overflow-hidden transition-all duration-500 ${
+            className={`px-[20px] overflow-hidden transition-all duration-500 ${
               isExpand
-                ? "max-h-[390px] opacity-100 pt-[40px]"
+                ? "max-h-[390px] opacity-100 pt-[40px] pb-[10px]"
                 : "max-h-0 opacity-0 pt-[0px]"
             }`}
           >

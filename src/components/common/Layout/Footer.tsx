@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <div className="px-[24px] py-[40px] md:px-[120px] md:py-[120px] flex flex-col md:flex-row md:justify-between text-[#f8fafc] text-[16px] font-medium leading-[1.2] bg-[radial-gradient(65.83%_240.71%_at_50%_-18.88%,#030408_40%,#081F3B_60%,#3E9C92_92.17%)]">
+    <div className="px-[24px] py-[40px] lg:px-[120px] lg:py-[120px] flex flex-col lg:flex-row lg:justify-between text-[#f8fafc] text-[16px] font-medium leading-[1.2] bg-[radial-gradient(65.83%_240.71%_at_50%_-18.88%,#030408_40%,#081F3B_60%,#3E9C92_92.17%)]">
       <div className="max-w-[400px]">
         <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
         <p className="my-[24px]">
@@ -15,7 +15,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="max-w-[400px] mt-[40px] md:mt-0">
+      <div className="max-w-[400px] mt-[40px] lg:mt-0">
         <h4 className="mb-[16px] font-bold leading-[120%] text-[24px]">
           Contact
         </h4>
