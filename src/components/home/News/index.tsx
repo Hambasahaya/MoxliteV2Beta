@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import NewsCard from "../NewsCard";
+import NewsCard from "../../common/NewsCard";
 
 const News = () => {
   const ref = useRef(null);

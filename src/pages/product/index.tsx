@@ -6,7 +6,7 @@ import SearchBox from "@/components/common/SearchBox";
 import Pagination from "@/components/common/Pagination";
 
 const ProductList = () => {
-  const [currentPage, setCurrentPage] = useState(10);
+  const [currPage, setCurrPage] = useState(1);
 
   return (
     <Layout>
@@ -78,12 +78,7 @@ const ProductList = () => {
           </div>
 
           <div className="mt-[24px] flex justify-end">
-            <Pagination
-              pageCount={10}
-              onPageChange={(page) => {
-                setCurrentPage(page);
-              }}
-            />
+            <Pagination pageCount={10} onPageChange={setCurrPage} />
           </div>
         </div>
       </div>
