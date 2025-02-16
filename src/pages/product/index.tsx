@@ -4,6 +4,7 @@ import Layout from "@/components/common/Layout";
 import ProductCard from "@/components/common/ProductCard";
 import SearchBox from "@/components/common/SearchBox";
 import Pagination from "@/components/common/Pagination";
+import { ROUTES } from "@/constant/ROUTES";
 
 const ProductList = () => {
   const [currPage, setCurrPage] = useState(1);
@@ -61,19 +62,19 @@ const ProductList = () => {
               imgUrl="/image/product_1.png"
               name="SCARLET I"
               desc="Moving Heads"
-              url="/product/ok"
+              url={`${ROUTES.PRODUCT.path}/sample`}
             />
             <ProductCard
               imgUrl="/image/product_2.png"
               name="SCARLET II"
               desc="Moving Heads"
-              url="/product/ok"
+              url={`${ROUTES.PRODUCT.path}/sample`}
             />
             <ProductCard
               imgUrl="/image/product_3.png"
               name="SCARLET III"
               desc="Moving Heads"
-              url="/product/ok"
+              url={`${ROUTES.PRODUCT.path}/sample`}
             />
           </div>
 

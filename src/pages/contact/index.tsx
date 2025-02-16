@@ -39,7 +39,7 @@ const Contact = () => {
                 {
                   label: "@moxlite.prolight",
                   iconUrl: "/icon/instagram.svg",
-                  redirectUrl: "https://www.instagram.com/@moxlite.prolight",
+                  redirectUrl: "https://www.instagram.com/moxlite.prolight",
                 },
                 {
                   label: "Moxlite Prolight",

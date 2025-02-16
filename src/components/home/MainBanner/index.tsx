@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { ROUTES } from "@/constant/ROUTES";
 
 const texts = ["Nightclub", "Concert", "Architectural"];
 
@@ -94,9 +96,11 @@ const MainBanner = () => {
               with Moxlite
             </h1>
 
-            <button className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] lg:my-[24px] rounded-md cursor-pointer text-[14px] font-medium">
-              Explore product
-            </button>
+            <Link href={ROUTES.PRODUCT.path}>
+              <button className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] lg:my-[24px] rounded-md cursor-pointer text-[14px] font-medium">
+                Explore product
+              </button>
+            </Link>
           </div>
 
           <div className="w-full flex justify-center">

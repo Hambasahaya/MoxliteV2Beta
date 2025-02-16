@@ -1,6 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { cardMetadata } from "./schema";
+import Link from "next/link";
+import { ROUTES } from "@/constant/ROUTES";
 
 const VisualImgs = () => {
   const ref = useRef(null);
@@ -32,9 +34,11 @@ const VisualImgs = () => {
             perfect ambiance for any venue. With Moxlite, every performance is a
             masterpiece.
           </p>
-          <button className="bg-[#FAFAFA] hover:bg-neutral-400 text-black py-[12px] px-[16px] mt-[40px] lg:mt-[29px] rounded-md cursor-pointer text-[14px] font-medium">
-            Explore product
-          </button>
+          <Link href={ROUTES.PRODUCT.path}>
+            <button className="bg-[#FAFAFA] hover:bg-neutral-400 text-black py-[12px] px-[16px] mt-[40px] lg:mt-[29px] rounded-md cursor-pointer text-[14px] font-medium">
+              Explore product
+            </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-[24px] lg:mt-[40px]">

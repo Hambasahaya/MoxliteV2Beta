@@ -1,6 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import MoxliteOnDutyCard from "../MoxliteOnDutyCard";
+import { ROUTES } from "@/constant/ROUTES";
+import Link from "next/link";
 
 const MoxliteOnDuty = () => {
   const ref = useRef(null);
@@ -27,7 +29,12 @@ const MoxliteOnDuty = () => {
             </h2>
           </div>
           <div>
-            <p className="text-[14px] cursor-pointer font-medium">View All</p>
+            <Link
+              className="text-[14px] cursor-pointer font-medium"
+              href={`${ROUTES.NEWS.path}`}
+            >
+              View All
+            </Link>
           </div>
         </div>
 

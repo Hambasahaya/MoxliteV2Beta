@@ -1,11 +1,14 @@
 import DropdownLink from "@/components/common/DropdownLink";
 import { useRouter } from "next/router";
 import { aspectOptions } from "./schema";
+import { ROUTES } from "@/constant/ROUTES";
 
 const AspectTab = () => {
   const router = useRouter();
-  const selectedAspect = aspectOptions.filter((e) => e.path == router.asPath)[0]
-    ?.label;
+  const { slug } = router.query;
+  const selectedAspect = aspectOptions.filter(
+    (e) => `${ROUTES.PRODUCT.path}/${slug}#${e.id}` == router.asPath
+  )[0]?.label;
 
   return (
     <div id="aspect" className="sticky top-[76px] lg:top-[63px] z-50">
@@ -17,7 +20,7 @@ const AspectTab = () => {
               e.label == selectedAspect ? "underline" : ""
             }`}
             onClick={() => {
-              router.push(e.path);
+              router.push(`${ROUTES.PRODUCT.path}/${slug}#${e.id}`);
             }}
           >
             {e.label}
@@ -26,7 +29,13 @@ const AspectTab = () => {
       </div>
 
       <div className="py-[8px] px-[24px] bg-[#213E77] flex lg:hidden">
-        <DropdownLink defaultValue options={aspectOptions} />
+        <DropdownLink
+          defaultValue
+          options={aspectOptions.map((e) => ({
+            label: e.label,
+            path: `${ROUTES.PRODUCT.path}/${slug}#${e.id}`,
+          }))}
+        />
       </div>
     </div>
   );

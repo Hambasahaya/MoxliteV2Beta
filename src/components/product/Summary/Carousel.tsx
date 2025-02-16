@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const images = [
@@ -25,6 +23,7 @@ const variants = {
 const Carousel = () => {
   const [index, setIndex] = useState(0);
   const directionRef = useRef(1); // 1: next, -1: prev
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextSlide = () => {
     directionRef.current = 1;
@@ -36,8 +35,34 @@ const Carousel = () => {
     setIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  useEffect(() => {
+    const startAutoSlide = () => {
+      intervalRef.current = setInterval(nextSlide, 2000);
+    };
+
+    startAutoSlide();
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  // Pause saat hover
+  const stopAutoSlide = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
+  const resumeAutoSlide = () => {
+    stopAutoSlide();
+    intervalRef.current = setInterval(nextSlide, 2000);
+  };
+
   return (
-    <div className="relative w-full max-w-lg mx-auto overflow-hidden">
+    <div
+      className="relative w-full max-w-lg mx-auto overflow-hidden"
+      onMouseEnter={stopAutoSlide}
+      onMouseLeave={resumeAutoSlide}
+    >
       {/* Carousel */}
       <div className="relative w-full h-[300px] lg:h-[480px]">
         <AnimatePresence custom={directionRef.current}>

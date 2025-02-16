@@ -1,6 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import NewsCard from "../../common/NewsCard";
+import { ROUTES } from "@/constant/ROUTES";
+import Link from "next/link";
 
 const News = () => {
   const ref = useRef(null);
@@ -20,7 +22,12 @@ const News = () => {
             <h2 className="text-[36px] lg:text-[48px] font-bold">News</h2>
           </div>
           <div>
-            <p className="text-[14px] cursor-pointer font-medium">View All</p>
+            <Link
+              className="text-[14px] cursor-pointer font-medium"
+              href={`${ROUTES.NEWS.path}`}
+            >
+              View All
+            </Link>
           </div>
         </div>
 

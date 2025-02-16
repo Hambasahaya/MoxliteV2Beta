@@ -1,22 +1,22 @@
 export const aspectOptions = [
   {
     label: "Technical Specification",
-    path: "/product/ok#tech-specs",
+    id: "tech-specs",
   },
   {
     label: "Gobo & Colors",
-    path: "/product/ok#gobo-colors",
+    id: "gobo-colors",
   },
   {
     label: "Packaging",
-    path: "/product/ok#packaging",
+    id: "packaging",
   },
   {
     label: "Technical Documents",
-    path: "/product/ok#tech-docs",
+    id: "tech-docs",
   },
   {
     label: "Preview Video",
-    path: "/product/ok#prev-vid",
+    id: "prev-vid",
   },
 ];

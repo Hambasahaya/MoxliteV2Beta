@@ -1,6 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import ProductCard from "../../common/ProductCard";
+import { ROUTES } from "@/constant/ROUTES";
+import Link from "next/link";
 
 const LatestProduct = () => {
   const ref = useRef(null);
@@ -21,7 +23,12 @@ const LatestProduct = () => {
             </h2>
           </div>
           <div>
-            <p className="text-[14px] cursor-pointer font-medium">View All</p>
+            <Link
+              className="text-[14px] cursor-pointer font-medium"
+              href={`${ROUTES.PRODUCT.path}`}
+            >
+              View All
+            </Link>
           </div>
         </div>
 
@@ -30,25 +37,25 @@ const LatestProduct = () => {
             imgUrl="/image/product_1.png"
             name="SCARLET I"
             desc="Moving Heads"
-            url="/product/ok"
+            url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
           />
           <ProductCard
             imgUrl="/image/product_2.png"
             name="SCARLET II"
             desc="Moving Heads"
-            url="/product/ok"
+            url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
           />
           <ProductCard
             imgUrl="/image/product_3.png"
             name="SCARLET III"
             desc="Moving Heads"
-            url="/product/ok"
+            url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
           />
           <ProductCard
             imgUrl="/image/product_1.png"
             name="SCARLET I"
             desc="Moving Heads"
-            url="/product/ok"
+            url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
           />
         </div>
       </motion.div>

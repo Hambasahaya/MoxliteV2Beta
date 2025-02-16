@@ -1,36 +1,65 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
+import { ROUTES } from "@/constant/ROUTES";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isExpand, setIsExpand] = useState(false);
+  const router = useRouter();
 
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-[100]">
         <div className="bg-black text-[#f8fafc] px-[120px] py-[22px] hidden lg:flex justify-between items-center">
-          <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
+          <Link href={ROUTES.HOME.path}>
+            <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
+          </Link>
           <div className="flex justify-between">
-            <div className="pl-[36px] font-[500] text-[15px] cursor-pointer leading-[16.94px]">
-              Home
-            </div>
-            <div className="pl-[36px] font-[500] text-[15px] cursor-pointer leading-[16.94px]">
-              About
-            </div>
-            <div className="pl-[36px] font-[500] text-[15px] cursor-pointer leading-[16.94px]">
-              Product
-            </div>
-            <div className="pl-[36px] font-[500] text-[15px] cursor-pointer leading-[16.94px]">
-              Project
-            </div>
-            <div className="pl-[36px] font-[500] text-[15px] cursor-pointer leading-[16.94px]">
-              News
-            </div>
-            <div className="pl-[36px] font-[500] text-[15px] cursor-pointer leading-[16.94px]">
-              Contact
-            </div>
-            <div className="pl-[36px] font-[500] text-[15px] cursor-pointer leading-[16.94px]">
-              FAQ
-            </div>
+            <Link href={ROUTES.HOME.path} className="pl-[36px] cursor-pointer">
+              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+                {ROUTES.HOME.label}
+              </span>
+            </Link>
+            <Link href={ROUTES.ABOUT.path} className="pl-[36px] cursor-pointer">
+              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+                {ROUTES.ABOUT.label}
+              </span>
+            </Link>
+            <Link
+              href={ROUTES.PRODUCT.path}
+              className="pl-[36px] cursor-pointer"
+            >
+              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+                {ROUTES.PRODUCT.label}
+              </span>
+            </Link>
+            <Link
+              href={ROUTES.PROJECT.path}
+              className="pl-[36px] cursor-pointer"
+            >
+              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+                {ROUTES.PROJECT.label}
+              </span>
+            </Link>
+            <Link href={ROUTES.NEWS.path} className="pl-[36px] cursor-pointer">
+              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+                {ROUTES.NEWS.label}
+              </span>
+            </Link>
+            <Link
+              href={ROUTES.CONTACT.path}
+              className="pl-[36px] cursor-pointer"
+            >
+              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+                {ROUTES.CONTACT.label}
+              </span>
+            </Link>
+            <Link href={ROUTES.FAQ.path} className="pl-[36px] cursor-pointer">
+              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+                {ROUTES.FAQ.label}
+              </span>
+            </Link>
           </div>
         </div>
 
@@ -74,53 +103,74 @@ const Navbar = () => {
             }`}
           >
             <div
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] overflow-hidden transition-all duration-500 ${
+              onClick={() => {
+                router.push(ROUTES.HOME.path);
+              }}
+              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              Home
+              {ROUTES.HOME.label}
             </div>
             <div
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] overflow-hidden transition-all duration-500 ${
+              onClick={() => {
+                router.push(ROUTES.ABOUT.path);
+              }}
+              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              About
+              {ROUTES.ABOUT.label}
             </div>
             <div
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] overflow-hidden transition-all duration-500 ${
+              onClick={() => {
+                router.push(ROUTES.PRODUCT.path);
+              }}
+              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              Product
+              {ROUTES.PRODUCT.label}
             </div>
             <div
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] overflow-hidden transition-all duration-500 ${
+              onClick={() => {
+                router.push(ROUTES.PROJECT.path);
+              }}
+              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              Project
+              {ROUTES.PROJECT.label}
             </div>
             <div
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] overflow-hidden transition-all duration-500 ${
+              onClick={() => {
+                router.push(ROUTES.NEWS.path);
+              }}
+              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              News
+              {ROUTES.NEWS.label}
             </div>
             <div
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] overflow-hidden transition-all duration-500 ${
+              onClick={() => {
+                router.push(ROUTES.CONTACT.path);
+              }}
+              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              Contact
+              {ROUTES.CONTACT.label}
             </div>
             <div
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] overflow-hidden transition-all duration-500 ${
+              onClick={() => {
+                router.push(ROUTES.FAQ.path);
+              }}
+              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              FAQ
+              {ROUTES.FAQ.label}
             </div>
           </div>
         </div>
