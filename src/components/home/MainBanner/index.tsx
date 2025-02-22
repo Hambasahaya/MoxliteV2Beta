@@ -36,29 +36,29 @@ const MainBanner = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0.5, y: -700 }} // Efek tarik ke atas
             transition={{ duration: 0.8, ease: "circOut" }}
-            className="absolute h-screen inset-0 flex justify-center items-center z-200"
+            className="absolute h-screen inset-0 flex justify-center items-center z-[200]"
             style={{
               background:
                 "radial-gradient(116.0069560407267% 139.71710502756912% at 50% 0%, #020617 33.16662609577179%, rgba(8, 31, 59, 1) 62.23050355911255%, rgba(62, 156, 146, 1) 100%)",
             }}
           >
-            {/* Logo Animasi: Muncul dari bawah sebelum overlay naik */}
+            {/* Logo Animasi */}
             <motion.img
               src="/icon/moxlite-icon-1.svg"
               className="h-[36px] lg:h-[58px]"
               initial={{ opacity: 0, y: 50 }} // Muncul dari bawah
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }} // Delay sebelum overlay bergerak
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
             />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Konten Utama Setelah Overlay Hilang */}
+      {/* Konten Utama */}
       <div className="relative h-[calc(97vh-50px)] lg:h-[calc(100vh-60px)]">
         {/* Video Background */}
         <video
-          className="absolute top-0 left-0 w-full h-full object-cover"
+          className="fixed top-0 left-0 w-full h-full object-cover z-[-1] will-change-transform transform-gpu"
           autoPlay
           loop
           muted
@@ -71,8 +71,19 @@ const MainBanner = () => {
         {/* Overlay & Content */}
         <div className="absolute inset-0 bg-gray-950/40 flex flex-col justify-between px-[24px] lg:px-[120px] lg:pt-0">
           <div className="w-full h-10" />
-          <div>
-            <div className="flex flex-wrap items-center">
+
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.5 } } }}
+          >
+            {/* Bagian Pertama - "Reimagining" */}
+            <motion.div
+              className="flex flex-wrap items-center"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 1 }}
+            >
               <h1 className="text-white text-[40px] lg:text-[72px] font-bold mr-0 lg:mr-[24px]">
                 Reimagining
               </h1>
@@ -90,18 +101,31 @@ const MainBanner = () => {
                   </motion.h1>
                 </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
 
-            <h1 className="text-white text-[40px] lg:text-[72px] font-bold">
+            {/* Bagian Kedua - "with Moxlite" */}
+            <motion.h1
+              className="text-white text-[40px] lg:text-[72px] font-bold"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 1.2 }}
+            >
               with Moxlite
-            </h1>
+            </motion.h1>
 
-            <Link href={ROUTES.PRODUCT.path}>
-              <button className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] lg:my-[24px] rounded-md cursor-pointer text-[14px] font-medium">
-                Explore product
-              </button>
-            </Link>
-          </div>
+            {/* Bagian Ketiga - Button */}
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: 1.3 }}
+            >
+              <Link href={ROUTES.PRODUCT.path}>
+                <button className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] lg:my-[24px] rounded-md cursor-pointer text-[14px] font-medium">
+                  Explore product
+                </button>
+              </Link>
+            </motion.div>
+          </motion.div>
 
           <div className="w-full flex justify-center">
             <img src="/icon/chevrons-down.svg" className="h-[48px] pb-2" />

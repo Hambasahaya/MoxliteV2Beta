@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { iAccordion } from "./types";
 
-const Accordion = ({ title, content }: iAccordion) => {
+const Accordion = ({ title, content, invertColor }: iAccordion) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,9 +13,15 @@ const Accordion = ({ title, content }: iAccordion) => {
       >
         <h4 className="font-semibold text-[18px]">{title}</h4>
         {isOpen ? (
-          <img src="/icon/chevron-up-small.svg" className="size-[16px]" />
+          <img
+            src="/icon/chevron-up-small.svg"
+            className={`size-[16px] ${invertColor ? "invert" : ""}`}
+          />
         ) : (
-          <img src="/icon/chevron-down-small.svg" className="size-[16px]" />
+          <img
+            src="/icon/chevron-down-small.svg"
+            className={`size-[16px] ${invertColor ? "invert" : ""}`}
+          />
         )}
       </button>
 
@@ -25,7 +31,7 @@ const Accordion = ({ title, content }: iAccordion) => {
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="overflow-hidden"
       >
-        <p className="text-[#09090B] text-[16px] pb-[24px]">{content}</p>
+        <p className="text-[16px] pb-[24px]">{content}</p>
       </motion.div>
     </div>
   );

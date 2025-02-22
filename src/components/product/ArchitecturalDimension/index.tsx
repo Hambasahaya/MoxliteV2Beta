@@ -1,12 +1,12 @@
-const GoboAndColors = () => {
+const ArchitecturalDimension = () => {
   return (
     <>
       <div
-        id="gobo-colors"
+        id="arch-dim"
         className="px-[24px] py-[40px] lg:px-[120px] lg:py-[80px]"
       >
         <h2 className="text-[30px] text-black font-bold mb-[40px]">
-          Gobo & Colors
+          Architectural Dimension
         </h2>
 
         <img src="/image/gobo-and-colors.png" className="w-full" />
@@ -16,4 +16,4 @@ const GoboAndColors = () => {
   );
 };
 
-export default GoboAndColors;
+export default ArchitecturalDimension;

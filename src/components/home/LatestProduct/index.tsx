@@ -56,6 +56,7 @@ const LatestProduct = () => {
             name="SCARLET I"
             desc="Moving Heads"
             url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
+            discontinue
           />
         </div>
       </motion.div>

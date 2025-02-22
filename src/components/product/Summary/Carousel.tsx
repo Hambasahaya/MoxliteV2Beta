@@ -66,17 +66,21 @@ const Carousel = () => {
       {/* Carousel */}
       <div className="relative w-full h-[300px] lg:h-[480px]">
         <AnimatePresence custom={directionRef.current}>
-          <motion.img
+          <motion.div
             key={index}
-            src={images[index]}
-            className="absolute w-full h-full object-contain rounded-lg"
+            className="absolute w-full h-full"
             custom={directionRef.current}
             variants={variants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={{ duration: 0.5 }}
-          />
+          >
+            <img
+              src={images[index]}
+              className="w-full h-full object-contain opacity-50"
+            />
+          </motion.div>
         </AnimatePresence>
       </div>
 

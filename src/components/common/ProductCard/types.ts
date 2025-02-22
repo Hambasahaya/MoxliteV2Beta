@@ -3,4 +3,5 @@ export type iProductCard = {
   name: string;
   desc: string;
   url?: string;
+  discontinue?: boolean;
 };

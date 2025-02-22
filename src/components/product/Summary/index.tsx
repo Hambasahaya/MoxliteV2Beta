@@ -1,3 +1,4 @@
+import FeatureOverlay from "../FetureOverlay";
 import Carousel from "./Carousel";
 
 const Summary = () => {
@@ -10,7 +11,7 @@ const Summary = () => {
         <div className="col-span-12 lg:col-span-7">
           <div className="flex items-center mb-[16px]">
             <h1 className="font-bold text-[36px] mr-[16px]">SCARLET I</h1>
-            <div className="bg-[#cbd5e1] px-[16px] py-[4px] text-[12px] text-[#272c34] font-medium h-fit">
+            <div className="bg-[#cbd5e1] px-[16px] py-[4px] text-[12px] text-[#64748B] font-medium h-fit">
               DISCONTINUE
             </div>
           </div>
@@ -31,55 +32,14 @@ const Summary = () => {
           </p>
 
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-[24px] lg:mt-[40px]">
-            <div className="border border-[#CBD5E1] bg-white px-[14px] py-[13px] flex flex-col items-center">
-              <img
-                src="/icon/signal.svg"
-                className="size-[44px] mb-[4px] object-contain"
-              />
-              <p className="font-bold text-[#020617] text-[12px]">NFC</p>
-            </div>
-            <div className="border border-[#CBD5E1] bg-white px-[14px] py-[13px] flex flex-col items-center">
-              <img
-                src="/icon/signal.svg"
-                className="size-[44px] mb-[4px] object-contain"
-              />
-              <p className="font-bold text-[#020617] text-[12px]">NFC</p>
-            </div>
-            <div className="border border-[#CBD5E1] bg-white px-[14px] py-[13px] flex flex-col items-center">
-              <img
-                src="/icon/signal.svg"
-                className="size-[44px] mb-[4px] object-contain"
-              />
-              <p className="font-bold text-[#020617] text-[12px]">NFC</p>
-            </div>
-            <div className="border border-[#CBD5E1] bg-white px-[14px] py-[13px] flex flex-col items-center">
-              <img
-                src="/icon/signal.svg"
-                className="size-[44px] mb-[4px] object-contain"
-              />
-              <p className="font-bold text-[#020617] text-[12px]">NFC</p>
-            </div>
-            <div className="border border-[#CBD5E1] bg-white px-[14px] py-[13px] flex flex-col items-center">
-              <img
-                src="/icon/signal.svg"
-                className="size-[44px] mb-[4px] object-contain"
-              />
-              <p className="font-bold text-[#020617] text-[12px]">NFC</p>
-            </div>
-            <div className="border border-[#CBD5E1] bg-white px-[14px] py-[13px] flex flex-col items-center">
-              <img
-                src="/icon/signal.svg"
-                className="size-[44px] mb-[4px] object-contain"
-              />
-              <p className="font-bold text-[#020617] text-[12px]">NFC</p>
-            </div>
-            <div className="border border-[#CBD5E1] bg-white px-[14px] py-[13px] flex flex-col items-center">
-              <img
-                src="/icon/signal.svg"
-                className="size-[44px] mb-[4px] object-contain"
-              />
-              <p className="font-bold text-[#020617] text-[12px]">NFC</p>
-            </div>
+            <FeatureOverlay />
+            <FeatureOverlay />
+            <FeatureOverlay />
+            <FeatureOverlay />
+            <FeatureOverlay />
+            <FeatureOverlay />
+            <FeatureOverlay />
+            <FeatureOverlay />
           </div>
         </div>
       </div>

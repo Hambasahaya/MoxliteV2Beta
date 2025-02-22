@@ -1,10 +1,10 @@
 import { iSpecItem } from "./types";
 
-const SpecItem = ({ title, items }: iSpecItem) => {
+const SpecItem = ({ title, items, iconPath }: iSpecItem) => {
   return (
     <div className="mb-[40px]">
       <div className="flex items-center mb-[16px]">
-        <img className="size-[24px]" src="/icon/lightbulb.svg" />
+        <img className="size-[24px]" src={iconPath} />
         <p className="text-black text-[20px] font-bold ml-[16px]">{title}</p>
       </div>
 

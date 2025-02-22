@@ -75,6 +75,7 @@ const ProductList = () => {
               name="SCARLET III"
               desc="Moving Heads"
               url={`${ROUTES.PRODUCT.path}/sample`}
+              discontinue
             />
           </div>
 
