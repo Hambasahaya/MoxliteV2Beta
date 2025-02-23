@@ -24,3 +24,14 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+#nprogress .bar {
+  background: rgb(41, 146, 135) !important;
+  height: 1.5px !important;
+}
+
+#nprogress .spinner-icon {
+  border: solid 2px transparent !important;
+  border-top-color: rgb(41, 146, 135) !important;
+  border-left-color: rgb(41, 146, 135) !important;
+}

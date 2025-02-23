@@ -1,0 +1,43 @@
+/* styles/ckeditor.css */
+.ck-content {
+  font-family: "Arial", sans-serif;
+  line-height: 1.6;
+  font-size: 16px;
+  color: #333;
+}
+
+.ck-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.ck-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ck-content blockquote {
+  font-style: italic;
+  border-left: 5px solid #ccc;
+  padding-left: 10px;
+  color: #666;
+}
+
+.markdown-content {
+  max-width: 100%;
+  margin: auto;
+  line-height: 1.6;
+}
+
+.markdown-content h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}

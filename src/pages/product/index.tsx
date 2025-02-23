@@ -28,18 +28,23 @@ const ProductList = () => {
             </p>
 
             <div className="mb-[40px]">
-              <div className="cursor-pointer mt-[8px] bg-[url(/image/product_list_banner.png)] bg-cover flex items-center justify-end">
-                <h4 className="text-[14px] font-bold text-white text-right w-[60%] py-2 lg:py-1 px-4">
+              <div
+                className="cursor-pointer mt-[8px] bg-cover flex items-center justify-end grayscale hover:grayscale-0"
+                style={{
+                  backgroundImage: `url(${"/image/category/architectural.svg"})`,
+                }}
+              >
+                <h4 className="text-[14px] font-bold text-white text-right w-[60%] py-2 px-4">
                   MOXLITE AMOS
                 </h4>
               </div>
-              <div className="cursor-pointer mt-[8px] bg-[url(/image/product_list_banner.png)] bg-cover flex items-center justify-end">
-                <h4 className="text-[14px] font-bold text-white text-right w-[60%] py-2 lg:py-1 px-4">
-                  MOXLITE AMOS
-                </h4>
-              </div>
-              <div className="cursor-pointer mt-[8px] bg-[url(/image/product_list_banner.png)] bg-cover flex items-center justify-end">
-                <h4 className="text-[14px] font-bold text-white text-right w-[60%] py-2 lg:py-1 px-4">
+              <div
+                className="cursor-pointer mt-[8px] bg-cover flex items-center justify-end grayscale hover:grayscale-0"
+                style={{
+                  backgroundImage: `url(${"/image/category/concert.svg"})`,
+                }}
+              >
+                <h4 className="text-[14px] font-bold text-white text-right w-[60%] py-2 px-4">
                   MOXLITE AMOS
                 </h4>
               </div>
