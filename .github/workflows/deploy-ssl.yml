@@ -1,0 +1,52 @@
+name: Deploy SSL
+on:
+  workflow_dispatch
+
+env:
+  DIRECTORY: /home/${{ secrets.SSH_USERNAME }}/proxy-ssl
+  DOCKER_COMPOSE_FILE: docker-compose-ssl-web.yml
+
+jobs:
+  deploy-service:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Create folder if not exists
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            mkdir -p ${{ env.DIRECTORY }}
+
+      - name: Copy Docker Compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: "${{ env.DOCKER_COMPOSE_FILE }}"
+          target: ${{ env.DIRECTORY }}
+              
+      # - name: Deploy
+      #   uses: appleboy/ssh-action@v1.2.1
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USERNAME }}
+      #     password: ${{ secrets.SSH_PASSWORD }}
+      #     port: ${{ secrets.PORT }}
+      #     script: |
+      #       # Navigate to deployment directory
+      #       cd ${{ env.DIRECTORY }}
+                        
+      #       # Deploy with health check
+      #       docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} up -d --remove-orphans
+              
+      #       # Cleanup old images
+      #       docker image prune -f

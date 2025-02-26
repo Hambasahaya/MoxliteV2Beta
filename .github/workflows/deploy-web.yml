@@ -1,0 +1,67 @@
+name: Deploy Web
+on:
+  workflow_dispatch
+
+env:
+  DIRECTORY: /home/${{ secrets.SSH_USERNAME }}/frontend
+  DOCKER_COMPOSE_FILE: docker-compose.yml
+
+jobs:
+  deploy-service:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Create folder if not exists
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            mkdir -p ${{ env.DIRECTORY }}
+
+      - name: Copy Docker Compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: "${{ env.DOCKER_COMPOSE_FILE }}"
+          target: ${{ env.DIRECTORY }}
+              
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            # Navigate to deployment directory
+            cd ${{ env.DIRECTORY }}
+            
+            # Create .env file with proper error handling
+            {
+              echo "# Application Configuration"
+              echo "NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}"
+              echo "NEXT_PUBLIC_FE_BASE_URL=${{ vars.NEXT_PUBLIC_FE_BASE_URL }}"
+            } > .env
+                        
+            # Deploy with health check
+            docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} up -d --remove-orphans
+            
+            # Check if containers are healthy
+            sleep 10
+            if ! docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} ps | grep -q "healthy"; then
+              echo "Container health check failed"
+              docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} logs
+              exit 1
+            fi
+            
+            # Cleanup old images
+            docker image prune -f
