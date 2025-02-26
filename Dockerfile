@@ -1,23 +1,23 @@
-# Gunakan image Node.js sebagai base image
-FROM node:18-alpine AS builder
+# Gunakan image Node.js versi 22 sebagai base image
+FROM node:22-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Salin file package.json dan yarn.lock / package-lock.json
+# Salin file package.json dan yarn.lock
 COPY package.json yarn.lock ./
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
+# Install dependencies dengan suppress warning
+RUN yarn install --frozen-lockfile --no-progress --silent
 
 # Salin semua file proyek ke dalam container
 COPY . .
 
-# Build Next.js
-RUN yarn build
+# Build Next.js tanpa warning
+RUN NODE_OPTIONS="--no-warnings" yarn build
 
 # Gunakan base image yang lebih kecil untuk runtime
-FROM node:18-alpine AS runner
+FROM node:22-alpine AS runner
 
 # Set working directory
 WORKDIR /app
@@ -31,6 +31,7 @@ COPY --from=builder /app/package.json ./
 # Tentukan variabel lingkungan
 ENV NODE_ENV production
 ENV PORT 3000
+ENV NODE_OPTIONS "--no-warnings"
 
 # Expose port yang digunakan
 EXPOSE 3000

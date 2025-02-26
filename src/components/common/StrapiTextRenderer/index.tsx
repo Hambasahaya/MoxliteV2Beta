@@ -1,4 +1,3 @@
-import "@/components/common/StrapiTextRenderer/styles.css";
 // import DOMPurify from "dompurify";
 import ReactMarkdown from "react-markdown";
 import { iStrapiTextRenderer } from "./types";

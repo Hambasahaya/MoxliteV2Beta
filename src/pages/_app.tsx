@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "@/styles/strapi_styles.css";
 import type { AppProps } from "next/app";
 import { Inter, Saira } from "next/font/google";
 import dynamic from "next/dynamic";
