@@ -1,26 +1,25 @@
 import { ROUTES } from "@/constant/ROUTES";
 import { useRouter } from "next/router";
+import moment from "moment";
+import { iNewsCard } from "./types";
 
-const NewsCard = () => {
+const NewsCard = ({ slug, name, thumbnail, desc, date }: iNewsCard) => {
   const router = useRouter();
 
   return (
     <div
       onClick={() => {
-        router.push(`${ROUTES.NEWS.path}/slug-sample`);
+        router.push(`${ROUTES.NEWS.path}/${slug}`);
       }}
       className="border border-[#CBD5E1] cursor-pointer bg-white hover:bg-black text-black hover:text-white hover:shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.3)]"
     >
-      <img src="/image/news_1.png" className="h-[254px] w-full object-cover" />
+      <img src={thumbnail} className="h-[254px] w-full object-cover" />
       <div className="py-[27px] px-[24px]">
-        <p className="text-[#64748B] text-[14px] font-medium">JAN 28, 2025</p>
-        <h2 className="font-bold text-[24px] my-[16px]">
-          Moxlite Helps Lift the Mask in South Africa
-        </h2>
-        <p className="font-medium text-[16px]">
-          The second series of The Masked Singer SA was one of the most
-          successful music TV shows of 2024...
+        <p className="text-[#64748B] text-[14px] font-medium">
+          {moment(date).format("MMM DD, YYYY")}
         </p>
+        <h2 className="font-bold text-[24px] my-[16px]">{name}</h2>
+        <p className="font-medium text-[16px]">{desc}</p>
       </div>
     </div>
   );

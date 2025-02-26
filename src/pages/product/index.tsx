@@ -1,13 +1,43 @@
-import { useState } from "react";
 import Dropdown from "@/components/common/Dropdown";
 import Layout from "@/components/common/Layout";
 import ProductCard from "@/components/common/ProductCard";
 import SearchBox from "@/components/common/SearchBox";
 import Pagination from "@/components/common/Pagination";
 import { ROUTES } from "@/constant/ROUTES";
+import { iProductProps } from "@/components/product/types";
+import { useRouter } from "next/router";
 
-const ProductList = () => {
-  const [currPage, setCurrPage] = useState(1);
+const ProductList = ({
+  productTypes,
+  productFamily,
+  products,
+  pageCount,
+}: iProductProps) => {
+  const router = useRouter();
+  const { typeQ, familyQ, q, page } = router?.query;
+
+  const updateQueryParams = (updates: { [key: string]: any }): void => {
+    let tmpQuery = router.query;
+
+    Object.keys(updates).forEach((key) => {
+      if (updates[key] === null) {
+        delete tmpQuery[key];
+      } else if (tmpQuery[key] === updates[key]) {
+        delete tmpQuery[key];
+      } else {
+        tmpQuery[key] = updates[key];
+      }
+    });
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: tmpQuery,
+      },
+      undefined,
+      { shallow: false }
+    );
+  };
 
   return (
     <Layout>
@@ -21,72 +51,105 @@ const ProductList = () => {
         <div className="col-span-12 lg:col-span-3">
           <div className="border-0 lg:border-r lg:border-[#CBD5E1] pr-0 lg:pr-4">
             <div className="mb-[40px]">
-              <SearchBox />
+              <SearchBox
+                onEnter={(value) => {
+                  if (value == q) return;
+
+                  if (!value) {
+                    updateQueryParams({ q });
+                  } else {
+                    updateQueryParams({ q: value });
+                  }
+                }}
+              />
             </div>
             <p className="text-[#64748B] text-[12px] font-semibold">
               FILTER BY PRODUCT TYPE
             </p>
 
             <div className="mb-[40px]">
-              <div
-                className="cursor-pointer mt-[8px] bg-cover flex items-center justify-end grayscale hover:grayscale-0"
-                style={{
-                  backgroundImage: `url(${"/image/category/architectural.svg"})`,
-                }}
-              >
-                <h4 className="text-[14px] font-bold text-white text-right w-[60%] py-2 px-4">
-                  MOXLITE AMOS
-                </h4>
-              </div>
-              <div
-                className="cursor-pointer mt-[8px] bg-cover flex items-center justify-end grayscale hover:grayscale-0"
-                style={{
-                  backgroundImage: `url(${"/image/category/concert.svg"})`,
-                }}
-              >
-                <h4 className="text-[14px] font-bold text-white text-right w-[60%] py-2 px-4">
-                  MOXLITE AMOS
-                </h4>
-              </div>
+              {productTypes.map((e, i) => (
+                <div
+                  key={i}
+                  className={`cursor-pointer mt-[8px] bg-cover flex items-center justify-end ${
+                    typeQ == e.slug ? "" : "grayscale hover:grayscale-0"
+                  }`}
+                  style={{
+                    backgroundImage: `url(${e.thumbnail})`,
+                  }}
+                  onClick={() => {
+                    updateQueryParams({ typeQ: e.slug });
+                  }}
+                >
+                  <div className="h-[67px] p-2 flex items-center justify-end">
+                    <h4 className="text-[14px] w-[66%] font-bold text-white text-right">
+                      {e.title}
+                    </h4>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <p className="text-[#64748B] text-[12px] font-semibold mb-[8px]">
               FILTER BY FAMILY
             </p>
             <Dropdown
-              selectedValue={null}
-              options={[{ label: "Moving Heads", value: 1 }]}
-              onChange={(_v) => {}}
+              selectedValue={{ label: "", value: familyQ }}
+              options={[
+                {
+                  label: "Please select an option",
+                  value: "",
+                },
+                ...productFamily.map((e) => ({
+                  label: e.title,
+                  value: e.slug,
+                })),
+              ]}
+              onChange={(option) => {
+                if (!option.value && familyQ) {
+                  updateQueryParams({ familyQ });
+                  return;
+                }
+                updateQueryParams({ familyQ: option.value });
+              }}
             />
           </div>
         </div>
 
         <div className="col-span-12 lg:col-span-9">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <ProductCard
-              imgUrl="/image/product_1.png"
-              name="SCARLET I"
-              desc="Moving Heads"
-              url={`${ROUTES.PRODUCT.path}/sample`}
-            />
-            <ProductCard
-              imgUrl="/image/product_2.png"
-              name="SCARLET II"
-              desc="Moving Heads"
-              url={`${ROUTES.PRODUCT.path}/sample`}
-            />
-            <ProductCard
-              imgUrl="/image/product_3.png"
-              name="SCARLET III"
-              desc="Moving Heads"
-              url={`${ROUTES.PRODUCT.path}/sample`}
-              discontinue
-            />
-          </div>
+          {products.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {products.map((e, i) => (
+                  <ProductCard
+                    key={i}
+                    imgUrl={e.thumbnail}
+                    name={e.name}
+                    desc={e.category}
+                    url={`${ROUTES.PRODUCT.path}/${e.slug}`}
+                  />
+                ))}
+              </div>
 
-          <div className="mt-[24px] flex justify-end">
-            <Pagination pageCount={10} onPageChange={setCurrPage} />
-          </div>
+              <div className="mt-[24px] flex justify-end">
+                <Pagination
+                  pageCount={pageCount}
+                  onPageChange={(currPage) => {
+                    if (currPage.toString() == page) return;
+                    updateQueryParams({ page: currPage });
+                  }}
+                />
+              </div>
+            </>
+          )}
+
+          {products.length == 0 && (
+            <div className="h-[60vh] w-full flex items-center justify-center">
+              <p className="text-center font-medium">
+                Data not found please use other filters...
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </Layout>
@@ -94,3 +157,5 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
+export { getServerPropsList as getServerSideProps } from "@/components/product/utils/getServerProps";

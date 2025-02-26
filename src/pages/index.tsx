@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import LatestProduct from "@/components/home/LatestProduct";
 import MoxliteOnDuty from "@/components/home/MoxliteOnDuty";
 import News from "@/components/home/News";
@@ -7,18 +6,18 @@ import Layout from "@/components/common/Layout";
 import MainBanner from "@/components/home/MainBanner";
 import { iHomeProps } from "@/components/home/types";
 
-export default function Home({ posts }: iHomeProps) {
-  useEffect(() => {
-    console.log("Fetched Posts:", posts);
-  }, [posts]);
-
+export default function Home({
+  latestNews,
+  latestProducts,
+  latestProjects,
+}: iHomeProps) {
   return (
     <Layout>
       <MainBanner />
-      <LatestProduct />
+      <LatestProduct contents={latestProducts} />
       <VisualImgs />
-      <News />
-      <MoxliteOnDuty />
+      <News contents={latestNews} />
+      <MoxliteOnDuty contents={latestProjects} />
     </Layout>
   );
 }

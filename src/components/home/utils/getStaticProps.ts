@@ -1,19 +1,29 @@
 import { GetStaticProps } from "next";
-import { iHomeProps, iPost } from "../types";
+import { iHomeProps } from "../types";
+import { getLatestNews, getLatestproducts, getLatestProjects } from "./api";
 
 export const getStaticProps: GetStaticProps<iHomeProps> = async () => {
   try {
-    const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-    const posts: iPost[] = await res.json();
+    const latestNews = await getLatestNews();
+    const latestProducts = await getLatestproducts();
+    const latestProjects = await getLatestProjects();
 
     return {
-      props: { posts }, // Kirim data sebagai props ke Home
+      props: {
+        latestNews,
+        latestProducts,
+        latestProjects,
+      },
     };
   } catch (error) {
     console.error("Error fetching posts:", error);
 
     return {
-      props: { posts: [] }, // Return array kosong jika gagal fetch
+      props: {
+        latestNews: [],
+        latestProducts: [],
+        latestProjects: [],
+      },
     };
   }
 };

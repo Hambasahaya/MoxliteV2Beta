@@ -8,7 +8,7 @@ const Pagination = ({ pageCount, onPageChange }: iPagination) => {
       <div className="hidden sm:flex">
         <ReactPaginate
           previousLabel={
-            <div className="flex items-center mr-2 cursor-pointer">
+            <div className="flex items-center mr-1 cursor-pointer">
               <img
                 src="/icon/chevron-left.svg"
                 className="size-[16px] mr-[4px]"

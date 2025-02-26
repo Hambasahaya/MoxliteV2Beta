@@ -3,8 +3,13 @@ import { useRef } from "react";
 import ProductCard from "../../common/ProductCard";
 import { ROUTES } from "@/constant/ROUTES";
 import Link from "next/link";
+import { iLatestProduct } from "../types";
 
-const LatestProduct = () => {
+const LatestProduct = ({ contents }: { contents: iLatestProduct[] }) => {
+  if (contents.length == 0) {
+    return <></>;
+  }
+
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, margin: "-100px" });
 
@@ -33,31 +38,16 @@ const LatestProduct = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <ProductCard
-            imgUrl="/image/product_1.png"
-            name="SCARLET I"
-            desc="Moving Heads"
-            url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
-          />
-          <ProductCard
-            imgUrl="/image/product_2.png"
-            name="SCARLET II"
-            desc="Moving Heads"
-            url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
-          />
-          <ProductCard
-            imgUrl="/image/product_3.png"
-            name="SCARLET III"
-            desc="Moving Heads"
-            url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
-          />
-          <ProductCard
-            imgUrl="/image/product_1.png"
-            name="SCARLET I"
-            desc="Moving Heads"
-            url={`${ROUTES.PRODUCT.path}/${"sample-landing"}`}
-            discontinue
-          />
+          {contents.map((e, i) => (
+            <ProductCard
+              key={i}
+              imgUrl={e.thumbnail}
+              name={e.name}
+              desc={e.category}
+              url={`${ROUTES.PRODUCT.path}/${e.slug}`}
+              discontinue={e.discontinue}
+            />
+          ))}
         </div>
       </motion.div>
     </div>

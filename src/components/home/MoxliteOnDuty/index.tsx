@@ -3,8 +3,13 @@ import { useRef } from "react";
 import MoxliteOnDutyCard from "../MoxliteOnDutyCard";
 import { ROUTES } from "@/constant/ROUTES";
 import Link from "next/link";
+import { iLatestProject } from "../types";
 
-const MoxliteOnDuty = () => {
+const MoxliteOnDuty = ({ contents }: { contents: iLatestProject[] }) => {
+  if (contents.length == 0) {
+    return <></>;
+  }
+
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, margin: "-100px" });
 
@@ -39,9 +44,9 @@ const MoxliteOnDuty = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <MoxliteOnDutyCard />
-          <MoxliteOnDutyCard />
-          <MoxliteOnDutyCard />
+          {contents.map((e, i) => (
+            <MoxliteOnDutyCard key={i} {...e} />
+          ))}
         </div>
       </motion.div>
     </div>

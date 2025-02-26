@@ -3,8 +3,13 @@ import { useRef } from "react";
 import NewsCard from "../../common/NewsCard";
 import { ROUTES } from "@/constant/ROUTES";
 import Link from "next/link";
+import { iLatestNews } from "../types";
 
-const News = () => {
+const News = ({ contents }: { contents: iLatestNews[] }) => {
+  if (contents.length == 0) {
+    return <></>;
+  }
+
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, margin: "-50px" });
 
@@ -32,9 +37,9 @@ const News = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <NewsCard />
-          <NewsCard />
-          <NewsCard />
+          {contents.map((e, i) => (
+            <NewsCard {...e} key={i} />
+          ))}
         </div>
       </motion.div>
     </div>
