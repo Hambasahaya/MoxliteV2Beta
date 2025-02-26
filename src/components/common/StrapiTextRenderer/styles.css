@@ -41,3 +41,12 @@
   height: auto;
   border-radius: 8px;
 }
+
+.custom-list {
+  padding-left: 20px;
+  list-style-type: disc; /* Pastikan menggunakan bullet point */
+}
+
+.custom-list-item {
+  margin-bottom: 5px;
+}

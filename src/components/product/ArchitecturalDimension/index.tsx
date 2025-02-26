@@ -1,4 +1,4 @@
-const ArchitecturalDimension = () => {
+const ArchitecturalDimension = ({ imgUrl }: { imgUrl: string }) => {
   return (
     <>
       <div
@@ -9,7 +9,7 @@ const ArchitecturalDimension = () => {
           Architectural Dimension
         </h2>
 
-        <img src="/image/gobo-and-colors.png" className="w-full" />
+        <img src={imgUrl} className="w-full" />
       </div>
       <div className="border border-[#CBD5E1] mx-[24px] lg:mx-[120px]" />
     </>

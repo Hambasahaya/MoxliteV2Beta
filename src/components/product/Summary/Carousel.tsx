@@ -1,12 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const images = [
-  "/image/product_1.png",
-  "/image/product_2.png",
-  "/image/product_3.png",
-  "/image/product_2.png",
-];
+import { iCarousel } from "./types";
 
 const variants = {
   enter: (direction: number) => ({
@@ -20,19 +14,19 @@ const variants = {
   }),
 };
 
-const Carousel = () => {
+const Carousel = ({ imgUrls = [] }: iCarousel) => {
   const [index, setIndex] = useState(0);
   const directionRef = useRef(1); // 1: next, -1: prev
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextSlide = () => {
     directionRef.current = 1;
-    setIndex((prev) => (prev + 1) % images.length);
+    setIndex((prev) => (prev + 1) % imgUrls.length);
   };
 
   const prevSlide = () => {
     directionRef.current = -1;
-    setIndex((prev) => (prev - 1 + images.length) % images.length);
+    setIndex((prev) => (prev - 1 + imgUrls.length) % imgUrls.length);
   };
 
   useEffect(() => {
@@ -77,7 +71,7 @@ const Carousel = () => {
             transition={{ duration: 0.5 }}
           >
             <img
-              src={images[index]}
+              src={imgUrls[index]}
               className="w-full h-full object-contain opacity-50"
             />
           </motion.div>
@@ -98,7 +92,7 @@ const Carousel = () => {
 
       {/* Indikator Dots */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 p-2 bg-gray-300 rounded-full">
-        {images.map((_, i) => (
+        {imgUrls.map((_, i) => (
           <div
             key={i}
             className={`w-2 h-2 rounded-full ${

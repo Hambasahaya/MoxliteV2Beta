@@ -1,8 +1,8 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { iHomeProps } from "../types";
 import { getLatestNews, getLatestproducts, getLatestProjects } from "./api";
 
-export const getStaticProps: GetStaticProps<iHomeProps> = async () => {
+export const getServerSideProps: GetServerSideProps<iHomeProps> = async () => {
   try {
     const latestNews = await getLatestNews();
     const latestProducts = await getLatestproducts();

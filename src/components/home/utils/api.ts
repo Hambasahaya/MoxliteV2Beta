@@ -8,10 +8,10 @@ export const getLatestproducts = async (): Promise<iLatestProduct[]> => {
     );
     const result = await rawRes.json();
     const products: iLatestProduct[] = result.data.map((e: any) => ({
-      slug: e.slug,
-      name: e.name,
-      thumbnail: e.main_image.url,
-      category: e.product_category.name,
+      slug: e?.slug ?? "",
+      name: e?.name ?? "",
+      thumbnail: e?.main_image?.url ?? "",
+      category: e?.product_category?.name ?? "",
       discontinue: e?.discontinued ?? false,
     }));
 
@@ -28,11 +28,11 @@ export const getLatestNews = async (): Promise<iLatestNews[]> => {
     );
     const result = await rawRes.json();
     const news: iLatestNews[] = result.data.map((e: any) => ({
-      slug: e.slug,
-      name: e.title,
-      thumbnail: e.main_image.url,
-      desc: e.summary,
-      date: e.publishedAt,
+      slug: e?.slug ?? "",
+      name: e?.title ?? "",
+      thumbnail: e?.main_image?.url ?? "",
+      desc: e?.summary ?? "",
+      date: e?.publishedAt ?? "",
     }));
 
     return news;
@@ -48,9 +48,9 @@ export const getLatestProjects = async (): Promise<iLatestProject[]> => {
     );
     const result = await rawRes.json();
     const projects: iLatestProject[] = result.data.map((e: any) => ({
-      slug: e.slug,
-      name: e.title,
-      thumbnail: e.main_image.url,
+      slug: e?.slug ?? "",
+      name: e?.title ?? "",
+      thumbnail: e?.main_image?.url ?? "",
     }));
 
     return projects;

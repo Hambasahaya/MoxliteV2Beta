@@ -1,6 +1,11 @@
 import { GetServerSideProps } from "next";
-import { iProductProps } from "../types";
-import { getProductTypes, getProductFamily, searchProducts } from "./api";
+import { iProductDetailProps, iProductProps } from "../types";
+import {
+  getProductTypes,
+  getProductFamily,
+  searchProducts,
+  getProductDetails,
+} from "./api";
 
 export const getServerPropsList: GetServerSideProps<iProductProps> = async (
   context
@@ -36,5 +41,23 @@ export const getServerPropsList: GetServerSideProps<iProductProps> = async (
         pageCount: 1,
       },
     };
+  }
+};
+
+export const getServerPropsDetail: GetServerSideProps<
+  iProductDetailProps
+> = async (context) => {
+  try {
+    const { slug } = context.params as any;
+    const content = await getProductDetails(slug);
+
+    return {
+      props: {
+        content,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return { notFound: true };
   }
 };

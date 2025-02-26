@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { tabs, files } from "./schema";
+import { tabs } from "./schema";
 import Dropdown from "@/components/common/Dropdown";
+import { iTechDocs } from "./types";
+import Link from "next/link";
 
-const TechDocs = () => {
+const TechDocs = ({ items }: iTechDocs) => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
@@ -62,22 +64,30 @@ const TechDocs = () => {
           <div className="col-span-2 hidden lg:flex" />
         </div>
 
-        {files.map((e, i) => (
-          <div className="grid grid-cols-12 gap-0" key={i}>
-            <div className="col-span-1 hidden lg:flex p-[14px] font-medium text-[#09090B] text-[14px]">
-              {i + 1}
+        {items
+          ?.filter((e) => e.type == activeTab.value)[0]
+          ?.files?.map((e, i) => (
+            <div className="grid grid-cols-12 gap-0" key={i}>
+              <div className="col-span-1 hidden lg:flex p-[14px] font-medium text-[#09090B] text-[14px]">
+                {i + 1}
+              </div>
+              <div className="col-span-8 lg:col-span-6 p-[14px] font-medium text-[#09090B] text-[14px]">
+                {e.name}
+              </div>
+              <div className="col-span-3 hidden lg:flex p-[14px] font-medium text-[#09090B] text-[14px]">
+                {"40KB"}
+              </div>
+              <Link
+                href={e.url}
+                passHref
+                target="_blank"
+                rel="noopener noreferrer"
+                className="col-span-4 lg:col-span-2 p-[14px] font-medium text-[#0284C7] text-[14px] w-full text-end cursor-pointer hover:font-bold hover:underline"
+              >
+                Download
+              </Link>
             </div>
-            <div className="col-span-8 lg:col-span-6 p-[14px] font-medium text-[#09090B] text-[14px]">
-              {e.name}
-            </div>
-            <div className="col-span-3 hidden lg:flex p-[14px] font-medium text-[#09090B] text-[14px]">
-              {e.size}
-            </div>
-            <div className="col-span-4 lg:col-span-2 p-[14px] font-medium text-[#0284C7] text-[14px] w-full text-end cursor-pointer hover:font-bold hover:underline">
-              Download
-            </div>
-          </div>
-        ))}
+          ))}
       </div>
       <div className="border border-[#CBD5E1] mx-[24px] lg:mx-[120px]" />
     </>

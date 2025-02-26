@@ -1,7 +1,15 @@
 import { specItemsMaps } from "./schema";
 import SpecItem from "./SpecItem";
+import { iTechSpec } from "./types";
 
-const TechSpec = () => {
+const TechSpec = ({ items }: iTechSpec) => {
+  const keyFeatures = Object.entries(items)
+    .map(([key, value]) => ({
+      key,
+      value,
+    }))
+    .filter((e) => !e.value);
+
   return (
     <>
       <div
@@ -13,24 +21,28 @@ const TechSpec = () => {
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8">
           <div className="border-0 lg:border-r lg:border-[#CBD5E1]">
-            {specItemsMaps.slice(0, 7).map((e, i) => (
-              <SpecItem
-                key={i}
-                title={e.title}
-                items={e.items}
-                iconPath={e.iconPath}
-              />
-            ))}
+            {keyFeatures
+              .slice(0, Math.floor(keyFeatures.length / 2))
+              .map((e, i) => (
+                <SpecItem
+                  key={i}
+                  title={e.key}
+                  content={e.value}
+                  iconPath={(specItemsMaps as any)[e.key].iconPath}
+                />
+              ))}
           </div>
           <div>
-            {specItemsMaps.slice(8, 12).map((e, i) => (
-              <SpecItem
-                key={i}
-                title={e.title}
-                items={e.items}
-                iconPath={e.iconPath}
-              />
-            ))}
+            {keyFeatures
+              .slice(Math.floor(keyFeatures.length / 2))
+              .map((e, i) => (
+                <SpecItem
+                  key={i}
+                  title={e.key}
+                  content={e.value}
+                  iconPath={(specItemsMaps as any)[e.key].iconPath}
+                />
+              ))}
           </div>
         </div>
       </div>

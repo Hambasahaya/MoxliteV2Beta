@@ -22,4 +22,4 @@ export default function Home({
   );
 }
 
-export { getStaticProps } from "@/components/home/utils/getStaticProps";
+export { getServerSideProps } from "@/components/home/utils/getServerProps";

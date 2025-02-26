@@ -1,4 +1,4 @@
-const PreviewVideo = () => {
+const PreviewVideo = ({ videoUrl }: { videoUrl: string }) => {
   return (
     <>
       <div
@@ -12,7 +12,7 @@ const PreviewVideo = () => {
         <div className="w-full h-[228px] lg:h-[675px]">
           <iframe
             className="w-full h-full rounded-lg border-none"
-            src="https://www.youtube.com/embed/6Izpt-aqMFM"
+            src={videoUrl}
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

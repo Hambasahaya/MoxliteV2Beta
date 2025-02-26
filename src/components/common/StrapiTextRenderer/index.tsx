@@ -17,7 +17,16 @@ const StrapiTextRenderer = ({ content, type }: iStrapiTextRenderer) => {
 
   return (
     <div className="markdown-content">
-      <ReactMarkdown>{content}</ReactMarkdown>
+      <ReactMarkdown
+        components={{
+          ul: ({ children }) => <ul className="custom-list">{children}</ul>,
+          li: ({ children }) => (
+            <li className="custom-list-item">{children}</li>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   );
 };

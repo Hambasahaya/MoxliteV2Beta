@@ -127,6 +127,7 @@ const ProductList = ({
                     name={e.name}
                     desc={e.category}
                     url={`${ROUTES.PRODUCT.path}/${e.slug}`}
+                    discontinue={e.discontinue}
                   />
                 ))}
               </div>
