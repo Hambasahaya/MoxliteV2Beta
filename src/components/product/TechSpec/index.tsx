@@ -8,7 +8,7 @@ const TechSpec = ({ items }: iTechSpec) => {
       key,
       value,
     }))
-    .filter((e) => !e.value);
+    .filter((e) => e.value);
 
   return (
     <>

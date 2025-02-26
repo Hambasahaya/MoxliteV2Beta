@@ -5,6 +5,7 @@ export type iTechDocs = {
     files: {
       name: string;
       url: string;
+      size: number;
     }[];
   }[];
 };

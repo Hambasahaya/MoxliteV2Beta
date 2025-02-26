@@ -72,6 +72,7 @@ export type iProductDetail = {
     files: {
       name: string;
       url: string;
+      size: number;
     }[];
   }[];
   previewVideo: string;

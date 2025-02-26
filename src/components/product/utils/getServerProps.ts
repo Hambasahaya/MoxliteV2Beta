@@ -19,7 +19,7 @@ export const getServerPropsList: GetServerSideProps<iProductProps> = async (
       typeQ: typeQ ? String(typeQ) : undefined,
       familyQ: familyQ ? String(familyQ) : undefined,
       page: page ? String(page) : undefined,
-      pageSize: 3,
+      pageSize: 12,
     });
 
     return {

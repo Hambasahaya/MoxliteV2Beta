@@ -3,9 +3,23 @@ import Layout from "@/components/common/Layout";
 import Pagination from "@/components/common/Pagination";
 import Highlighted from "@/components/news/Highlighted";
 import NewsCard from "@/components/common/NewsCard";
+import { iNewsProps } from "@/components/news/types";
+import { useRouter } from "next/router";
 
-const News = () => {
-  const [currPage, setCurrPage] = useState(1);
+const News = ({ news, pageCount }: iNewsProps) => {
+  const router = useRouter();
+  const highlightedNews = news[0];
+
+  const movePage = (page: number) => {
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { page },
+      },
+      undefined,
+      { shallow: false }
+    );
+  };
 
   return (
     <Layout>
@@ -15,23 +29,22 @@ const News = () => {
         </h1>
       </div>
 
-      <Highlighted />
+      <Highlighted {...highlightedNews} />
       <div className="border-t border-t-[#CBD5E1] mx-[24px] lg:mx-[120px]" />
 
       <div className="pt-[40px] pb-[40px] px-[24px] lg:px-[120px] lg:pt-[80px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* <NewsCard />
-        <NewsCard />
-        <NewsCard />
-        <NewsCard />
-        <NewsCard />
-        <NewsCard /> */}
+        {news?.slice(1)?.map((e, i) => <NewsCard key={i} {...e} />) ?? null}
       </div>
 
-      <div className="w-full flex justify-end px-[24px] pb-[24px] lg:pb-[80px] lg:px-[120px]">
-        <Pagination pageCount={10} onPageChange={setCurrPage} />
-      </div>
+      {news.length > 1 && (
+        <div className="w-full flex justify-end px-[24px] pb-[24px] lg:pb-[80px] lg:px-[120px]">
+          <Pagination pageCount={pageCount} onPageChange={movePage} />
+        </div>
+      )}
     </Layout>
   );
 };
 
 export default News;
+
+export { getServerSidePropsList as getServerSideProps } from "@/components/news/utils/getServerProps";

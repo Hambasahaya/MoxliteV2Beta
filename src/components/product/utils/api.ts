@@ -14,9 +14,9 @@ export const getProductTypes = async (): Promise<iProductType[]> => {
     );
     const result = await rawRes.json();
     const types: iProductType[] = result.data.map((e: any) => ({
-      slug: e.slug,
-      title: e.name,
-      thumbnail: e.filter_button_image.url,
+      slug: e?.slug ?? "",
+      title: e?.name ?? "",
+      thumbnail: e?.filter_button_image?.url ?? "",
     }));
 
     return types;
@@ -32,8 +32,8 @@ export const getProductFamily = async (): Promise<iProductFamily[]> => {
     );
     const result = await rawRes.json();
     const families: iProductFamily[] = result.data.map((e: any) => ({
-      slug: e.slug,
-      title: e.name,
+      slug: e?.slug ?? "",
+      title: e?.name ?? "",
     }));
 
     return families;
@@ -67,10 +67,10 @@ export const searchProducts = async ({
 
     const result = await rawRes.json();
     const products: iProductCard[] = result.data.map((e: any) => ({
-      slug: e.slug,
-      name: e.name,
+      slug: e?.slug ?? "",
+      name: e?.name ?? "",
       thumbnail: e?.main_image?.url ?? "",
-      category: e.product_category.name,
+      category: e?.product_category?.name ?? "",
       discontinue: e?.discontinued ?? false,
     }));
     const pageCount = result?.meta?.pagination?.pageCount ?? 0;
@@ -134,6 +134,7 @@ export const getProductDetails = async (
             e?.files?.map((file: any) => ({
               name: file?.name ?? "",
               url: file?.url ?? "",
+              size: file?.size ?? 0,
             })) ?? [],
         })) ?? [],
       previewVideo: result?.data?.video_youtube_url ?? "",

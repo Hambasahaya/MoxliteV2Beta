@@ -53,16 +53,23 @@ const TechDocs = ({ items }: iTechDocs) => {
           />
         </div>
 
-        <div className="grid grid-cols-12 gap-0 border-b border-gray-500/30 mt-[40px]">
-          <div className="col-span-1 hidden lg:flex" />
-          <div className="col-span-12 lg:col-span-6 p-[14px] text-[#71717A] text-[14px]">
-            Filename
+        {items?.filter((e) => e.type == activeTab.value)[0]?.files.length >
+        0 ? (
+          <div className="grid grid-cols-12 gap-0 border-b border-gray-500/30 mt-[40px]">
+            <div className="col-span-1 hidden lg:flex" />
+            <div className="col-span-12 lg:col-span-6 p-[14px] text-[#71717A] text-[14px]">
+              Filename
+            </div>
+            <div className="col-span-3 hidden lg:flex p-[14px] text-[#71717A] text-[14px]">
+              File Size
+            </div>
+            <div className="col-span-2 hidden lg:flex" />
           </div>
-          <div className="col-span-3 hidden lg:flex p-[14px] text-[#71717A] text-[14px]">
-            File Size
+        ) : (
+          <div className="w-full mt-4">
+            <p className="text-center">No documents yet...</p>
           </div>
-          <div className="col-span-2 hidden lg:flex" />
-        </div>
+        )}
 
         {items
           ?.filter((e) => e.type == activeTab.value)[0]
@@ -75,17 +82,18 @@ const TechDocs = ({ items }: iTechDocs) => {
                 {e.name}
               </div>
               <div className="col-span-3 hidden lg:flex p-[14px] font-medium text-[#09090B] text-[14px]">
-                {"40KB"}
+                {e.size} KB
               </div>
-              <Link
-                href={e.url}
-                passHref
-                target="_blank"
-                rel="noopener noreferrer"
-                className="col-span-4 lg:col-span-2 p-[14px] font-medium text-[#0284C7] text-[14px] w-full text-end cursor-pointer hover:font-bold hover:underline"
-              >
-                Download
-              </Link>
+              <div className="col-span-4 lg:col-span-2 p-[14px] font-medium text-[#0284C7] text-[14px] w-full text-end cursor-pointer hover:font-bold hover:underline">
+                <Link
+                  href={e.url}
+                  passHref
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Download
+                </Link>
+              </div>
             </div>
           ))}
       </div>
