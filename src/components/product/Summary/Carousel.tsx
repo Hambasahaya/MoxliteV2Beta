@@ -14,7 +14,7 @@ const variants = {
   }),
 };
 
-const Carousel = ({ imgUrls = [] }: iCarousel) => {
+const Carousel = ({ imgUrls = [], discontinued }: iCarousel) => {
   const [index, setIndex] = useState(0);
   const directionRef = useRef(1); // 1: next, -1: prev
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -72,7 +72,9 @@ const Carousel = ({ imgUrls = [] }: iCarousel) => {
           >
             <img
               src={imgUrls[index]}
-              className="w-full h-full object-contain opacity-50"
+              className={`w-full h-full object-contain ${
+                discontinued ? "opacity-50" : ""
+              }`}
             />
           </motion.div>
         </AnimatePresence>

@@ -13,4 +13,5 @@ export type iSummary = {
 
 export type iCarousel = {
   imgUrls: string[];
+  discontinued: boolean;
 };

@@ -65,7 +65,9 @@ const Navbar = () => {
 
         <div className="bg-black text-[#f8fafc] px-[20px] py-[24px] flex-none lg:hidden">
           <div className="flex justify-between items-center">
-            <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
+            <Link href={ROUTES.HOME.path}>
+              <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
+            </Link>
             <div className="relative h-[30px] w-[30px] overflow-hidden">
               <AnimatePresence>
                 {!isExpand ? (

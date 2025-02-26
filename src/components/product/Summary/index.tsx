@@ -14,7 +14,7 @@ const Summary = ({
     <div className="p-[24px] lg:pt-[56px] lg:pb-[80px] lg:px-[120px] ">
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 lg:col-span-5">
-          <Carousel imgUrls={gallery} />
+          <Carousel imgUrls={gallery} discontinued={discontinued} />
         </div>
         <div className="col-span-12 lg:col-span-7">
           <div className="flex items-center mb-[16px]">

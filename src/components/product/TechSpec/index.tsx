@@ -26,7 +26,7 @@ const TechSpec = ({ items }: iTechSpec) => {
               .map((e, i) => (
                 <SpecItem
                   key={i}
-                  title={e.key}
+                  title={(specItemsMaps as any)[e.key].title}
                   content={e.value}
                   iconPath={(specItemsMaps as any)[e.key].iconPath}
                 />
@@ -38,7 +38,7 @@ const TechSpec = ({ items }: iTechSpec) => {
               .map((e, i) => (
                 <SpecItem
                   key={i}
-                  title={e.key}
+                  title={(specItemsMaps as any)[e.key].title}
                   content={e.value}
                   iconPath={(specItemsMaps as any)[e.key].iconPath}
                 />
