@@ -1,0 +1,16 @@
+name: SSL
+
+services:
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    networks:
+      - proxy-network
+    command: certonly --webroot -w /var/www/certbot --keep-until-expiring -d moxlite.com -d www.moxlite.com -m moxlitewebsite@gmail.com --agree-tos --non-interactive
+
+networks:
+  proxy-network:
+    external: true
+    

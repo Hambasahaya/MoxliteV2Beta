@@ -1,0 +1,19 @@
+name: moxlite-web
+
+services:
+  web:
+    image: ghcr.io/akar-codehaus/moxlite-web:latest
+    env_file:
+      - .env
+    networks:
+      - frontend-network
+      - backend-network
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+networks:
+  frontend-network:
+    name: frontend-network
+  backend-network:
+    name: backend-network
+    external: true
