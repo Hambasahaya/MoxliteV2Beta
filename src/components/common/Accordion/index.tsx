@@ -11,7 +11,7 @@ const Accordion = ({ title, content, invertColor }: iAccordion) => {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex justify-between items-center py-[24px] cursor-pointer"
       >
-        <h4 className="font-semibold text-[18px]">{title}</h4>
+        <h4 className="font-semibold text-[18px] text-start">{title}</h4>
         {isOpen ? (
           <img
             src="/icon/chevron-up-small.svg"
