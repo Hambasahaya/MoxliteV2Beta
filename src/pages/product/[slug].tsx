@@ -18,7 +18,7 @@ const Summary = dynamic(() => import("@/components/product/Summary"), {
 const Product = ({ content }: iProductDetailProps) => {
   const router = useRouter();
   const { slug } = router.query;
-  console.log(content);
+
 
   return (
     <Layout>
