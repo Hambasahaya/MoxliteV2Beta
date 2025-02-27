@@ -1,5 +1,6 @@
 import { useMotionValue, useSpring, useInView } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
+import { iCounter } from "./types";
 
 const Counter = ({ maxCount, bgImgPath, label }: iCounter) => {
   const count = useMotionValue(0);

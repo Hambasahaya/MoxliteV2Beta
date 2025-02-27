@@ -1,6 +1,8 @@
 import Accordion from "@/components/common/Accordion";
+import { iDoBestProps } from "./types";
 
-const DoBest = () => {
+const DoBest = ({data}: iDoBestProps) => {
+
   return (
     <div
       id="advantages"
@@ -10,31 +12,18 @@ const DoBest = () => {
         What We Do Best
       </h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-white">
-        <Accordion
-          title="Product, Supplier & Importer"
-          content="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English."
-          invertColor
-        />
-        <Accordion
-          title="Product, Supplier & Importer"
-          content="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English."
-          invertColor
-        />
-        <Accordion
-          title="Product, Supplier & Importer"
-          content="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English."
-          invertColor
-        />
-        <Accordion
-          title="Product, Supplier & Importer"
-          content="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English."
-          invertColor
-        />
-        <Accordion
-          title="Product, Supplier & Importer"
-          content="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English."
-          invertColor
-        />
+        {
+          data?.valueProposition?.map((item)=>{
+return  <Accordion
+key={`value-proposition-${item.id}`}
+title={item.value}
+content={item.description}
+invertColor
+/>
+          })
+        }
+       
+        
       </div>
     </div>
   );

@@ -1,20 +1,23 @@
 import Counter from "./Counter";
+import { iCountingNumberProps } from "./types";
 
-const CountingNumber = () => {
+const CountingNumber = ({data}:iCountingNumberProps) => {
+ 
+
   return (
     <div className="grid grid-cols-1 ms:grid-col-2 md:grid-cols-3 gap-4 px-[24px] lg:px-[120px]">
       <Counter
-        maxCount={12000}
+        maxCount={data?.totalInstalledFixtures??0}
         bgImgPath="/image/bg_cnt_1.png"
         label="INSTALLED FIXTURES"
       />
       <Counter
-        maxCount={50}
+        maxCount={data?.totalCitiesInIndonesia??0}
         bgImgPath="/image/bg_cnt_2.png"
         label="CITIES IN INDONESIA"
       />
       <Counter
-        maxCount={1000}
+        maxCount={data?.totalClients??0}
         bgImgPath="/image/bg_cnt_3.png"
         label="PLEASED CLIENTS"
       />
