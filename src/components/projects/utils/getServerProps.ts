@@ -1,20 +1,20 @@
 import { GetServerSideProps } from "next";
-import { getNewsDetail, getNews } from "./api";
-import { iNewsDetailProps, iNewsProps } from "../types";
+import { getProjectDetail, getProjects } from "./api";
+import { iProjectDetailProps, iProjectsProps } from "../types";
 
-export const getServerSidePropsList: GetServerSideProps<iNewsProps> = async (
-  context
-) => {
+export const getServerSidePropsList: GetServerSideProps<
+  iProjectsProps
+> = async (context) => {
   try {
     const { page } = context.query;
-    const { news, pageCount } = await getNews({
+    const { projects, pageCount } = await getProjects({
       page: page as string,
       pageSize: 2,
     });
 
     return {
       props: {
-        news,
+        projects,
         pageCount,
       },
     };
@@ -23,7 +23,7 @@ export const getServerSidePropsList: GetServerSideProps<iNewsProps> = async (
 
     return {
       props: {
-        news: [],
+        projects: [],
         pageCount: 1,
       },
     };
@@ -31,15 +31,16 @@ export const getServerSidePropsList: GetServerSideProps<iNewsProps> = async (
 };
 
 export const getServerSidePropsDetail: GetServerSideProps<
-  iNewsDetailProps
+  iProjectDetailProps
 > = async (context) => {
   const { slug } = context.params as any;
+
   try {
-    const news = await getNewsDetail(slug);
+    const project = await getProjectDetail(slug);
 
     return {
       props: {
-        news,
+        project,
       },
     };
   } catch (error) {

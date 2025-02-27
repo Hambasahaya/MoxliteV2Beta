@@ -8,7 +8,7 @@ const MoxliteOnDutyCard = ({ slug, name, thumbnail }: iLatestProject) => {
   return (
     <div
       onClick={() => {
-        router.push(`${ROUTES.NEWS.path}/${slug}`);
+        router.push(`${ROUTES.PROJECT.path}/${slug}`);
       }}
       className="h-[285px] cursor-pointer bg-cover flex flex-col justify-end"
       style={{

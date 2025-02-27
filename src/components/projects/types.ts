@@ -1,16 +1,16 @@
 import { iNewsCard } from "../common/NewsCard/types";
 
-export type iNewsProps = {
-  news: iNewsCard[];
+export type iProjectsProps = {
+  projects: iNewsCard[];
   pageCount: number;
 };
 
-export type iGetNewsRequest = {
+export type iGetProjectsRequest = {
   page: string;
   pageSize: number;
 };
 
-export type iNewsDetail = {
+export type iProjectsDetail = {
   title: string;
   slug: string;
   summary: string;
@@ -20,6 +20,6 @@ export type iNewsDetail = {
   content: string;
 };
 
-export type iNewsDetailProps = {
-  news: iNewsDetail;
+export type iProjectDetailProps = {
+  project: iProjectsDetail;
 };

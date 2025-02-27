@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { iDropdownLink } from "./types";
+import { useEffect } from "react";
 
 const DropdownLink = ({
   options,
@@ -10,19 +11,26 @@ const DropdownLink = ({
 }: iDropdownLink) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const selectedLabel = options.filter((e) => e.path == router.asPath)[0]
-    ?.label;
+  const [selectedAspect, setSelectedAspect] = useState("");
+
+  useEffect(() => {
+    if (router.asPath.includes("#")) {
+      setSelectedAspect(
+        options.filter((e) => e.path == router.asPath)[0]?.label ?? ""
+      );
+    }
+  }, [router.asPath]);
 
   return (
     <div className="relative w-full">
       <button
         className={`cursor-pointer w-full px-4 py-2 ${
-          selectedLabel ? "text-black" : "text-gray-500"
+          selectedAspect ? "text-black" : "text-gray-500"
         }  bg-white border border-gray-300 rounded-lg flex justify-between items-center`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {selectedLabel
-          ? selectedLabel
+        {selectedAspect
+          ? selectedAspect
           : defaultValue
           ? options[0].label
           : placeholder}

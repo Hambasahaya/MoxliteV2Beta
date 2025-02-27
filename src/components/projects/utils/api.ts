@@ -1,44 +1,52 @@
 import { ENV } from "@/constant/ENV";
 import { iNewsCard } from "@/components/common/NewsCard/types";
-import { iGetNewsRequest, iNewsDetail } from "../types";
+import { iGetProjectsRequest, iProjectsDetail } from "../types";
 import { ROUTES } from "@/constant/ROUTES";
 
-export const getNews = async ({
+export const getProjects = async ({
   page,
   pageSize,
-}: iGetNewsRequest): Promise<{ news: iNewsCard[]; pageCount: number }> => {
+}: iGetProjectsRequest): Promise<{
+  projects: iNewsCard[];
+  pageCount: number;
+}> => {
   try {
     const rawRes = await fetch(
       `${
         ENV.NEXT_PUBLIC_API_BASE_URL
-      }/api/news?pagination[pageSize]=${pageSize}&pagination[page]=${page ?? 1}`
+      }/api/projects?pagination[pageSize]=${pageSize}&pagination[page]=${
+        page ?? 1
+      }`
     );
 
     const result = await rawRes.json();
-    const news: iNewsCard[] = result.data.map((e: any) => ({
-      url: `${ROUTES.NEWS.path}/${e?.slug ?? "undefined"}`,
-      name: e?.title ?? "",
-      thumbnail: e?.main_image?.url ?? "",
-      desc: e?.summary ?? "",
-      date: e?.publishedAt ?? "",
-    }));
+    const projects: iNewsCard[] =
+      result.data.map((e: any) => ({
+        url: `${ROUTES.PROJECT.path}/${e?.slug ?? "undefined"}`,
+        name: e?.title ?? "",
+        thumbnail: e?.main_image?.url ?? "",
+        desc: e?.summary ?? "",
+        date: e?.publishedAt ?? "",
+      })) ?? [];
 
     const pageCount = result?.meta?.pagination?.pageCount ?? 0;
 
-    return { news, pageCount };
+    return { projects, pageCount };
   } catch (error) {
     throw error;
   }
 };
 
-export const getNewsDetail = async (slug: string): Promise<iNewsDetail> => {
+export const getProjectDetail = async (
+  slug: string
+): Promise<iProjectsDetail> => {
   try {
     const rawRes = await fetch(
-      `${ENV.NEXT_PUBLIC_API_BASE_URL}/api/news/${slug}`
+      `${ENV.NEXT_PUBLIC_API_BASE_URL}/api/projects/${slug}`
     );
 
     const result = await rawRes.json();
-    const news: iNewsDetail = {
+    const projects: iProjectsDetail = {
       title: result?.data?.title ?? "",
       slug: result?.data?.slug ?? "",
       summary: result?.data?.summry ?? "",
@@ -48,7 +56,7 @@ export const getNewsDetail = async (slug: string): Promise<iNewsDetail> => {
       content: result?.data?.content ?? "",
     };
 
-    return news;
+    return projects;
   } catch (error) {
     throw error;
   }

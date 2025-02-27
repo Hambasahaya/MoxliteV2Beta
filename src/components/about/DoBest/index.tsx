@@ -1,8 +1,7 @@
 import Accordion from "@/components/common/Accordion";
 import { iDoBestProps } from "./types";
 
-const DoBest = ({data}: iDoBestProps) => {
-
+const DoBest = ({ data }: iDoBestProps) => {
   return (
     <div
       id="advantages"
@@ -12,18 +11,16 @@ const DoBest = ({data}: iDoBestProps) => {
         What We Do Best
       </h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-white">
-        {
-          data?.valueProposition?.map((item)=>{
-return  <Accordion
-key={`value-proposition-${item.id}`}
-title={item.value}
-content={item.description}
-invertColor
-/>
-          })
-        }
-       
-        
+        {data?.valueProposition?.map((item) => {
+          return (
+            <Accordion
+              key={`value-proposition-${item.id}`}
+              title={item.value}
+              content={item.description}
+              invertColor
+            />
+          );
+        })}
       </div>
     </div>
   );

@@ -1,27 +1,95 @@
 /* styles/ckeditor.css */
+/* styles/ckeditor.css */
 .ck-content {
   font-family: "Arial", sans-serif;
-  line-height: 1.6;
+  line-height: 1.8;
   font-size: 16px;
   color: #333;
 }
 
+/* Mengatur gambar agar responsif */
 .ck-content img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+  display: block;
+  margin: 10px auto;
 }
 
+/* Styling tabel */
 .ck-content table {
   width: 100%;
   border-collapse: collapse;
 }
 
+.ck-content th,
+.ck-content td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.ck-content th {
+  background-color: #f4f4f4;
+}
+
+/* Blok kutipan */
 .ck-content blockquote {
   font-style: italic;
   border-left: 5px solid #ccc;
-  padding-left: 10px;
+  padding-left: 15px;
   color: #666;
+  margin: 20px 0;
+}
+
+/* Heading */
+.ck-content h1,
+.ck-content h2,
+.ck-content h3,
+.ck-content h4,
+.ck-content h5,
+.ck-content h6 {
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+/* Pastikan bullet point terlihat */
+.ck-content ul {
+  list-style-type: disc; /* Menampilkan bullet point */
+  padding-left: 25px; /* Memberi ruang agar tidak terlalu rapat dengan teks */
+  margin: 10px 0;
+}
+
+.ck-content ul li {
+  margin-bottom: 5px;
+}
+
+/* Jika sub-list (nested list) tidak tampil, tambahkan ini */
+.ck-content ul ul {
+  list-style-type: circle; /* Bullet lebih kecil untuk nested list */
+  padding-left: 20px;
+}
+
+.ck-content ol {
+  list-style-type: decimal; /* Untuk daftar bernomor */
+  padding-left: 25px;
+}
+
+.ck-content ol ol {
+  list-style-type: lower-alpha; /* Sub-list bernomor */
+  padding-left: 20px;
+}
+
+/* Strong (bold text) */
+.ck-content strong {
+  font-weight: bold;
+  color: #222;
+}
+
+/* Paragraf */
+.ck-content p {
+  margin-bottom: 15px;
+  text-align: justify;
 }
 
 .markdown-content {

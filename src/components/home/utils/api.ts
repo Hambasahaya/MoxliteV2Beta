@@ -1,5 +1,6 @@
 import { ENV } from "@/constant/ENV";
 import { iLatestNews, iLatestProduct, iLatestProject } from "../types";
+import { ROUTES } from "@/constant/ROUTES";
 
 export const getLatestproducts = async (): Promise<iLatestProduct[]> => {
   try {
@@ -28,7 +29,7 @@ export const getLatestNews = async (): Promise<iLatestNews[]> => {
     );
     const result = await rawRes.json();
     const news: iLatestNews[] = result.data.map((e: any) => ({
-      slug: e?.slug ?? "",
+      url: `${ROUTES.NEWS.path}/${e?.slug ?? "undefined"}`,
       name: e?.title ?? "",
       thumbnail: e?.main_image?.url ?? "",
       desc: e?.summary ?? "",

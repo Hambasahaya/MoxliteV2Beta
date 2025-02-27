@@ -1,11 +1,29 @@
 import DropdownLink from "@/components/common/DropdownLink";
 import { useRouter } from "next/router";
-import { aspectOptions } from "../../product/schema";
+import { useEffect, useState } from "react";
 
 const AspectTab = ({ options }: iAspectTab) => {
   const router = useRouter();
-  const selectedAspect = options.filter((e) => e.path == router.asPath)[0]
-    ?.label;
+  const [selectedAspect, setSelectedAspect] = useState("");
+
+  useEffect(() => {
+    if (router.asPath.includes("#")) {
+      setSelectedAspect(
+        options.filter((e) => e.path == router.asPath)[0]?.label ?? ""
+      );
+
+      const elementId = router.asPath.split("#")[1];
+      const targetElement = document.getElementById(elementId);
+
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        setTimeout(() => {
+          window.scrollBy({ top: -100, behavior: "smooth" });
+        }, 0);
+      }
+    }
+  }, [router.asPath]);
 
   return (
     <div id="aspect" className="sticky top-[76px] lg:top-[63px] z-50">

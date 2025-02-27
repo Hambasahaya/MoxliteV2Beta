@@ -1,5 +1,5 @@
 export type iNewsCard = {
-  slug: string;
+  url: string;
   name: string;
   thumbnail: string;
   desc: string;

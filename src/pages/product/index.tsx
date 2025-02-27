@@ -118,7 +118,7 @@ const ProductList = ({
 
         <div className="col-span-12 lg:col-span-9">
           {products.length > 0 && (
-            <>
+            <div className="flex flex-col justify-between h-full">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {products.map((e, i) => (
                   <ProductCard
@@ -141,7 +141,7 @@ const ProductList = ({
                   }}
                 />
               </div>
-            </>
+            </div>
           )}
 
           {products.length == 0 && (

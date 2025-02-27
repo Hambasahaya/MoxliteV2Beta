@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const images = ["/image/news_1.png", "/image/news_2.png"];
-
 const variants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 100 : -100,
@@ -15,19 +13,19 @@ const variants = {
   }),
 };
 
-const NewsCarousel = () => {
+const NewsCarousel = ({ imgUrls }: { imgUrls: string[] }) => {
   const [index, setIndex] = useState(0);
   const directionRef = useRef(1); // 1: next, -1: prev
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const nextSlide = () => {
     directionRef.current = 1;
-    setIndex((prev) => (prev + 1) % images.length);
+    setIndex((prev) => (prev + 1) % imgUrls.length);
   };
 
   const prevSlide = () => {
     directionRef.current = -1;
-    setIndex((prev) => (prev - 1 + images.length) % images.length);
+    setIndex((prev) => (prev - 1 + imgUrls.length) % imgUrls.length);
   };
 
   useEffect(() => {
@@ -62,7 +60,7 @@ const NewsCarousel = () => {
         <AnimatePresence custom={directionRef.current}>
           <motion.img
             key={index}
-            src={images[index]}
+            src={imgUrls[index]}
             className="absolute w-full h-full object-cover"
             custom={directionRef.current}
             variants={variants}
@@ -88,7 +86,7 @@ const NewsCarousel = () => {
 
       {/* Indikator Dots */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 p-2">
-        {images.map((_, i) => (
+        {imgUrls.map((_, i) => (
           <div
             key={i}
             className={`w-2 h-2 rounded-full ${
