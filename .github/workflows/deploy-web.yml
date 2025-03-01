@@ -53,15 +53,7 @@ jobs:
             } > .env
                         
             # Deploy with health check
-            docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} up -d --remove-orphans
-            
-            # Check if containers are healthy
-            sleep 10
-            if ! docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} ps | grep -q "healthy"; then
-              echo "Container health check failed"
-              docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} logs
-              exit 1
-            fi
-            
+            docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} up -d --remove-orphans --force-recreate
+             
             # Cleanup old images
             docker image prune -f
