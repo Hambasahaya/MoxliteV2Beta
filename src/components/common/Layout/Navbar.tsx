@@ -7,6 +7,7 @@ import Link from "next/link";
 const Navbar = () => {
   const [isExpand, setIsExpand] = useState(false);
   const router = useRouter();
+  const currPath = router.asPath;
   const menuMobileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,12 +40,20 @@ const Navbar = () => {
           </Link>
           <div className="flex justify-between">
             <Link href={ROUTES.HOME.path} className="pl-[36px] cursor-pointer">
-              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+              <span
+                className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                  currPath == ROUTES.HOME.path ? "text-[#3E9C92]" : ""
+                }`}
+              >
                 {ROUTES.HOME.label}
               </span>
             </Link>
             <Link href={ROUTES.ABOUT.path} className="pl-[36px] cursor-pointer">
-              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+              <span
+                className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                  currPath.includes(ROUTES.ABOUT.path) ? "text-[#3E9C92]" : ""
+                }`}
+              >
                 {ROUTES.ABOUT.label}
               </span>
             </Link>
@@ -52,7 +61,11 @@ const Navbar = () => {
               href={ROUTES.PRODUCT.path}
               className="pl-[36px] cursor-pointer"
             >
-              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+              <span
+                className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                  currPath.includes(ROUTES.PRODUCT.path) ? "text-[#3E9C92]" : ""
+                }`}
+              >
                 {ROUTES.PRODUCT.label}
               </span>
             </Link>
@@ -60,12 +73,20 @@ const Navbar = () => {
               href={ROUTES.PROJECT.path}
               className="pl-[36px] cursor-pointer"
             >
-              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+              <span
+                className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                  currPath.includes(ROUTES.PROJECT.path) ? "text-[#3E9C92]" : ""
+                }`}
+              >
                 {ROUTES.PROJECT.label}
               </span>
             </Link>
             <Link href={ROUTES.NEWS.path} className="pl-[36px] cursor-pointer">
-              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+              <span
+                className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                  currPath.includes(ROUTES.NEWS.path) ? "text-[#3E9C92]" : ""
+                }`}
+              >
                 {ROUTES.NEWS.label}
               </span>
             </Link>
@@ -73,12 +94,20 @@ const Navbar = () => {
               href={ROUTES.CONTACT.path}
               className="pl-[36px] cursor-pointer"
             >
-              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+              <span
+                className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                  currPath.includes(ROUTES.CONTACT.path) ? "text-[#3E9C92]" : ""
+                }`}
+              >
                 {ROUTES.CONTACT.label}
               </span>
             </Link>
             <Link href={ROUTES.FAQ.path} className="pl-[36px] cursor-pointer">
-              <span className="font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]">
+              <span
+                className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                  currPath.includes(ROUTES.FAQ.path) ? "text-[#3E9C92]" : ""
+                }`}
+              >
                 {ROUTES.FAQ.label}
               </span>
             </Link>
@@ -133,7 +162,9 @@ const Navbar = () => {
               onClick={() => {
                 router.push(ROUTES.HOME.path);
               }}
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+              className={`${
+                currPath == ROUTES.HOME.path ? "text-[#3E9C92]" : ""
+              } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
@@ -143,7 +174,9 @@ const Navbar = () => {
               onClick={() => {
                 router.push(ROUTES.ABOUT.path);
               }}
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+              className={`${
+                currPath.includes(ROUTES.ABOUT.path) ? "text-[#3E9C92]" : ""
+              } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
@@ -153,7 +186,9 @@ const Navbar = () => {
               onClick={() => {
                 router.push(ROUTES.PRODUCT.path);
               }}
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+              className={`${
+                currPath.includes(ROUTES.PRODUCT.path) ? "text-[#3E9C92]" : ""
+              } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
@@ -163,7 +198,9 @@ const Navbar = () => {
               onClick={() => {
                 router.push(ROUTES.PROJECT.path);
               }}
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+              className={`${
+                currPath.includes(ROUTES.PROJECT.path) ? "text-[#3E9C92]" : ""
+              } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
@@ -173,7 +210,9 @@ const Navbar = () => {
               onClick={() => {
                 router.push(ROUTES.NEWS.path);
               }}
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+              className={`${
+                currPath.includes(ROUTES.NEWS.path) ? "text-[#3E9C92]" : ""
+              } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
@@ -183,7 +222,9 @@ const Navbar = () => {
               onClick={() => {
                 router.push(ROUTES.CONTACT.path);
               }}
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+              className={`${
+                currPath.includes(ROUTES.CONTACT.path) ? "text-[#3E9C92]" : ""
+              } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
@@ -193,7 +234,9 @@ const Navbar = () => {
               onClick={() => {
                 router.push(ROUTES.FAQ.path);
               }}
-              className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+              className={`${
+                currPath.includes(ROUTES.FAQ.path) ? "text-[#3E9C92]" : ""
+              } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
                 isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
