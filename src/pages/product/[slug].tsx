@@ -32,7 +32,6 @@ const Product = ({ content }: iProductDetailProps) => {
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/product/${content.slug}`,
       }}
     >
-      <img src={content.thumbnail} />
       <Summary
         name={content.name}
         desc={content.desc}
