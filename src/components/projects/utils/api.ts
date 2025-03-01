@@ -50,7 +50,7 @@ export const getProjectDetail = async (
       title: result?.data?.title ?? "",
       slug: result?.data?.slug ?? "",
       summary: result?.data?.summry ?? "",
-      thumbnail: result?.data?.main_image?.url ?? "",
+      thumbnail: result?.data?.main_image?.formats?.thumbnail?.url ?? "",
       gallery: result?.data?.image_gallery?.map((e: any) => e?.url ?? "") ?? [],
       published_at: result?.data?.publishedAt ?? "",
       content: result?.data?.content ?? "",

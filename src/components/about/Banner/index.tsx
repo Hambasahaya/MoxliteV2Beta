@@ -1,5 +1,5 @@
 import AspectTab from "@/components/common/AspectTab";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRef } from "react";
 import { aspectOptions } from "./schema";
 
@@ -9,13 +9,6 @@ const Banner = ({
   customers: { name: string; imgUrl: string }[];
 }) => {
   const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
-  const x = useTransform(scrollYProgress, [0, 1], [0, -500]);
-  const smoothX = useSpring(x, { stiffness: 100, damping: 20 });
 
   return (
     <>
@@ -40,7 +33,11 @@ const Banner = ({
 
         {/* Bagian Logo Partners dengan Animasi Scroll */}
         <div className="bg-black overflow-hidden relative">
-          <motion.div style={{ x: smoothX }}>
+          <motion.div
+            className="flex whitespace-nowrap"
+            animate={{ x: ["0%", "-100%"] }}
+            transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+          >
             {customers.length == 0 && (
               <div className="flex">
                 <img
@@ -53,26 +50,18 @@ const Banner = ({
                 />
               </div>
             )}
-            {customers.length > 0 && (
-              <div className="flex">
-                {customers.map((e, i) => (
+
+            {customers.length > 0 &&
+              [...customers, ...customers, ...customers, ...customers].map(
+                (e, i) => (
                   <img
                     key={i}
                     src={e.imgUrl}
                     alt={e.name}
                     className="h-[40px] md:h-[60px] my-[15px] mx-[40px] object-cover invert"
                   />
-                ))}
-                {customers.map((e, i) => (
-                  <img
-                    key={i}
-                    src={e.imgUrl}
-                    alt={e.name}
-                    className="h-[40px] md:h-[60px] my-[15px] mx-[40px] object-cover invert"
-                  />
-                ))}
-              </div>
-            )}
+                )
+              )}
           </motion.div>
           <div className="absolute left-0 top-0 h-full w-[120px] bg-gradient-to-r from-black to-transparent pointer-events-none"></div>
           <div className="absolute right-0 top-0 h-full w-[120px] bg-gradient-to-l from-black to-transparent pointer-events-none"></div>

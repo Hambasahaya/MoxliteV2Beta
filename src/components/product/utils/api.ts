@@ -94,7 +94,7 @@ export const getProductDetails = async (
       name: result?.data?.name ?? "",
       slug: result?.data?.slug ?? "",
       desc: result?.data?.description ?? "",
-      thumbnail: result?.data?.main_image?.url ?? "",
+      thumbnail: result?.data?.main_image?.formats?.thumbnail?.url ?? "",
       gallery: result?.data?.image_gallery?.map((e: any) => e?.url) ?? [],
       discontinued: result?.data?.discontinued ?? false,
       keyFeatures:
