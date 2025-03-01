@@ -7,32 +7,52 @@ const AspectTab = ({ options }: iAspectTab) => {
   const [selectedAspect, setSelectedAspect] = useState("");
 
   useEffect(() => {
-    if (router.asPath.includes("#")) {
+    if (router.query?.sec) {
+      const docId = router.query.sec as string;
       setSelectedAspect(
-        options.filter((e) => e.path == router.asPath)[0]?.label ?? ""
+        options.find((e) => e.path === router.asPath)?.label ?? ""
       );
 
-      const elementId = router.asPath.split("#")[1];
-      const targetElement = document.getElementById(elementId);
-
+      const targetElement = document.getElementById(docId);
       if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        const targetPosition =
+          targetElement.getBoundingClientRect().top + window.scrollY;
+        const startPosition = window.scrollY;
+        const distance = targetPosition - startPosition - 100;
+        const duration = 500; // 0.5 detik
+        let startTime: number | null = null;
 
-        setTimeout(() => {
-          window.scrollBy({ top: -100, behavior: "smooth" });
-        }, 0);
+        const smoothScroll = (currentTime: number) => {
+          if (!startTime) startTime = currentTime;
+          const timeElapsed = currentTime - startTime;
+          const progress = Math.min(timeElapsed / duration, 1);
+
+          window.scrollTo(
+            0,
+            startPosition + distance * easeInOutQuad(progress)
+          );
+
+          if (timeElapsed < duration) {
+            requestAnimationFrame(smoothScroll);
+          }
+        };
+
+        const easeInOutQuad = (t: number) =>
+          t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+        requestAnimationFrame(smoothScroll);
       }
     }
-  }, [router.asPath]);
+  }, [router.asPath, options]);
 
   return (
-    <div id="aspect" className="sticky top-[76px] lg:top-[63px] z-50">
+    <div className="sticky top-[76px] lg:top-[63px] z-50">
       <div className="bg-[#213E77] py-[12px] hidden lg:flex justify-center">
         {options.map((e, i) => (
           <p
             key={i}
             className={`font-bold text-white text-[16px] px-[27px] cursor-pointer ${
-              e.label == selectedAspect ? "underline" : ""
+              e.label === selectedAspect ? "underline" : ""
             }`}
             onClick={() => {
               router.push(e.path);

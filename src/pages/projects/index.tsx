@@ -5,6 +5,7 @@ import Highlighted from "@/components/news/Highlighted";
 import NewsCard from "@/components/common/NewsCard";
 import { iProjectsProps } from "@/components/projects/types";
 import { useRouter } from "next/router";
+import { ENV } from "@/constant/ENV";
 
 const ProjectList = ({ projects, pageCount }: iProjectsProps) => {
   const router = useRouter();
@@ -22,7 +23,14 @@ const ProjectList = ({ projects, pageCount }: iProjectsProps) => {
   };
 
   return (
-    <Layout>
+    <Layout
+      metadata={{
+        title: "Projects - Moxlite",
+        desc: "Adaptive Lighting Solutions -For All Stage Sizes Learn more Reimagining Performance Spaces with Moxlite From concert to intimate clubs, every stage deserves to shine. Moxlite's versatile lighting solutions are designed to adapt and elevate, creating the perfect ambiance for any venue. With Moxlite, every performance is a masterpiece. Explore our products Nightclub/Bar Touring/Concert Houses of ...",
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/projects`,
+      }}
+    >
       <div className="w-full p-[24px] lg:px-[120px] lg:py-[40px] bg-[url(/image/project_list_banner.png)] bg-cover">
         <h1 className="text-center text-white font-bold text-[36px] lg:text-[48px]">
           Explore Our Latest Projects

@@ -2,11 +2,22 @@ import Layout from "@/components/common/Layout";
 import StrapiTextRenderer from "@/components/common/StrapiTextRenderer";
 import NewsCarousel from "@/components/news/NewsCarousel";
 import { iProjectDetailProps } from "@/components/projects/types";
+import { ENV } from "@/constant/ENV";
 import moment from "moment";
 
 const ProjectDetail = ({ project }: iProjectDetailProps) => {
   return (
-    <Layout>
+    <Layout
+      metadata={{
+        title: `${project.title} - Moxlite`,
+        desc:
+          project.summary.length > 100
+            ? project.summary.substring(0, 100) + "..."
+            : project.summary,
+        thumbnail: project.thumbnail,
+        url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/projects/${project.slug}`,
+      }}
+    >
       <div className="p-[24px] lg:pt-[56px] lg:pb-[80px] lg:px-[120px] w-full flex flex-col items-center">
         <NewsCarousel imgUrls={project.gallery} />
         <div className="w-full lg:max-w-[640px] my-[40px]">

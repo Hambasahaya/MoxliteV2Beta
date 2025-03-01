@@ -5,6 +5,7 @@ import VisualImgs from "@/components/home/VisualImgs";
 import Layout from "@/components/common/Layout";
 import MainBanner from "@/components/home/MainBanner";
 import { iHomeProps } from "@/components/home/types";
+import { ENV } from "@/constant/ENV";
 
 export default function Home({
   latestNews,
@@ -12,12 +13,19 @@ export default function Home({
   latestProjects,
 }: iHomeProps) {
   return (
-    <Layout>
+    <Layout
+      metadata={{
+        title: "Home - Moxlite",
+        desc: "Adaptive Lighting Solutions -For All Stage Sizes Learn more Reimagining Performance Spaces with Moxlite From concert to intimate clubs, every stage deserves to shine. Moxlite's versatile lighting solutions are designed to adapt and elevate, creating the perfect ambiance for any venue. With Moxlite, every performance is a masterpiece. Explore our products Nightclub/Bar Touring/Concert Houses of ...",
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}`,
+      }}
+    >
       <MainBanner />
       <LatestProduct contents={latestProducts} />
       <VisualImgs />
-      <News contents={latestNews} />
       <MoxliteOnDuty contents={latestProjects} />
+      <News contents={latestNews} />
     </Layout>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { ROUTES } from "@/constant/ROUTES";
@@ -7,6 +7,28 @@ import Link from "next/link";
 const Navbar = () => {
   const [isExpand, setIsExpand] = useState(false);
   const router = useRouter();
+  const menuMobileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuMobileRef.current &&
+        !menuMobileRef.current.contains(event.target as Node)
+      ) {
+        setIsExpand(false);
+      }
+    };
+
+    if (isExpand) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isExpand]);
 
   return (
     <>
@@ -63,7 +85,10 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div className="bg-black text-[#f8fafc] px-[20px] py-[24px] flex-none lg:hidden">
+        <div
+          ref={menuMobileRef}
+          className="bg-black text-[#f8fafc] px-[20px] py-[24px] flex-none lg:hidden"
+        >
           <div className="flex justify-between items-center">
             <Link href={ROUTES.HOME.path}>
               <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />

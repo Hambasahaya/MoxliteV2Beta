@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { aspectOptions } from "@/components/product/schema";
 import { iProductDetailProps } from "@/components/product/types";
+import { ENV } from "@/constant/ENV";
 
 const Summary = dynamic(() => import("@/components/product/Summary"), {
   ssr: false,
@@ -19,9 +20,19 @@ const Product = ({ content }: iProductDetailProps) => {
   const router = useRouter();
   const { slug } = router.query;
 
-
   return (
-    <Layout>
+    <Layout
+      metadata={{
+        title: `${content.name} - Moxlite`,
+        desc:
+          content.desc.length > 100
+            ? content.desc.substring(0, 100) + "..."
+            : content.desc,
+        thumbnail: content.thumbnail,
+        url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/product/${content.slug}`,
+      }}
+    >
+      <img src={content.thumbnail} />
       <Summary
         name={content.name}
         desc={content.desc}

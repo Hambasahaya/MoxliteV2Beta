@@ -1,10 +1,18 @@
 import Accordion from "@/components/common/Accordion";
 import Layout from "@/components/common/Layout";
 import { iFaqProps } from "@/components/faq/types";
+import { ENV } from "@/constant/ENV";
 
 const FAQ = ({ faqs }: iFaqProps) => {
   return (
-    <Layout>
+    <Layout
+      metadata={{
+        title: "FAQ - Moxlite",
+        desc: "Adaptive Lighting Solutions -For All Stage Sizes Learn more Reimagining Performance Spaces with Moxlite From concert to intimate clubs, every stage deserves to shine. Moxlite's versatile lighting solutions are designed to adapt and elevate, creating the perfect ambiance for any venue. With Moxlite, every performance is a masterpiece. Explore our products Nightclub/Bar Touring/Concert Houses of ...",
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/news`,
+      }}
+    >
       <div className="w-full p-[24px] lg:px-[120px] lg:py-[40px] bg-[url(/image/faq_list_banner.png)] bg-cover">
         <h1 className="text-center text-white font-bold text-[36px] lg:text-[48px]">
           Frequently Asked Questions (FAQ)

@@ -18,7 +18,7 @@ const MoxliteOnDuty = ({ contents }: { contents: iLatestProject[] }) => {
       className="p-[24px] lg:p-[120px]"
       style={{
         background:
-          "radial-gradient(116.01% 139.72% at 50% 100%, #020617 33.17%, rgba(8, 31, 59, 1) 62.23%, rgba(62, 156, 146, 1) 100%)",
+          "radial-gradient(116.0069560407267% 139.71710502756912% at 50% 0%, #020617 33.16662609577179%, rgba(8, 31, 59, 1) 62.23050355911255%, rgba(62, 156, 146, 1) 100%)",
       }}
     >
       <motion.div

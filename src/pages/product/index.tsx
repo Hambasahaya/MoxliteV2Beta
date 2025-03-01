@@ -6,6 +6,7 @@ import Pagination from "@/components/common/Pagination";
 import { ROUTES } from "@/constant/ROUTES";
 import { iProductProps } from "@/components/product/types";
 import { useRouter } from "next/router";
+import { ENV } from "@/constant/ENV";
 
 const ProductList = ({
   productTypes,
@@ -40,7 +41,14 @@ const ProductList = ({
   };
 
   return (
-    <Layout>
+    <Layout
+      metadata={{
+        title: "Product - Moxlite",
+        desc: "Moxlite Product Range A Diverse Selection of Stage Lighting Solutions Tailored to Your Needs View More HADES View More SCARLET I View More CATRICE View More AMOS+ View More OPTIC IV View More POSEIDON View More MOREEN View More MEDUSA+ View More MAXINE View More LIME View More ATHEN ZOOM View More APHRODITE View More ...",
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/product`,
+      }}
+    >
       <div className="w-full p-[24px] lg:px-[120px] lg:py-[40px] bg-[url(/image/product_list_banner.png)] bg-cover">
         <h1 className="text-center text-white font-bold text-[36px] lg:text-[48px]">
           Get the Product for Your Next Show

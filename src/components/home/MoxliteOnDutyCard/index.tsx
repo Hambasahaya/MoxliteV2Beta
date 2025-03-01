@@ -10,12 +10,12 @@ const MoxliteOnDutyCard = ({ slug, name, thumbnail }: iLatestProject) => {
       onClick={() => {
         router.push(`${ROUTES.PROJECT.path}/${slug}`);
       }}
-      className="h-[285px] cursor-pointer bg-cover flex flex-col justify-end"
+      className="h-[285px] cursor-pointer bg-cover flex flex-col justify-end text-white hover:text-black group"
       style={{
         backgroundImage: `url(${thumbnail})`,
       }}
     >
-      <h4 className="font-bold text-[24px] text-white hover:text-black p-[16px] bg-none hover:bg-gray-300/90">
+      <h4 className="font-bold text-[24px]  p-[16px] group-hover:bg-gray-300/90">
         {name}
       </h4>
     </div>

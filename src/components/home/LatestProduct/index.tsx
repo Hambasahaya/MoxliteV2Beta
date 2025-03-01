@@ -39,14 +39,15 @@ const LatestProduct = ({ contents }: { contents: iLatestProduct[] }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {contents.map((e, i) => (
-            <ProductCard
-              key={i}
-              imgUrl={e.thumbnail}
-              name={e.name}
-              desc={e.category}
-              url={`${ROUTES.PRODUCT.path}/${e.slug}`}
-              discontinue={e.discontinue}
-            />
+            <div className="flex justify-center w-full" key={i}>
+              <ProductCard
+                imgUrl={e.thumbnail}
+                name={e.name}
+                desc={e.category}
+                url={`${ROUTES.PRODUCT.path}/${e.slug}`}
+                discontinue={e.discontinue}
+              />
+            </div>
           ))}
         </div>
       </motion.div>
