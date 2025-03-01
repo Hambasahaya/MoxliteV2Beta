@@ -43,5 +43,7 @@ jobs:
         with:
           context: .
           push: true
+          build-args: |
+            NEXT_PUBLIC_FE_BASE_URL=${{ vars.NEXT_PUBLIC_FE_BASE_URL }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

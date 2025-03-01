@@ -13,6 +13,9 @@ RUN yarn install --frozen-lockfile --no-progress --silent
 # Salin semua file proyek ke dalam container
 COPY . .
 
+ARG NEXT_PUBLIC_FE_BASE_URL=""
+ENV NEXT_PUBLIC_FE_BASE_URL=$NEXT_PUBLIC_FE_BASE_URL
+
 # Build Next.js tanpa warning
 RUN NODE_OPTIONS="--no-warnings" yarn build
 
