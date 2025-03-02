@@ -9,7 +9,7 @@ export const getServerSidePropsList: GetServerSideProps<
     const { page } = context.query;
     const { projects, pageCount } = await getProjects({
       page: page as string,
-      pageSize: 2,
+      pageSize: 10,
     });
 
     return {

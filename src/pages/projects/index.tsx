@@ -26,7 +26,7 @@ const ProjectList = ({ projects, pageCount }: iProjectsProps) => {
     <Layout
       metadata={{
         title: "Projects - Moxlite",
-        desc: "Adaptive Lighting Solutions -For All Stage Sizes Learn more Reimagining Performance Spaces with Moxlite From concert to intimate clubs, every stage deserves to shine. Moxlite's versatile lighting solutions are designed to adapt and elevate, creating the perfect ambiance for any venue. With Moxlite, every performance is a masterpiece. Explore our products Nightclub/Bar Touring/Concert Houses of ...",
+        desc: "Discover Moxlite's innovative projects and see how we bring ideas to life",
         thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/projects`,
       }}
@@ -44,7 +44,7 @@ const ProjectList = ({ projects, pageCount }: iProjectsProps) => {
         {projects?.slice(1)?.map((e, i) => <NewsCard key={i} {...e} />) ?? null}
       </div>
 
-      {projects.length > 1 && (
+      {pageCount > 1 && (
         <div className="w-full flex justify-end px-[24px] pb-[24px] lg:pb-[80px] lg:px-[120px]">
           <Pagination pageCount={pageCount} onPageChange={movePage} />
         </div>

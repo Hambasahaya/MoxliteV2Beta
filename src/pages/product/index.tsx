@@ -89,8 +89,8 @@ const ProductList = ({
                     updateQueryParams({ typeQ: e.slug });
                   }}
                 >
-                  <div className="h-[67px] p-2 flex items-center justify-end">
-                    <h4 className="text-[14px] w-[66%] font-bold text-white text-right">
+                  <div className="h-[67px] max-w-[50%] mr-4 flex items-center justify-end">
+                    <h4 className="text-[14px] font-bold text-white text-right">
                       {e.title}
                     </h4>
                   </div>

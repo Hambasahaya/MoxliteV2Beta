@@ -8,7 +8,7 @@ const FAQ = ({ faqs }: iFaqProps) => {
     <Layout
       metadata={{
         title: "FAQ - Moxlite",
-        desc: "Adaptive Lighting Solutions -For All Stage Sizes Learn more Reimagining Performance Spaces with Moxlite From concert to intimate clubs, every stage deserves to shine. Moxlite's versatile lighting solutions are designed to adapt and elevate, creating the perfect ambiance for any venue. With Moxlite, every performance is a masterpiece. Explore our products Nightclub/Bar Touring/Concert Houses of ...",
+        desc: "Find answers to common questions about Moxlite's products",
         thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/news`,
       }}

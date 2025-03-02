@@ -9,7 +9,7 @@ export const getServerSidePropsList: GetServerSideProps<iNewsProps> = async (
     const { page } = context.query;
     const { news, pageCount } = await getNews({
       page: page as string,
-      pageSize: 2,
+      pageSize: 10,
     });
 
     return {
@@ -24,7 +24,7 @@ export const getServerSidePropsList: GetServerSideProps<iNewsProps> = async (
     return {
       props: {
         news: [],
-        pageCount: 1,
+        pageCount: 0,
       },
     };
   }
