@@ -1,20 +1,18 @@
-import { ROUTES } from "@/constant/ROUTES";
-
 export const aspectOptions = [
   {
     label: "About Moxlite",
-    path: `${ROUTES.ABOUT.path}?sec=about`,
+    docId: `about`,
   },
   {
     label: "Our Client",
-    path: `${ROUTES.ABOUT.path}?sec=client`,
+    docId: `client`,
   },
   {
     label: "Our Advantages",
-    path: `${ROUTES.ABOUT.path}?sec=advantages`,
+    docId: `advantages`,
   },
   {
     label: "Product Distributions",
-    path: `${ROUTES.ABOUT.path}?sec=distributions`,
+    docId: `distributions`,
   },
 ];

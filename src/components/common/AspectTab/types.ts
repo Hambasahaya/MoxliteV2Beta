@@ -1,6 +1,6 @@
 type iAspectTab = {
   options: {
     label: string;
-    path: string;
+    docId: string;
   }[];
 };

@@ -1,7 +1,7 @@
 export type iDropdownLink = {
   options: {
     label: string;
-    path: string;
+    docId: string;
   }[];
   defaultValue?: boolean;
   placeholder?: string;

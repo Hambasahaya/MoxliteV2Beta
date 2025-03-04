@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/router";
 import { iDropdownLink } from "./types";
 import { useEffect } from "react";
 
@@ -9,28 +8,53 @@ const DropdownLink = ({
   defaultValue,
   placeholder = "Please select an option",
 }: iDropdownLink) => {
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedAspect, setSelectedAspect] = useState("");
+  const [selectedOption, setSelectedOption] = useState<{
+    label: string;
+    docId: string;
+  } | null>(null);
 
   useEffect(() => {
-    if (router.asPath.includes("sec")) {
-      setSelectedAspect(
-        options.filter((e) => e.path == router.asPath)[0]?.label ?? ""
-      );
+    if (!selectedOption) return;
+
+    const targetElement = document.getElementById(selectedOption.docId);
+    if (targetElement) {
+      const targetPosition =
+        targetElement.getBoundingClientRect().top + window.scrollY;
+      const startPosition = window.scrollY;
+      const distance = targetPosition - startPosition - 100;
+      const duration = 500; // 0.5 detik
+      let startTime: number | null = null;
+
+      const smoothScroll = (currentTime: number) => {
+        if (!startTime) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+
+        window.scrollTo(0, startPosition + distance * easeInOutQuad(progress));
+
+        if (timeElapsed < duration) {
+          requestAnimationFrame(smoothScroll);
+        }
+      };
+
+      const easeInOutQuad = (t: number) =>
+        t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+      requestAnimationFrame(smoothScroll);
     }
-  }, [router.asPath]);
+  }, [JSON.stringify(selectedOption)]);
 
   return (
     <div className="relative w-full">
       <button
         className={`cursor-pointer w-full px-4 py-2 ${
-          selectedAspect ? "text-black" : "text-gray-500"
+          selectedOption ? "text-black" : "text-gray-500"
         }  bg-white border border-gray-300 rounded-lg flex justify-between items-center`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {selectedAspect
-          ? selectedAspect
+        {selectedOption
+          ? selectedOption.label
           : defaultValue
           ? options[0].label
           : placeholder}
@@ -55,7 +79,7 @@ const DropdownLink = ({
               key={i}
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => {
-                router.push(e.path);
+                setSelectedOption(e);
                 setIsOpen(false);
               }}
             >
