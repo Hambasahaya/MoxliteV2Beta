@@ -44,7 +44,7 @@ const ProjectList = ({ projects, pageCount }: iProjectsProps) => {
         {projects?.slice(1)?.map((e, i) => <NewsCard key={i} {...e} />) ?? null}
       </div>
 
-      {pageCount > 1 && (
+      {pageCount > 0 && (
         <div className="w-full flex justify-end px-[24px] pb-[24px] lg:pb-[80px] lg:px-[120px]">
           <Pagination pageCount={pageCount} onPageChange={movePage} />
         </div>

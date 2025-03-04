@@ -24,7 +24,7 @@ export const getServerSidePropsList: GetServerSideProps<
     return {
       props: {
         projects: [],
-        pageCount: 1,
+        pageCount: 0,
       },
     };
   }

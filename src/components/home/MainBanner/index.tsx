@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ROUTES } from "@/constant/ROUTES";
+import { GAevent } from "@/lib/gtag";
 
 const texts = ["Nightclub", "Concert", "Architectural"];
 
@@ -120,7 +121,17 @@ const MainBanner = () => {
               transition={{ duration: 0.5, ease: "easeOut", delay: 1.3 }}
             >
               <Link href={ROUTES.PRODUCT.path}>
-                <button className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] lg:my-[24px] rounded-md cursor-pointer text-[14px] font-medium">
+                <button
+                  className="bg-[#FAFAFA] hover:bg-neutral-400 py-[12px] px-[16px] my-[40px] lg:my-[24px] rounded-md cursor-pointer text-[14px] font-medium"
+                  onClick={() => {
+                    GAevent({
+                      action: "klik_tombol",
+                      category: "interaksi_pengguna",
+                      label: "Tombol CTA",
+                      value: 1,
+                    });
+                  }}
+                >
                   Explore product
                 </button>
               </Link>

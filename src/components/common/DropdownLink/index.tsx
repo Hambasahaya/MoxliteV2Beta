@@ -14,7 +14,7 @@ const DropdownLink = ({
   const [selectedAspect, setSelectedAspect] = useState("");
 
   useEffect(() => {
-    if (router.asPath.includes("#")) {
+    if (router.asPath.includes("sec")) {
       setSelectedAspect(
         options.filter((e) => e.path == router.asPath)[0]?.label ?? ""
       );
