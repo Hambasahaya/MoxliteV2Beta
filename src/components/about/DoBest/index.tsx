@@ -1,5 +1,6 @@
 import Accordion from "@/components/common/Accordion";
 import { iDoBestProps } from "./types";
+import { title } from "process";
 
 const DoBest = ({ data }: iDoBestProps) => {
   return (
@@ -18,6 +19,12 @@ const DoBest = ({ data }: iDoBestProps) => {
               title={item.value}
               content={item.description}
               invertColor
+              GAevent={{
+                action: "about_what_we_do_best",
+                attribute: {
+                  title: item.value,
+                },
+              }}
             />
           );
         })}

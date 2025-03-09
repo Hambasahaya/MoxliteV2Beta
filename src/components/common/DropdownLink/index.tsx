@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { iDropdownLink } from "./types";
 import { useEffect } from "react";
+import { fireGAevent } from "@/lib/gtag";
 
 const DropdownLink = ({
   options,
@@ -79,6 +80,9 @@ const DropdownLink = ({
               key={i}
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => {
+                if (e.GAevent) {
+                  fireGAevent(e.GAevent);
+                }
                 setSelectedOption(e);
                 setIsOpen(false);
               }}

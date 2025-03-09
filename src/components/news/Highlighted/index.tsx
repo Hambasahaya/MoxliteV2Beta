@@ -1,13 +1,24 @@
 import { iNewsCard } from "@/components/common/NewsCard/types";
 import { useRouter } from "next/router";
 import moment from "moment";
+import { fireGAevent } from "@/lib/gtag";
 
-const Highlighted = ({ url, name, thumbnail, desc, date }: iNewsCard) => {
+const Highlighted = ({
+  url,
+  name,
+  thumbnail,
+  desc,
+  date,
+  GAevent,
+}: iNewsCard) => {
   const router = useRouter();
 
   return (
     <div
       onClick={() => {
+        if (GAevent) {
+          fireGAevent(GAevent);
+        }
         router.push(url);
       }}
       className="m-[24px] lg:my-[80px] lg:mx-[120px] bg-[#020617] text-[#F8FAFC] grid grid-cols-12 gap-0 cursor-pointer hover:shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.7)]"

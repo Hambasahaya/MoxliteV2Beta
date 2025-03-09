@@ -1,6 +1,7 @@
 import { ROUTES } from "@/constant/ROUTES";
 import { useRouter } from "next/router";
 import { iLatestProject } from "../types";
+import { fireGAevent } from "@/lib/gtag";
 
 const MoxliteOnDutyCard = ({ slug, name, thumbnail }: iLatestProject) => {
   const router = useRouter();
@@ -8,6 +9,12 @@ const MoxliteOnDutyCard = ({ slug, name, thumbnail }: iLatestProject) => {
   return (
     <div
       onClick={() => {
+        fireGAevent({
+          action: "homepage_project",
+          attribute: {
+            project_name: name,
+          },
+        });
         router.push(`${ROUTES.PROJECT.path}/${slug}`);
       }}
       className="h-[285px] cursor-pointer bg-cover flex flex-col justify-end text-white hover:text-black group"

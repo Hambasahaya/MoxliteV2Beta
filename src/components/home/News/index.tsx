@@ -4,6 +4,7 @@ import NewsCard from "../../common/NewsCard";
 import { ROUTES } from "@/constant/ROUTES";
 import Link from "next/link";
 import { iLatestNews } from "../types";
+import { fireGAevent } from "@/lib/gtag";
 
 const News = ({ contents }: { contents: iLatestNews[] }) => {
   if (contents.length == 0) {
@@ -38,7 +39,20 @@ const News = ({ contents }: { contents: iLatestNews[] }) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {contents.map((e, i) => (
-            <NewsCard {...e} key={i} />
+            <div
+              key={i}
+              className="w-full h-full"
+              onClick={() => {
+                fireGAevent({
+                  action: "homepage_news",
+                  attribute: {
+                    news_name: e.name,
+                  },
+                });
+              }}
+            >
+              <NewsCard {...e} />
+            </div>
           ))}
         </div>
       </motion.div>

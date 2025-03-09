@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-const SearchBox = ({ onEnter }: { onEnter: (value: string) => void }) => {
+const SearchBox = ({
+  onEnter,
+  onClickSearch,
+}: {
+  onEnter: (value: string) => void;
+  onClickSearch: (value: string) => void;
+}) => {
   const [searchValue, setSearchValue] = useState("");
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -21,7 +27,10 @@ const SearchBox = ({ onEnter }: { onEnter: (value: string) => void }) => {
       />
       <img
         src="/icon/search.svg"
-        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-[20px]"
+        onClick={() => {
+          onClickSearch(searchValue);
+        }}
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-[20px] cursor-pointer"
       />
     </div>
   );

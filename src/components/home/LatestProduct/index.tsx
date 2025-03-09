@@ -4,6 +4,7 @@ import ProductCard from "../../common/ProductCard";
 import { ROUTES } from "@/constant/ROUTES";
 import Link from "next/link";
 import { iLatestProduct } from "../types";
+import { fireGAevent } from "@/lib/gtag";
 
 const LatestProduct = ({ contents }: { contents: iLatestProduct[] }) => {
   if (contents.length == 0) {
@@ -39,7 +40,18 @@ const LatestProduct = ({ contents }: { contents: iLatestProduct[] }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {contents.map((e, i) => (
-            <div className="flex justify-center w-full" key={i}>
+            <div
+              className="flex justify-center w-full"
+              key={i}
+              onClick={() => {
+                fireGAevent({
+                  action: "homepage_latest_product",
+                  attribute: {
+                    product_name: e.name,
+                  },
+                });
+              }}
+            >
               <ProductCard
                 imgUrl={e.thumbnail}
                 name={e.name}

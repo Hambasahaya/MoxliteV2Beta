@@ -18,18 +18,20 @@ const ProjectDetail = ({ project }: iProjectDetailProps) => {
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/projects/${project.slug}`,
       }}
     >
-      <div className="p-[24px] lg:pt-[56px] lg:pb-[80px] lg:px-[120px] w-full flex flex-col items-center">
-        <NewsCarousel imgUrls={project.gallery} />
-        <div className="w-full lg:max-w-[640px] my-[40px]">
-          <p className="mb-[8px]">
-            {moment(project.published_at).format("DD MMMM YYYY")}
-          </p>
-          <h1 className="text-[36px] lg:text-[48px] font-bold leading-[1.2em]">
-            {project.title}
-          </h1>
-        </div>
-        <div className="w-full lg:max-w-[640px]">
-          <StrapiTextRenderer content={project.content} type="HTML" />
+      <div className="w-full flex justify-center">
+        <div className="p-[24px] md:p-0 lg:pt-[56px] lg:pb-[80px] w-full md:w-[80%] lg:w-[60%] flex flex-col items-center">
+          <NewsCarousel imgUrls={project.gallery} />
+          <div className="w-full my-[40px]">
+            <p className="mb-[8px]">
+              {moment(project.published_at).format("DD MMMM YYYY")}
+            </p>
+            <h1 className="text-[36px] lg:text-[48px] font-bold leading-[1.2em]">
+              {project.title}
+            </h1>
+          </div>
+          <div className="w-full">
+            <StrapiTextRenderer content={project.content} type="HTML" />
+          </div>
         </div>
       </div>
     </Layout>

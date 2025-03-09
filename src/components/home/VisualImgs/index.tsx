@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { cardMetadata } from "./schema";
 import Link from "next/link";
 import { ROUTES } from "@/constant/ROUTES";
+import { fireGAevent } from "@/lib/gtag";
 
 const VisualImgs = () => {
   const ref = useRef(null);
@@ -35,7 +36,12 @@ const VisualImgs = () => {
             masterpiece.
           </p>
           <Link href={ROUTES.PRODUCT.path}>
-            <button className="bg-[#FAFAFA] hover:bg-neutral-400 text-black py-[12px] px-[16px] mt-[40px] lg:mt-[29px] rounded-md cursor-pointer text-[14px] font-medium">
+            <button
+              onClick={() => {
+                fireGAevent({ action: "homepage_explore_product_events" });
+              }}
+              className="bg-[#FAFAFA] hover:bg-neutral-400 text-black py-[12px] px-[16px] mt-[40px] lg:mt-[29px] rounded-md cursor-pointer text-[14px] font-medium"
+            >
               Explore product
             </button>
           </Link>

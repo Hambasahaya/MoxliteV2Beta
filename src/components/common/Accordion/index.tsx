@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { iAccordion } from "./types";
+import { fireGAevent } from "@/lib/gtag";
 
-const Accordion = ({ title, content, invertColor }: iAccordion) => {
+const Accordion = ({ title, content, invertColor, GAevent }: iAccordion) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="border-t border-gray-300">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (GAevent && !isOpen) {
+            fireGAevent(GAevent);
+          }
+          setIsOpen(!isOpen);
+        }}
         className="w-full flex justify-between items-center py-[24px] cursor-pointer"
       >
         <h4 className="font-semibold text-[18px] text-start">{title}</h4>

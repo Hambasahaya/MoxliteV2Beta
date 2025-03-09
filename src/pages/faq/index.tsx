@@ -25,6 +25,12 @@ const FAQ = ({ faqs }: iFaqProps) => {
             key={item.documentId}
             title={item.question}
             content={item.answer}
+            GAevent={{
+              action: "faq_items",
+              attribute: {
+                faq_title: item.question,
+              },
+            }}
           />
         ))}
       </div>
