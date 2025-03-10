@@ -1,6 +1,5 @@
 name: Deploy Web
-on:
-  workflow_dispatch
+on: workflow_dispatch
 
 env:
   DIRECTORY: /home/${{ secrets.SSH_USERNAME }}/frontend
@@ -13,7 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Create folder if not exists
         uses: appleboy/ssh-action@v1.2.1
         with:
@@ -33,7 +32,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           source: "${{ env.DOCKER_COMPOSE_FILE }}"
           target: ${{ env.DIRECTORY }}
-              
+
       - name: Deploy
         uses: appleboy/ssh-action@v1.2.1
         with:
@@ -44,12 +43,13 @@ jobs:
           script: |
             # Navigate to deployment directory
             cd ${{ env.DIRECTORY }}
-            
+
             # Create .env file with proper error handling
             {
               echo "# Application Configuration"
               echo "NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}"
               echo "NEXT_PUBLIC_FE_BASE_URL=${{ vars.NEXT_PUBLIC_FE_BASE_URL }}"
+              echo "NEXT_PUBLIC_GA_ID=${{ vars.NEXT_PUBLIC_GA_ID }}"
             } > .env
                         
             # Deploy with health check
