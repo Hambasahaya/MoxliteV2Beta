@@ -21,7 +21,7 @@ const WAFloatingButton = ({
             attribute: {
               product_name: productName,
               product_category: productCategory,
-              productFamily: productFamily,
+              product_family: productFamily,
             },
           });
         }}
