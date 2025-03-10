@@ -55,7 +55,7 @@ const Contact = () => {
                   redirectUrl:
                     "https://wa.me/6282116549906?text=Hi Moxlite Team, I have a question regarding ...",
                   GAevent: {
-                    action: "Contact_whatsapp",
+                    action: "contact_whatsapp",
                   },
                 },
                 {
@@ -64,7 +64,7 @@ const Contact = () => {
                   redirectUrl:
                     "mailto:info@moxlite.com?subject=Need Support&body=Hi Moxlite Team, I have a question regarding ...",
                   GAevent: {
-                    action: "Contact_email",
+                    action: "contact_email",
                   },
                 },
               ]}
@@ -80,7 +80,7 @@ const Contact = () => {
                   iconUrl: "/icon/instagram.svg",
                   redirectUrl: "https://www.instagram.com/moxlite.prolight",
                   GAevent: {
-                    action: "Contact_instagram",
+                    action: "contact_instagram",
                   },
                 },
                 {
@@ -88,7 +88,7 @@ const Contact = () => {
                   iconUrl: "/icon/youtube.svg",
                   redirectUrl: "https://www.youtube.com/@MoxliteProlight",
                   GAevent: {
-                    action: "Contact_youtube",
+                    action: "contact_youtube",
                   },
                 },
               ]}

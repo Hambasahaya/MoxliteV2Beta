@@ -18,7 +18,13 @@ export const fireGApageview = (url: string) => {
 };
 
 export const fireGAevent = ({ action, attribute }: iGTagEvent) => {
-  console.log("GA action :: ", action, attribute);
+  console.log(
+    "GA action :: ",
+    ENV.NEXT_PUBLIC_GA_ID,
+    " :: ",
+    action,
+    attribute
+  );
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag(
       "event",

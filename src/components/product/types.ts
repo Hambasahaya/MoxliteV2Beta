@@ -14,6 +14,7 @@ export type iProductCard = {
   name: string;
   thumbnail: string;
   category: string;
+  family: string;
   discontinue: boolean;
 };
 
@@ -35,6 +36,8 @@ export type iProductProps = {
 export type iProductDetail = {
   name: string;
   slug: string;
+  category: string;
+  family: string;
   desc: string;
   thumbnail: string;
   gallery: string[];

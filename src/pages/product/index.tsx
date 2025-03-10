@@ -157,14 +157,28 @@ const ProductList = ({
             <div className="flex flex-col justify-between h-full">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {products.map((e, i) => (
-                  <ProductCard
+                  <div
                     key={i}
-                    imgUrl={e.thumbnail}
-                    name={e.name}
-                    desc={e.category}
-                    url={`${ROUTES.PRODUCT.path}/${e.slug}`}
-                    discontinue={e.discontinue}
-                  />
+                    className="w-full"
+                    onClick={() => {
+                      fireGAevent({
+                        action: "product_click",
+                        attribute: {
+                          product_name: e.name,
+                          product_family: e.family,
+                          product_category: e.category,
+                        },
+                      });
+                    }}
+                  >
+                    <ProductCard
+                      imgUrl={e.thumbnail}
+                      name={e.name}
+                      desc={e.category}
+                      url={`${ROUTES.PRODUCT.path}/${e.slug}`}
+                      discontinue={e.discontinue}
+                    />
+                  </div>
                 ))}
               </div>
 

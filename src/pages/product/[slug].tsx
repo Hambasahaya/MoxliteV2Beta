@@ -7,19 +7,16 @@ import PreviewVideo from "@/components/product/PreviewVideo";
 import TechDocs from "@/components/product/TechDocs";
 import TechSpec from "@/components/product/TechSpec";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import { aspectOptions } from "@/components/product/schema";
 import { iProductDetailProps } from "@/components/product/types";
 import { ENV } from "@/constant/ENV";
+import WAFloatingButton from "@/components/product/WAFloatingButton";
 
 const Summary = dynamic(() => import("@/components/product/Summary"), {
   ssr: false,
 });
 
 const Product = ({ content }: iProductDetailProps) => {
-  const router = useRouter();
-  const { slug } = router.query;
-
   return (
     <Layout
       metadata={{
@@ -39,13 +36,25 @@ const Product = ({ content }: iProductDetailProps) => {
         keyFeatures={content.keyFeatures}
         discontinued={content.discontinued}
       />
-      <AspectTab options={aspectOptions(slug as string)} />
+      <AspectTab
+        options={aspectOptions(content.name, content.family, content.category)}
+      />
       <TechSpec items={content.techSpecs} />
       <GoboAndColors imgUrl={content.goboColorsImgUrl} />
       <ArchitecturalDimension imgUrl={content.archDimImgUrl} />
       <Packaging items={content.packaging} />
-      <TechDocs items={content.techDocs} />
+      <TechDocs
+        productName={content.name}
+        productCategory={content.category}
+        productFamily={content.family}
+        items={content.techDocs}
+      />
       <PreviewVideo videoUrl={content.previewVideo} />
+      <WAFloatingButton
+        productName={content.name}
+        productCategory={content.category}
+        productFamily={content.family}
+      />
     </Layout>
   );
 };
