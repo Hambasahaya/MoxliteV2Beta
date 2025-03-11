@@ -87,6 +87,18 @@ const Navbar = () => {
               </span>
             </Link>
             <Link
+              href={ROUTES.SALES.path}
+              className="pl-[36px] cursor-pointer"
+            >
+              <span
+                className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                  currPath.includes(ROUTES.SALES.path) ? "text-[#3E9C92]" : ""
+                }`}
+              >
+                {ROUTES.SALES.label}
+              </span>
+            </Link>
+            <Link
               onClick={() => {
                 fireGAevent({ action: "Navigation_projects" });
               }}
