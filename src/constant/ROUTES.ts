@@ -11,6 +11,14 @@ export const ROUTES = {
     label: "Product",
     path: "/product",
   },
+  SALES: {
+    label: "Partners",
+    path: "/sales",
+  },
+  REGISTER_SALES: {
+    label: "Register Sales",
+    path: "/sales/register",
+  },
   PROJECT: {
     label: "Project",
     path: "/projects",

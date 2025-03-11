@@ -1,4 +1,4 @@
-type iOption = {
+export type iOption = {
   label: string;
   value: any;
 };
