@@ -7,6 +7,7 @@ import { ROUTES } from "@/constant/ROUTES";
 import { iProductProps } from "@/components/product/types";
 import { useRouter } from "next/router";
 import { ENV } from "@/constant/ENV";
+import { fireGAevent } from "@/lib/gtag";
 
 const ProductList = ({
   productTypes,
@@ -40,6 +41,16 @@ const ProductList = ({
     );
   };
 
+  const onSearch = (value: string) => {
+    if (value == q) return;
+
+    if (!value) {
+      updateQueryParams({ q });
+    } else {
+      updateQueryParams({ q: value });
+    }
+  };
+
   return (
     <Layout
       metadata={{
@@ -61,13 +72,16 @@ const ProductList = ({
             <div className="mb-[40px]">
               <SearchBox
                 onEnter={(value) => {
-                  if (value == q) return;
-
-                  if (!value) {
-                    updateQueryParams({ q });
-                  } else {
-                    updateQueryParams({ q: value });
-                  }
+                  fireGAevent({
+                    action: "product_search_enter",
+                  });
+                  onSearch(value);
+                }}
+                onClickSearch={(value) => {
+                  fireGAevent({
+                    action: "product_search",
+                  });
+                  onSearch(value);
                 }}
               />
             </div>
@@ -86,6 +100,13 @@ const ProductList = ({
                     backgroundImage: `url(${e.thumbnail})`,
                   }}
                   onClick={() => {
+                    fireGAevent({
+                      action: "product_filter_category",
+                      attribute: {
+                        category_title: e.title,
+                      },
+                    });
+
                     updateQueryParams({ typeQ: e.slug });
                   }}
                 >
@@ -118,6 +139,13 @@ const ProductList = ({
                   updateQueryParams({ familyQ });
                   return;
                 }
+
+                fireGAevent({
+                  action: "product_filter_family",
+                  attribute: {
+                    family_title: option.label,
+                  },
+                });
                 updateQueryParams({ familyQ: option.value });
               }}
             />
@@ -129,14 +157,28 @@ const ProductList = ({
             <div className="flex flex-col justify-between h-full">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {products.map((e, i) => (
-                  <ProductCard
+                  <div
                     key={i}
-                    imgUrl={e.thumbnail}
-                    name={e.name}
-                    desc={e.category}
-                    url={`${ROUTES.PRODUCT.path}/${e.slug}`}
-                    discontinue={e.discontinue}
-                  />
+                    className="w-full"
+                    onClick={() => {
+                      fireGAevent({
+                        action: "product_click",
+                        attribute: {
+                          product_name: e.name,
+                          product_family: e.family,
+                          product_category: e.category,
+                        },
+                      });
+                    }}
+                  >
+                    <ProductCard
+                      imgUrl={e.thumbnail}
+                      name={e.name}
+                      desc={e.category}
+                      url={`${ROUTES.PRODUCT.path}/${e.slug}`}
+                      discontinue={e.discontinue}
+                    />
+                  </div>
                 ))}
               </div>
 

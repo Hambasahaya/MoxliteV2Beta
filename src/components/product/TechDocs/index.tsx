@@ -4,8 +4,14 @@ import { tabs } from "./schema";
 import Dropdown from "@/components/common/Dropdown";
 import { iTechDocs } from "./types";
 import Link from "next/link";
+import { fireGAevent } from "@/lib/gtag";
 
-const TechDocs = ({ items }: iTechDocs) => {
+const TechDocs = ({
+  productName,
+  productFamily,
+  productCategory,
+  items,
+}: iTechDocs) => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
@@ -86,6 +92,22 @@ const TechDocs = ({ items }: iTechDocs) => {
               </div>
               <div className="col-span-4 lg:col-span-2 p-[14px] font-medium text-[#0284C7] text-[14px] w-full text-end cursor-pointer hover:font-bold hover:underline">
                 <Link
+                  onClick={() => {
+                    fireGAevent({
+                      action:
+                        activeTab.value
+                          .replace(/\s+/g, "_")
+                          .replace(/([a-z])([A-Z])/g, "$1_$2")
+                          .replace(/[^a-zA-Z0-9_]/g, "")
+                          .toLowerCase() + "_donwload",
+                      attribute: {
+                        product_name: productName,
+                        product_category: productCategory,
+                        product_family: productFamily,
+                        downloaded_filename: e.name,
+                      },
+                    });
+                  }}
                   href={e.url}
                   passHref
                   target="_blank"

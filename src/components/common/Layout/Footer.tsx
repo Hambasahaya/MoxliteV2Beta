@@ -1,3 +1,4 @@
+import { fireGAevent } from "@/lib/gtag";
 import Link from "next/link";
 
 const Footer = () => {
@@ -12,6 +13,9 @@ const Footer = () => {
         </p>
         <div className="flex items-center">
           <Link
+            onClick={() => {
+              fireGAevent({ action: "Footer_instagram" });
+            }}
             href={"https://www.instagram.com/moxlite.prolight/"}
             passHref
             target="_blank"
@@ -20,6 +24,9 @@ const Footer = () => {
             <img src="/icon/instagram.svg" className="h-[20px] mr-[27px]" />
           </Link>
           <Link
+            onClick={() => {
+              fireGAevent({ action: "Footer_youtube" });
+            }}
             href={"https://www.youtube.com/channel/UCJtLlfDGiT_KiAN261740xA"}
             passHref
             target="_blank"
@@ -28,6 +35,9 @@ const Footer = () => {
             <img src="/icon/youtube.svg" className="h-[20px] mr-[27px]" />
           </Link>
           <Link
+            onClick={() => {
+              fireGAevent({ action: "Footer_Ecommerce" });
+            }}
             href={"https://tokopedia.link/zWC7yylrNHb"}
             passHref
             target="_blank"
@@ -51,6 +61,9 @@ const Footer = () => {
           </p>
         </div>
         <Link
+          onClick={() => {
+            fireGAevent({ action: "Footer_Whatsapp" });
+          }}
           href={
             "https://wa.me/6282116549906?text=Hi Moxlite Team, I have a question regarding ..."
           }
@@ -65,6 +78,9 @@ const Footer = () => {
         </Link>
 
         <Link
+          onClick={() => {
+            fireGAevent({ action: "Footer_email" });
+          }}
           href={
             "mailto:info@moxlite.com?subject=Need Support&body=Hi Moxlite Team, I have a question regarding ..."
           }

@@ -71,6 +71,7 @@ export const searchProducts = async ({
       name: e?.name ?? "",
       thumbnail: e?.main_image?.url ?? "",
       category: e?.product_category?.name ?? "",
+      family: e?.product_family?.name ?? "",
       discontinue: e?.discontinued ?? false,
     }));
     const pageCount = result?.meta?.pagination?.pageCount ?? 0;
@@ -93,6 +94,8 @@ export const getProductDetails = async (
     const details: iProductDetail = {
       name: result?.data?.name ?? "",
       slug: result?.data?.slug ?? "",
+      category: result?.data?.product_category?.name ?? "",
+      family: result?.data?.product_family?.name ?? "",
       desc: result?.data?.description ?? "",
       thumbnail: result?.data?.main_image?.formats?.thumbnail?.url ?? "",
       gallery: result?.data?.image_gallery?.map((e: any) => e?.url) ?? [],

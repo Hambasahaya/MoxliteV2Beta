@@ -52,7 +52,7 @@ const NewsCarousel = ({ imgUrls }: { imgUrls: string[] }) => {
 
   return (
     <div
-      className="relative w-full lg:max-w-[640px] overflow-hidden"
+      className="relative w-full overflow-hidden"
       onMouseEnter={stopAutoSlide}
       onMouseLeave={resumeAutoSlide}
     >

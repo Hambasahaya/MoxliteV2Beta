@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Script from "next/script";
-import { GApageview } from "@/lib/gtag";
+import { fireGApageview } from "@/lib/gtag";
 import { ENV } from "@/constant/ENV";
 
 export default function GoogleAnalytics() {
@@ -9,7 +9,7 @@ export default function GoogleAnalytics() {
 
   useEffect(() => {
     if (pathname) {
-      GApageview(pathname);
+      fireGApageview(pathname);
     }
   }, [pathname]);
 

@@ -1,5 +1,7 @@
 import DropdownLink from "@/components/common/DropdownLink";
 import { useEffect, useState } from "react";
+import { iAspectTab } from "./types";
+import { fireGAevent } from "@/lib/gtag";
 
 const AspectTab = ({ options }: iAspectTab) => {
   const [selectedOption, setSelectedOption] = useState<{
@@ -48,6 +50,10 @@ const AspectTab = ({ options }: iAspectTab) => {
               e.docId === selectedOption?.docId ? "underline" : ""
             }`}
             onClick={() => {
+              if (e.GAevent) {
+                fireGAevent(e.GAevent);
+              }
+
               setSelectedOption(e);
             }}
           >
@@ -62,6 +68,7 @@ const AspectTab = ({ options }: iAspectTab) => {
           options={options.map((e) => ({
             label: e.label,
             docId: e.docId,
+            GAevent: e.GAevent,
           }))}
         />
       </div>

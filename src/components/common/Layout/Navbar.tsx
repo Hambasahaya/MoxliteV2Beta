@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { ROUTES } from "@/constant/ROUTES";
 import Link from "next/link";
+import { fireGAevent } from "@/lib/gtag";
 
 const Navbar = () => {
   const [isExpand, setIsExpand] = useState(false);
@@ -39,7 +40,13 @@ const Navbar = () => {
             <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
           </Link>
           <div className="flex justify-between">
-            <Link href={ROUTES.HOME.path} className="pl-[36px] cursor-pointer">
+            <Link
+              onClick={() => {
+                fireGAevent({ action: "Navigation_home" });
+              }}
+              href={ROUTES.HOME.path}
+              className="pl-[36px] cursor-pointer"
+            >
               <span
                 className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
                   currPath == ROUTES.HOME.path ? "text-[#3E9C92]" : ""
@@ -48,7 +55,14 @@ const Navbar = () => {
                 {ROUTES.HOME.label}
               </span>
             </Link>
-            <Link href={ROUTES.ABOUT.path} className="pl-[36px] cursor-pointer">
+
+            <Link
+              onClick={() => {
+                fireGAevent({ action: "Navigation_about" });
+              }}
+              href={ROUTES.ABOUT.path}
+              className="pl-[36px] cursor-pointer"
+            >
               <span
                 className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
                   currPath.includes(ROUTES.ABOUT.path) ? "text-[#3E9C92]" : ""
@@ -58,6 +72,9 @@ const Navbar = () => {
               </span>
             </Link>
             <Link
+              onClick={() => {
+                fireGAevent({ action: "Navigation_products" });
+              }}
               href={ROUTES.PRODUCT.path}
               className="pl-[36px] cursor-pointer"
             >
@@ -82,6 +99,9 @@ const Navbar = () => {
               </span>
             </Link>
             <Link
+              onClick={() => {
+                fireGAevent({ action: "Navigation_projects" });
+              }}
               href={ROUTES.PROJECT.path}
               className="pl-[36px] cursor-pointer"
             >
@@ -93,7 +113,14 @@ const Navbar = () => {
                 {ROUTES.PROJECT.label}
               </span>
             </Link>
-            <Link href={ROUTES.NEWS.path} className="pl-[36px] cursor-pointer">
+
+            <Link
+              onClick={() => {
+                fireGAevent({ action: "Navigation_news" });
+              }}
+              href={ROUTES.NEWS.path}
+              className="pl-[36px] cursor-pointer"
+            >
               <span
                 className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
                   currPath.includes(ROUTES.NEWS.path) ? "text-[#3E9C92]" : ""
@@ -103,6 +130,9 @@ const Navbar = () => {
               </span>
             </Link>
             <Link
+              onClick={() => {
+                fireGAevent({ action: "Navigation_contact" });
+              }}
               href={ROUTES.CONTACT.path}
               className="pl-[36px] cursor-pointer"
             >
@@ -114,7 +144,14 @@ const Navbar = () => {
                 {ROUTES.CONTACT.label}
               </span>
             </Link>
-            <Link href={ROUTES.FAQ.path} className="pl-[36px] cursor-pointer">
+
+            <Link
+              onClick={() => {
+                fireGAevent({ action: "Navigation_faq" });
+              }}
+              href={ROUTES.FAQ.path}
+              className="pl-[36px] cursor-pointer"
+            >
               <span
                 className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
                   currPath.includes(ROUTES.FAQ.path) ? "text-[#3E9C92]" : ""
@@ -131,7 +168,12 @@ const Navbar = () => {
           className="bg-black text-[#f8fafc] px-[20px] py-[24px] flex-none lg:hidden"
         >
           <div className="flex justify-between items-center">
-            <Link href={ROUTES.HOME.path}>
+            <Link
+              onClick={() => {
+                fireGAevent({ action: "Navigation_home" });
+              }}
+              href={ROUTES.HOME.path}
+            >
               <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
             </Link>
             <div className="relative h-[30px] w-[30px] overflow-hidden">
@@ -172,6 +214,7 @@ const Navbar = () => {
           >
             <div
               onClick={() => {
+                fireGAevent({ action: "Navigation_home" });
                 router.push(ROUTES.HOME.path);
               }}
               className={`${
@@ -184,6 +227,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
+                fireGAevent({ action: "Navigation_about" });
                 router.push(ROUTES.ABOUT.path);
               }}
               className={`${
@@ -196,6 +240,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
+                fireGAevent({ action: "Navigation_products" });
                 router.push(ROUTES.PRODUCT.path);
               }}
               className={`${
@@ -208,6 +253,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
+                fireGAevent({ action: "Navigation_projects" });
                 router.push(ROUTES.PROJECT.path);
               }}
               className={`${
@@ -220,6 +266,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
+                fireGAevent({ action: "Navigation_news" });
                 router.push(ROUTES.NEWS.path);
               }}
               className={`${
@@ -232,6 +279,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
+                fireGAevent({ action: "Navigation_contact" });
                 router.push(ROUTES.CONTACT.path);
               }}
               className={`${
@@ -244,6 +292,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
+                fireGAevent({ action: "Navigation_faq" });
                 router.push(ROUTES.FAQ.path);
               }}
               className={`${
