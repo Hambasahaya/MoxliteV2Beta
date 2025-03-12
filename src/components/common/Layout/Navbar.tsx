@@ -253,6 +253,19 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
+              
+                router.push(ROUTES.SALES.path);
+              }}
+              className={`${
+                currPath.includes(ROUTES.SALES.path) ? "text-[#3E9C92]" : ""
+              } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+                isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+              }`}
+            >
+              {ROUTES.SALES.label}
+            </div>
+            <div
+              onClick={() => {
                 fireGAevent({ action: "Navigation_projects" });
                 router.push(ROUTES.PROJECT.path);
               }}
