@@ -42,7 +42,7 @@ const Navbar = () => {
           <div className="flex justify-between">
             <Link
               onClick={() => {
-                fireGAevent({ action: "Navigation_home" });
+                fireGAevent({ action: "navigation_home" });
               }}
               href={ROUTES.HOME.path}
               className="pl-[36px] cursor-pointer"
@@ -58,7 +58,7 @@ const Navbar = () => {
 
             <Link
               onClick={() => {
-                fireGAevent({ action: "Navigation_about" });
+                fireGAevent({ action: "navigation_about" });
               }}
               href={ROUTES.ABOUT.path}
               className="pl-[36px] cursor-pointer"
@@ -73,7 +73,7 @@ const Navbar = () => {
             </Link>
             <Link
               onClick={() => {
-                fireGAevent({ action: "Navigation_products" });
+                fireGAevent({ action: "navigation_products" });
               }}
               href={ROUTES.PRODUCT.path}
               className="pl-[36px] cursor-pointer"
@@ -87,6 +87,9 @@ const Navbar = () => {
               </span>
             </Link>
             <Link
+              onClick={() => {
+                fireGAevent({ action: "navigation_partners" });
+              }}
               href={ROUTES.SALES.path}
               className="pl-[36px] cursor-pointer"
             >
@@ -100,7 +103,7 @@ const Navbar = () => {
             </Link>
             <Link
               onClick={() => {
-                fireGAevent({ action: "Navigation_projects" });
+                fireGAevent({ action: "navigation_projects" });
               }}
               href={ROUTES.PROJECT.path}
               className="pl-[36px] cursor-pointer"
@@ -116,7 +119,7 @@ const Navbar = () => {
 
             <Link
               onClick={() => {
-                fireGAevent({ action: "Navigation_news" });
+                fireGAevent({ action: "navigation_news" });
               }}
               href={ROUTES.NEWS.path}
               className="pl-[36px] cursor-pointer"
@@ -131,7 +134,7 @@ const Navbar = () => {
             </Link>
             <Link
               onClick={() => {
-                fireGAevent({ action: "Navigation_contact" });
+                fireGAevent({ action: "navigation_contact" });
               }}
               href={ROUTES.CONTACT.path}
               className="pl-[36px] cursor-pointer"
@@ -147,7 +150,7 @@ const Navbar = () => {
 
             <Link
               onClick={() => {
-                fireGAevent({ action: "Navigation_faq" });
+                fireGAevent({ action: "navigation_faq" });
               }}
               href={ROUTES.FAQ.path}
               className="pl-[36px] cursor-pointer"
@@ -170,7 +173,7 @@ const Navbar = () => {
           <div className="flex justify-between items-center">
             <Link
               onClick={() => {
-                fireGAevent({ action: "Navigation_home" });
+                fireGAevent({ action: "navigation_home" });
               }}
               href={ROUTES.HOME.path}
             >
@@ -214,7 +217,7 @@ const Navbar = () => {
           >
             <div
               onClick={() => {
-                fireGAevent({ action: "Navigation_home" });
+                fireGAevent({ action: "navigation_home" });
                 router.push(ROUTES.HOME.path);
               }}
               className={`${
@@ -227,7 +230,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
-                fireGAevent({ action: "Navigation_about" });
+                fireGAevent({ action: "navigation_about" });
                 router.push(ROUTES.ABOUT.path);
               }}
               className={`${
@@ -240,7 +243,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
-                fireGAevent({ action: "Navigation_products" });
+                fireGAevent({ action: "navigation_products" });
                 router.push(ROUTES.PRODUCT.path);
               }}
               className={`${
@@ -253,7 +256,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
-              
+                fireGAevent({ action: "navigation_partners" });
                 router.push(ROUTES.SALES.path);
               }}
               className={`${
@@ -266,7 +269,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
-                fireGAevent({ action: "Navigation_projects" });
+                fireGAevent({ action: "navigation_projects" });
                 router.push(ROUTES.PROJECT.path);
               }}
               className={`${
@@ -279,7 +282,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
-                fireGAevent({ action: "Navigation_news" });
+                fireGAevent({ action: "navigation_news" });
                 router.push(ROUTES.NEWS.path);
               }}
               className={`${
@@ -292,7 +295,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
-                fireGAevent({ action: "Navigation_contact" });
+                fireGAevent({ action: "navigation_contact" });
                 router.push(ROUTES.CONTACT.path);
               }}
               className={`${
@@ -305,7 +308,7 @@ const Navbar = () => {
             </div>
             <div
               onClick={() => {
-                fireGAevent({ action: "Navigation_faq" });
+                fireGAevent({ action: "navigation_faq" });
                 router.push(ROUTES.FAQ.path);
               }}
               className={`${

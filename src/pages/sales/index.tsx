@@ -31,7 +31,9 @@ const Sales = ({ sales, locations }: iSalesProps) => {
     fireGAevent({
       action: "sales_partner_filter",
       attribute: {
-        partner_category: tab.label,
+        partner_category: cities.map((e) =>
+          e.city == tab.label ? e.country : ""
+        )[0],
         partner_location: tab.label,
       },
     });
