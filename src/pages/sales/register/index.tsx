@@ -35,6 +35,8 @@ const Register = ({}) => {
     reason: "",
   });
  
+
+
   const handlePhoneOnChange = (e: any) => {
     const value = e.target.value;
     if (!isNaN(value)) {
@@ -65,8 +67,9 @@ const Register = ({}) => {
       },
       "recaptchaToken": token
       }
-  
-      const response = await fetch(`${ENV.NEXT_PUBLIC_API_BASE_URL}/api/sales-partner-registrations`, { method: "POST", body:JSON.stringify(payload) });
+
+
+      const response = await fetch(`${ENV.NEXT_PUBLIC_API_BASE_URL}/api/sales-partner-registrations`, { method: "POST",  headers: {'Content-Type':'application/json'}, body:JSON.stringify(payload) });
       const jsonRes = await response.json();
       if(jsonRes.data){
         alert("Form successfully submitted!");
