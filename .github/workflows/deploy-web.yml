@@ -50,6 +50,7 @@ jobs:
               echo "NEXT_PUBLIC_API_BASE_URL=${{ vars.NEXT_PUBLIC_API_BASE_URL }}"
               echo "NEXT_PUBLIC_FE_BASE_URL=${{ vars.NEXT_PUBLIC_FE_BASE_URL }}"
               echo "NEXT_PUBLIC_GA_ID=${{ vars.NEXT_PUBLIC_GA_ID }}"
+              echo "NEXT_PUBLIC_RECAPTCHA_KEY=${{ vars.NEXT_PUBLIC_RECAPTCHA_KEY }}"
             } > .env
                         
             # Deploy with health check

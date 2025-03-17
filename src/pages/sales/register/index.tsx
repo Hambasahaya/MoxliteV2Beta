@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Layout from "@/components/common/Layout";
 import { ENV } from "@/constant/ENV";
 import { useState } from "react";
@@ -5,28 +6,35 @@ import Link from "next/link";
 import { ROUTES } from "@/constant/ROUTES";
 import { countries } from "@/constant/countryOptions";
 import { fireGAevent } from "@/lib/gtag";
+import { useReCaptcha } from "next-recaptcha-v3";
 
 const Register = ({}) => {
+  const { executeRecaptcha } = useReCaptcha();
+
   const [data, setData] = useState<{
+    picName:string;
     companyName: string;
     city: string;
     country: string;
     phone: string;
+    email:string;
     website: string;
     instagram: string;
     comproLink: string;
     reason: string;
   }>({
+    picName:'',
     companyName: "",
     city: "",
     country: "",
+    email:'',
     phone: "",
     website: "",
     instagram: "",
     comproLink: "",
     reason: "",
   });
-
+ 
   const handlePhoneOnChange = (e: any) => {
     const value = e.target.value;
     if (!isNaN(value)) {
@@ -34,12 +42,39 @@ const Register = ({}) => {
     }
   };
 
-  const handleSubmit = () => {
-    fireGAevent({
-      action: "register_sales_partner_submit",
-    });
+  const handleSubmit = async(e:any) => {
 
-    alert("submitted!");
+      e.preventDefault();
+      fireGAevent({
+        action: "register_sales_partner_submit",
+      });
+      const token = await executeRecaptcha("form_submit");
+  
+      const payload = {
+        "data": {
+          "contact_person": data.picName,
+          "company_name": data.companyName,
+          "city": data.city,
+          "country": data.country,
+          "phone_number": data.phone,
+          "email": data.email,
+          "website": data.website,
+          "instagram": data.instagram,
+          "company_profile_gdrive_url": data.comproLink,
+          "motivation": data.reason
+      },
+      "recaptchaToken": token
+      }
+  
+      const response = await fetch(`${ENV.NEXT_PUBLIC_API_BASE_URL}/api/sales-partner-registrations`, { method: "POST", body:JSON.stringify(payload) });
+      const jsonRes = await response.json();
+      if(jsonRes.data){
+        alert("Form successfully submitted!");
+        window.location.reload();
+      }
+      else{
+        alert(jsonRes.error.message);
+      }
   };
 
   return (
@@ -72,6 +107,21 @@ const Register = ({}) => {
 
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-[24px]">
+          <div>
+              <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
+                PIC Name
+              </p>
+              <input
+                type="text"
+                placeholder="Enter here"
+                value={data.picName}
+                required
+                onChange={(e) =>
+                  setData((prev) => ({ ...prev, picName: e.target.value }))
+                }
+                className="w-full h-[40px] px-3 pr-10 text-[14px] text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
                 Company Name
@@ -124,6 +174,21 @@ const Register = ({}) => {
                   );
                 })}
               </select>
+            </div>
+            <div>
+              <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
+                Email
+              </p>
+              <input
+                type="email"
+                placeholder="Enter here"
+                value={data.email}
+                required
+                onChange={(e) =>
+                  setData((prev) => ({ ...prev, email: e.target.value }))
+                }
+                className="w-full h-[40px] px-3 pr-10 text-[14px] text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">

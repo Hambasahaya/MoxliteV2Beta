@@ -45,5 +45,6 @@ jobs:
           build-args: |
             NEXT_PUBLIC_FE_BASE_URL=${{ vars.NEXT_PUBLIC_FE_BASE_URL }}
             NEXT_PUBLIC_GA_ID=${{ vars.NEXT_PUBLIC_GA_ID }}
+            NEXT_PUBLIC_RECAPTCHA_KEY=${{ vars.NEXT_PUBLIC_RECAPTCHA_KEY }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

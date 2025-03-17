@@ -18,7 +18,13 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
       </div>
       <div className="col-span-12 lg:col-span-8">
         <div className="w-full h-full flex flex-col p-[24px]">
-          <h6 className="text-[20px] lg:text-[24px] font-bold">{sales.name}</h6>
+          <div className="flex  flex-col sm:flex-row items-start sm:items-center justify-between gap-[6px]">
+            <h6 className="text-[20px] lg:text-[24px] font-bold">{sales.name}</h6>
+            <div className="py-[4px] px-[8px] border-solid border-1 border-[#0F677A] ">
+              <p className="text-[10px] font-semibold text-[#0F677A] uppercase">{sales.location.city}, {sales.location.country}</p>
+            </div>
+          
+          </div>
           <div className="grid grid-cols-12 gap-[24px] mt-[20px]">
             <div className="col-span-12 lg:col-span-6">
               <div className="flex flex-col gap-[20px]">
