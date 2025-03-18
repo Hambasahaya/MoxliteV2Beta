@@ -7,9 +7,11 @@ import { ROUTES } from "@/constant/ROUTES";
 import { countries } from "@/constant/countryOptions";
 import { fireGAevent } from "@/lib/gtag";
 import { useReCaptcha } from "next-recaptcha-v3";
+import { useSnackbar } from "notistack";
 
 const Register = ({}) => {
   const { executeRecaptcha } = useReCaptcha();
+  const { enqueueSnackbar } = useSnackbar()
 
   const [data, setData] = useState<{
     picName:string;
@@ -34,7 +36,14 @@ const Register = ({}) => {
     comproLink: "",
     reason: "",
   });
- 
+
+  const isUrlValid = (userInput:string) =>{
+    const pattern = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
+    return pattern.test(userInput);
+}
+
+  const isWebsiteLinkValid = isUrlValid(data.website);
+  const isComproLinkValid = isUrlValid(data.comproLink);
 
 
   const handlePhoneOnChange = (e: any) => {
@@ -45,8 +54,9 @@ const Register = ({}) => {
   };
 
   const handleSubmit = async(e:any) => {
-
-      e.preventDefault();
+    e.preventDefault();
+    if(!isWebsiteLinkValid || !isComproLinkValid) return;
+    try{
       fireGAevent({
         action: "register_sales_partner_submit",
       });
@@ -72,12 +82,24 @@ const Register = ({}) => {
       const response = await fetch(`${ENV.NEXT_PUBLIC_API_BASE_URL}/api/sales-partner-registrations`, { method: "POST",  headers: {'Content-Type':'application/json'}, body:JSON.stringify(payload) });
       const jsonRes = await response.json();
       if(jsonRes.data){
-        alert("Form successfully submitted!");
+        enqueueSnackbar('Form submitted!', {
+          variant:"success"
+        },)
         window.location.reload();
       }
       else{
-        alert(jsonRes.error.message);
+        enqueueSnackbar(jsonRes?.error?.message??"Something went wrong!", {
+          variant:"error"
+        },)
+    
       }
+    }
+    catch(error){
+      enqueueSnackbar("Something went wrong!", {
+        variant:"error"
+      },)
+    }
+     
   };
 
   return (
@@ -119,6 +141,7 @@ const Register = ({}) => {
                 placeholder="Enter here"
                 value={data.picName}
                 required
+                
                 onChange={(e) =>
                   setData((prev) => ({ ...prev, picName: e.target.value }))
                 }
@@ -220,6 +243,11 @@ const Register = ({}) => {
                 }
                 className="w-full h-[40px] px-3 pr-10 text-[14px] text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              {
+                data.website && !isWebsiteLinkValid ?  <p className="text-[12px]  text-[#ed4337] mt-[6px]">
+            Please enter a valid website URL (e.g., https://example.com).
+              </p>:null
+              }
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
@@ -253,6 +281,11 @@ const Register = ({}) => {
                 }
                 className="w-full h-[40px] px-3 pr-10 text-[14px] text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+               {
+                data.comproLink && !isComproLinkValid ?  <p className="text-[12px]  text-[#ed4337] mt-[6px]">
+         Please enter a valid URL (e.g., https://example.com).
+              </p>:null
+              }
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
