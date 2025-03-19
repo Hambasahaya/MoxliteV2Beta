@@ -85,7 +85,10 @@ const Register = ({}) => {
         enqueueSnackbar('Form submitted!', {
           variant:"success"
         },)
-        window.location.reload();
+        setTimeout(()=>{
+          window.location.reload();
+        },3000)
+      
       }
       else{
         enqueueSnackbar(jsonRes?.error?.message??"Something went wrong!", {
