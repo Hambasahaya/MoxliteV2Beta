@@ -85,9 +85,19 @@ const Register = ({}) => {
         enqueueSnackbar('Form submitted!', {
           variant:"success"
         },)
-        setTimeout(()=>{
-          window.location.reload();
-        },3000)
+        setData({
+          picName:'',
+          companyName: "",
+          city: "",
+          country: "",
+          email:'',
+          phone: "",
+          website: "",
+          instagram: "",
+          comproLink: "",
+          reason: "",
+        })
+       
       
       }
       else{
