@@ -72,7 +72,7 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
             </div>
             <div className="col-span-12 lg:col-span-6">
               <div className="flex flex-col gap-[20px]">
-              <div className="flex align-start">
+              {/* <div className="flex align-start">
                   <img
                     src={"/icon/user-round.svg"}
                     className="h-[24px] pr-[8px]"
@@ -87,7 +87,7 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                   </p>:"-"
                   }
                   
-                </div>
+                </div> */}
               <div className="flex align-start">
                   <img
                     src={"/icon/phone.svg"}
