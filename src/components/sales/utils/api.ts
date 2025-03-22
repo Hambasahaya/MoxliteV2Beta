@@ -11,6 +11,7 @@ export const getSales = async (): Promise<iGroupedSales[]> => {
     const sales: iSales[] = result.data.map((e: iSales) => ({
     id:e.id??"",
       documentId:e.documentId??"",
+      contact_person:e.contact_person??"",
       name:e.name??"",
       address:e.address??"",
       phone_number:e.phone_number??"",

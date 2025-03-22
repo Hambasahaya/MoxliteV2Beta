@@ -90,7 +90,7 @@ function isEmailValid(email:string) {
       const response = await fetch(`${ENV.NEXT_PUBLIC_API_BASE_URL}/api/sales-partner-registrations`, { method: "POST",  headers: {'Content-Type':'application/json'}, body:JSON.stringify(payload) });
       const jsonRes = await response.json();
       if(jsonRes.data){
-        enqueueSnackbar('Form submitted!', {
+        enqueueSnackbar(`We've received your request. Our team will reach out to you soon via WhatsApp or email`, {
           variant:"success"
         },)
         setData({

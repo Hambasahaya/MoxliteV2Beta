@@ -33,16 +33,22 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     src={"/icon/location_on_dark.svg"}
                     className="h-[24px] pr-[8px]"
                   />
-                  <p
+                  {
+                    sales.address ? 
+                    <p
                     rel="noopener noreferrer"
                     className="text-[16px] font-semibold break-all"
                   >
                     {sales.address}
-                  </p>
+                  </p>:"-"
+                  }
+                 
                 </div>
                 <div className="flex align-start ">
                   <img src={"/icon/globe.svg"} className="h-[24px] pr-[8px]" />
-                  <a
+                  {
+                    sales.website_url ? 
+                    <a
                     onClick={() => {
                       fireGAevent({
                         action: "partner_website",
@@ -57,31 +63,39 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     className="text-[16px] font-semibold break-all !underline"
                   >
                     {sales.website_url}
-                  </a>
+                  </a>:"-"
+                  }
+                
                 </div>
 
               </div>
             </div>
             <div className="col-span-12 lg:col-span-6">
               <div className="flex flex-col gap-[20px]">
-              {/* <div className="flex align-start">
+              <div className="flex align-start">
                   <img
                     src={"/icon/user-round.svg"}
                     className="h-[24px] pr-[8px]"
                   />
-                  <p
+                  {
+                    sales.contact_person ?
+                    <p
                     rel="noopener noreferrer"
                     className="text-[16px] font-semibold break-all"
                   >
-                    {sales.name}
-                  </p>
-                </div> */}
+                    {sales.contact_person}
+                  </p>:"-"
+                  }
+                  
+                </div>
               <div className="flex align-start">
                   <img
                     src={"/icon/phone.svg"}
                     className="h-[24px] pr-[8px]"
                   />
-                  <Link
+                  {
+                    sales.phone_number ? 
+                    <Link
                     onClick={() => {
                       fireGAevent({
                         action: "partner_phone",
@@ -97,14 +111,17 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     className="text-[16px] font-semibold break-all"
                   >
                     {sales.phone_number}
-                  </Link>
+                  </Link>:"-"
+                  }
+                  
                 </div>
                 <div className="flex align-start ">
                   <img
                     src={"/icon/mail-dark.svg"}
                     className="h-[24px] pr-[8px]"
                   />
-                  <a
+                  {
+                    sales.email ?   <a
                     onClick={() => {
                       fireGAevent({
                         action: "partner_email",
@@ -119,14 +136,18 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     className="text-[16px] font-semibold break-all"
                   >
                     {sales.email}
-                  </a>
+                  </a>:"-"
+                  }
+                
                 </div>
                 <div className="flex align-start ">
                   <img
                     src={"/icon/instagram-dark.svg"}
                     className="h-[24px] pr-[8px]"
                   />
-                  <a
+                  {
+                    sales.instagram_username ? 
+                    <a
                     onClick={() => {
                       fireGAevent({
                         action: "partner_social_media",
@@ -141,7 +162,9 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     className="text-[16px] font-semibold break-all !underline"
                   >
                     {sales.instagram_username}
-                  </a>
+                  </a>:"-"
+                  }
+                 
                 </div>
               
               </div>

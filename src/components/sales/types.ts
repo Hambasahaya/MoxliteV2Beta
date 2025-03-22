@@ -9,6 +9,7 @@ export type iLocation  = {
 export type iSales = {
    id:number;
    documentId:number;
+   contact_person?:string;
    name:string;
    address:string;
    phone_number:string;
