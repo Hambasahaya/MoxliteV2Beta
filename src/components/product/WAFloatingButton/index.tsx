@@ -9,7 +9,7 @@ const WAFloatingButton = ({
   productCategory: string;
   productFamily: string;
 }) => {
-  const whatsappNumber = "6282116549906";
+  const whatsappNumber = "6285215676696";
   const message = "Hi Moxlite Team, I have a question regarding ...";
 
   return (

@@ -50,10 +50,10 @@ const Contact = () => {
               title="Contact Person"
               content={[
                 {
-                  label: "+62 821 1654 9906",
+                  label: "+62 852 1567 6696",
                   iconUrl: "/icon/whatsapp.svg",
                   redirectUrl:
-                    "https://wa.me/6282116549906?text=Hi Moxlite Team, I have a question regarding ...",
+                    "https://wa.me/6285215676696?text=Hi Moxlite Team, I have a question regarding ...",
                   GAevent: {
                     action: "contact_whatsapp",
                   },

@@ -65,7 +65,7 @@ const Footer = () => {
             fireGAevent({ action: "Footer_Whatsapp" });
           }}
           href={
-            "https://wa.me/6282116549906?text=Hi Moxlite Team, I have a question regarding ..."
+            "https://wa.me/6285215676696?text=Hi Moxlite Team, I have a question regarding ..."
           }
           passHref
           target="_blank"
@@ -73,7 +73,7 @@ const Footer = () => {
         >
           <div className="mb-[16px] flex">
             <img src="/icon/whatsapp.svg" className="h-[20px] mr-1" />
-            <p>+62 821 1654 9906</p>
+            <p>+62 852 1567 6696</p>
           </div>
         </Link>
 
