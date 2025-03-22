@@ -17,19 +17,24 @@ const Sales = ({ sales, locations }: iSalesProps) => {
   });
 
   const handleScroll = (selected:HTMLElement | null)=>{
-    const offset = 70; // Height of sticky navbar
 
+
+    if(selected){
+      const offset = 70; // Height of sticky navbar
+      
     // Get current scroll position
-    const elementPosition = selected?.getBoundingClientRect().top + window.scrollY;
+      const elementPosition = selected?.getBoundingClientRect().top + window.scrollY;
 
-    const offsetPosition = elementPosition - offset;
-
+      const offsetPosition = elementPosition - offset;
   
-    // Scroll with smooth behavior
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: "smooth",
-    });
+    
+      // Scroll with smooth behavior
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+   
   }
 
   const handleCityOnChange = (slug: string, city: string) => {
