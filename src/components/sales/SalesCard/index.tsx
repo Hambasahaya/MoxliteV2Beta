@@ -40,9 +40,45 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     {sales.address}
                   </p>
                 </div>
-                <div className="flex align-start">
+                <div className="flex align-start ">
+                  <img src={"/icon/globe.svg"} className="h-[24px] pr-[8px]" />
+                  <a
+                    onClick={() => {
+                      fireGAevent({
+                        action: "partner_website",
+                        attribute: {
+                          partner_name: sales.name,
+                        },
+                      });
+                    }}
+                    href={sales.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[16px] font-semibold break-all !underline"
+                  >
+                    {sales.website_url}
+                  </a>
+                </div>
+
+              </div>
+            </div>
+            <div className="col-span-12 lg:col-span-6">
+              <div className="flex flex-col gap-[20px]">
+              {/* <div className="flex align-start">
                   <img
-                    src={"/icon/whatsapp_dark.svg"}
+                    src={"/icon/user-round.svg"}
+                    className="h-[24px] pr-[8px]"
+                  />
+                  <p
+                    rel="noopener noreferrer"
+                    className="text-[16px] font-semibold break-all"
+                  >
+                    {sales.name}
+                  </p>
+                </div> */}
+              <div className="flex align-start">
+                  <img
+                    src={"/icon/phone.svg"}
                     className="h-[24px] pr-[8px]"
                   />
                   <Link
@@ -63,10 +99,6 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     {sales.phone_number}
                   </Link>
                 </div>
-              </div>
-            </div>
-            <div className="col-span-12 lg:col-span-6">
-              <div className="flex flex-col gap-[20px]">
                 <div className="flex align-start ">
                   <img
                     src={"/icon/mail-dark.svg"}
@@ -111,25 +143,7 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     {sales.instagram_username}
                   </a>
                 </div>
-                <div className="flex align-start ">
-                  <img src={"/icon/globe.svg"} className="h-[24px] pr-[8px]" />
-                  <a
-                    onClick={() => {
-                      fireGAevent({
-                        action: "partner_website",
-                        attribute: {
-                          partner_name: sales.name,
-                        },
-                      });
-                    }}
-                    href={sales.website_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[16px] font-semibold break-all !underline"
-                  >
-                    {sales.website_url}
-                  </a>
-                </div>
+              
               </div>
             </div>
           </div>

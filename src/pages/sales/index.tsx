@@ -16,16 +16,32 @@ const Sales = ({ sales, locations }: iSalesProps) => {
     return { label: item.city, value: item.slug };
   });
 
+  const handleScroll = (selected:HTMLElement | null)=>{
+    const offset = 70; // Height of sticky navbar
+
+    // Get current scroll position
+    const elementPosition = selected?.getBoundingClientRect().top + window.scrollY;
+
+    const offsetPosition = elementPosition - offset;
+
+  
+    // Scroll with smooth behavior
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  }
+
   const handleCityOnChange = (slug: string, city: string) => {
     setSelectedCity({
       label: city,
       value: slug,
     });
+
     const selected = document.getElementById(city);
-    selected?.scrollIntoView({
-      behavior: "smooth",
-    });
+    handleScroll(selected)
   };
+
 
   const handleDropdownOnChange = (tab: iOption) => {
     fireGAevent({
@@ -39,9 +55,8 @@ const Sales = ({ sales, locations }: iSalesProps) => {
     });
     setSelectedCity(tab);
     const selected = document.getElementById(tab.label);
-    selected?.scrollIntoView({
-      behavior: "smooth",
-    });
+    handleScroll(selected)
+   
   };
 
   return (

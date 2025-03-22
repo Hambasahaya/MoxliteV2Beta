@@ -7,6 +7,7 @@ export const getSales = async (): Promise<iGroupedSales[]> => {
     const rawRes = await fetch(`${ENV.NEXT_PUBLIC_API_BASE_URL}/api/sales-partners`);
     const result = await rawRes.json();
 
+
     const sales: iSales[] = result.data.map((e: iSales) => ({
     id:e.id??"",
       documentId:e.documentId??"",

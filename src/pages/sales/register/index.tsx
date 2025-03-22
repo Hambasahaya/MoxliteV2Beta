@@ -42,8 +42,16 @@ const Register = ({}) => {
     return pattern.test(userInput);
 }
 
+
+
+function isEmailValid(email:string) {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(email);
+}
+
   const isWebsiteLinkValid = isUrlValid(data.website);
-  const isComproLinkValid = isUrlValid(data.comproLink);
+  const isEmailLinkValid = isEmailValid(data.email)
+  const isComproLinkValid =!data.comproLink ||  isUrlValid(data.comproLink);
 
 
   const handlePhoneOnChange = (e: any) => {
@@ -55,7 +63,7 @@ const Register = ({}) => {
 
   const handleSubmit = async(e:any) => {
     e.preventDefault();
-    if(!isWebsiteLinkValid || !isComproLinkValid) return;
+    if(!isWebsiteLinkValid || !isComproLinkValid || !isEmailLinkValid) return;
     try{
       fireGAevent({
         action: "register_sales_partner_submit",
@@ -147,7 +155,7 @@ const Register = ({}) => {
           <div className="flex flex-col gap-[24px]">
           <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
-                PIC Name
+                PIC Name <span style={{color:'red'}}>*</span>
               </p>
               <input
                 type="text"
@@ -163,7 +171,7 @@ const Register = ({}) => {
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
-                Company Name
+                Company Name <span style={{color:'red'}}>*</span>
               </p>
               <input
                 type="text"
@@ -178,7 +186,7 @@ const Register = ({}) => {
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
-                City
+                City <span style={{color:'red'}}>*</span>
               </p>
               <input
                 type="text"
@@ -193,7 +201,7 @@ const Register = ({}) => {
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
-                Country
+                Country <span style={{color:'red'}}>*</span>
               </p>
               <select
                 required
@@ -216,7 +224,7 @@ const Register = ({}) => {
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
-                Email
+                Email <span style={{color:'red'}}>*</span>
               </p>
               <input
                 type="email"
@@ -228,10 +236,15 @@ const Register = ({}) => {
                 }
                 className="w-full h-[40px] px-3 pr-10 text-[14px] text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+                {
+                data.email && !isEmailLinkValid ?  <p className="text-[12px]  text-[#ed4337] mt-[6px]">
+            Please enter a valid Email (e.g., test@example.com).
+              </p>:null
+              }
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
-                Phone/WhatsApp Number
+                Phone/WhatsApp Number <span style={{color:'red'}}>*</span>
               </p>
               <input
                 type="text"
@@ -244,7 +257,7 @@ const Register = ({}) => {
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
-                Website
+                Website <span style={{color:'red'}}>*</span>
               </p>
               <input
                 type="text"
@@ -269,7 +282,7 @@ const Register = ({}) => {
               <input
                 type="text"
                 placeholder="Enter here"
-                required
+            
                 value={data.instagram}
                 onChange={(e) =>
                   setData((prev) => ({ ...prev, instagram: e.target.value }))
@@ -287,7 +300,7 @@ const Register = ({}) => {
               <input
                 type="text"
                 placeholder="Enter here"
-                required
+            
                 value={data.comproLink}
                 onChange={(e) =>
                   setData((prev) => ({ ...prev, comproLink: e.target.value }))
@@ -302,7 +315,7 @@ const Register = ({}) => {
             </div>
             <div>
               <p className="text-[14px] font-semibold text-[#0F172A] mb-[6px]">
-                Why You Want to Become Moxlite Sales Partner
+                Why You Want to Become Moxlite Sales Partner <span style={{color:'red'}}>*</span>
               </p>
               <textarea
                 placeholder="Enter here"
