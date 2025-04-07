@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ROUTES } from "@/constant/ROUTES";
 import { fireGAevent } from "@/lib/gtag";
+import HLSVideo from "./HLSVideo";
 
 const texts = ["Nightclub", "Concert", "Architectural"];
 
@@ -58,17 +59,7 @@ const MainBanner = () => {
       {/* Konten Utama */}
       <div className="relative h-[calc(97vh-50px)] lg:h-[calc(100vh-60px)]">
         {/* Video Background */}
-        <video
-          className="fixed top-0 left-0 w-full h-full object-cover z-[-1] will-change-transform transform-gpu"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/video/main_hero_banner.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-
+        <HLSVideo />
         {/* Overlay & Content */}
         <div className="absolute inset-0 bg-gray-950/40 flex flex-col justify-between px-[24px] lg:px-[120px] lg:pt-0">
           <div className="w-full h-10" />
