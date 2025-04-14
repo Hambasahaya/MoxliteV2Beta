@@ -5,7 +5,7 @@ import { ROUTES } from "@/constant/ROUTES";
 export const getLatestproducts = async (): Promise<iLatestProduct[]> => {
   try {
     const rawRes = await fetch(
-      `${ENV.NEXT_PUBLIC_API_BASE_URL}/api/products?sort=name:desc&pagination[pageSize]=3`
+      `${ENV.NEXT_PUBLIC_API_BASE_URL}/api/products?sort=name:desc&pagination[pageSize]=4`
     );
     const result = await rawRes.json();
     const products: iLatestProduct[] = result.data.map((e: any) => ({
