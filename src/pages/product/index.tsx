@@ -124,11 +124,16 @@ const ProductList = ({
             </p>
             <Dropdown
               selectedValue={{ label: "", value: familyQ }}
+              placeholder="All options"
               options={[
-                {
-                  label: "Please select an option",
-                  value: "",
-                },
+                ...(familyQ
+                  ? [
+                      {
+                        label: "All options",
+                        value: "",
+                      },
+                    ]
+                  : []),
                 ...productFamily.map((e) => ({
                   label: e.title,
                   value: e.slug,

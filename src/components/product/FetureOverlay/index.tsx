@@ -52,7 +52,7 @@ export default function FeatureOverlay({
           <img
             src={bgUrl}
             alt="Background"
-            className="w-full h-[100px] object-cover"
+            className="w-full h-[100px] object-contain pt-[16px]"
           />
           <div className="p-[16px]">
             <h3 className="font-bold text-black text-[14px] mb-[8px]">

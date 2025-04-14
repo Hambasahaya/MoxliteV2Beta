@@ -16,7 +16,7 @@ const ProductCard = ({
         if (!url) return;
         router.push(url);
       }}
-      className="max-w-[1200px] w-full border border-[#CBD5E1] flex flex-col items-center cursor-pointer bg-white hover:bg-black text-black hover:text-white hover:shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)]"
+      className="max-w-[1200px] w-full h-full border border-[#CBD5E1] flex flex-col items-center cursor-pointer bg-white hover:bg-black text-black hover:text-white hover:shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)]"
     >
       <div className="bg-white w-full flex justify-center">
         <img
