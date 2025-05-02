@@ -65,7 +65,7 @@ const Footer = () => {
             fireGAevent({ action: "Footer_Whatsapp" });
           }}
           href={
-            "https://wa.me/6285215676696?text=Hi Moxlite Team, I have a question regarding ..."
+            "https://wa.me/6285215676696?text=Hi Moxlite Team, just visited your website, and we would like to learn more about moxlite products!"
           }
           passHref
           target="_blank"
@@ -82,7 +82,7 @@ const Footer = () => {
             fireGAevent({ action: "Footer_email" });
           }}
           href={
-            "mailto:info@moxlite.com?subject=Need Support&body=Hi Moxlite Team, I have a question regarding ..."
+            "mailto:info@moxlite.com?subject=Need Support&body=Hi Moxlite Team, just visited your website, and we would like to learn more about moxlite products!"
           }
           passHref
           target="_blank"

@@ -53,7 +53,7 @@ const Contact = () => {
                   label: "+62 852 1567 6696",
                   iconUrl: "/icon/whatsapp.svg",
                   redirectUrl:
-                    "https://wa.me/6285215676696?text=Hi Moxlite Team, I have a question regarding ...",
+                    "https://wa.me/6285215676696?text=Hi Moxlite Team, just visited your website, and we would like to learn more about moxlite products!",
                   GAevent: {
                     action: "contact_whatsapp",
                   },
@@ -62,7 +62,7 @@ const Contact = () => {
                   label: "info@moxlite.com",
                   iconUrl: "/icon/mail.svg",
                   redirectUrl:
-                    "mailto:info@moxlite.com?subject=Need Support&body=Hi Moxlite Team, I have a question regarding ...",
+                    "mailto:info@moxlite.com?subject=Need Support&body=Hi Moxlite Team, just visited your website, and we would like to learn more about moxlite products!",
                   GAevent: {
                     action: "contact_email",
                   },

@@ -19,11 +19,14 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
       <div className="col-span-12 lg:col-span-8">
         <div className="w-full h-full flex flex-col p-[24px]">
           <div className="flex  flex-col sm:flex-row items-start sm:items-center justify-between gap-[6px]">
-            <h6 className="text-[20px] lg:text-[24px] font-bold">{sales.name}</h6>
+            <h6 className="text-[20px] lg:text-[24px] font-bold">
+              {sales.name}
+            </h6>
             <div className="py-[4px] px-[8px] border-solid border-1 border-[#0F677A] ">
-              <p className="text-[10px] font-semibold text-[#0F677A] uppercase">{sales.location.city}, {sales.location.country}</p>
+              <p className="text-[10px] font-semibold text-[#0F677A] uppercase">
+                {sales.location.city}, {sales.location.country}
+              </p>
             </div>
-          
           </div>
           <div className="grid grid-cols-12 gap-[24px] mt-[20px]">
             <div className="col-span-12 lg:col-span-6">
@@ -33,46 +36,45 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                     src={"/icon/location_on_dark.svg"}
                     className="h-[24px] pr-[8px]"
                   />
-                  {
-                    sales.address ? 
+                  {sales.address ? (
                     <p
-                    rel="noopener noreferrer"
-                    className="text-[16px] font-semibold break-all"
-                  >
-                    {sales.address}
-                  </p>:"-"
-                  }
-                 
+                      rel="noopener noreferrer"
+                      className="text-[16px] font-semibold break-all"
+                    >
+                      {sales.address}
+                    </p>
+                  ) : (
+                    "-"
+                  )}
                 </div>
                 <div className="flex align-start ">
                   <img src={"/icon/globe.svg"} className="h-[24px] pr-[8px]" />
-                  {
-                    sales.website_url ? 
+                  {sales.website_url ? (
                     <a
-                    onClick={() => {
-                      fireGAevent({
-                        action: "partner_website",
-                        attribute: {
-                          partner_name: sales.name,
-                        },
-                      });
-                    }}
-                    href={sales.website_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[16px] font-semibold break-all !underline"
-                  >
-                    {sales.website_url}
-                  </a>:"-"
-                  }
-                
+                      onClick={() => {
+                        fireGAevent({
+                          action: "partner_website",
+                          attribute: {
+                            partner_name: sales.name,
+                          },
+                        });
+                      }}
+                      href={sales.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[16px] font-semibold break-all !underline"
+                    >
+                      {sales.website_url}
+                    </a>
+                  ) : (
+                    "-"
+                  )}
                 </div>
-
               </div>
             </div>
             <div className="col-span-12 lg:col-span-6">
               <div className="flex flex-col gap-[20px]">
-              {/* <div className="flex align-start">
+                {/* <div className="flex align-start">
                   <img
                     src={"/icon/user-round.svg"}
                     className="h-[24px] pr-[8px]"
@@ -88,85 +90,82 @@ const SalesCard: FC<iSalesCardProps> = ({ sales }) => {
                   }
                   
                 </div> */}
-              <div className="flex align-start">
-                  <img
-                    src={"/icon/phone.svg"}
-                    className="h-[24px] pr-[8px]"
-                  />
-                  {
-                    sales.phone_number ? 
+                <div className="flex align-start">
+                  <img src={"/icon/phone.svg"} className="h-[24px] pr-[8px]" />
+                  {sales.phone_number ? (
                     <Link
-                    onClick={() => {
-                      fireGAevent({
-                        action: "partner_phone",
-                        attribute: {
-                          partner_name: sales.name,
-                        },
-                      });
-                    }}
-                    href={`https://wa.me/${sales.phone_number}?text=Hi Moxlite Team, I have a question regarding ...`}
-                    passHref
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[16px] font-semibold break-all"
-                  >
-                    {sales.phone_number}
-                  </Link>:"-"
-                  }
-                  
+                      onClick={() => {
+                        fireGAevent({
+                          action: "partner_phone",
+                          attribute: {
+                            partner_name: sales.name,
+                          },
+                        });
+                      }}
+                      href={`https://wa.me/${sales.phone_number}?text=Hi Moxlite Team, just visited your website, and we would like to learn more about moxlite products!`}
+                      passHref
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[16px] font-semibold break-all"
+                    >
+                      {sales.phone_number}
+                    </Link>
+                  ) : (
+                    "-"
+                  )}
                 </div>
                 <div className="flex align-start ">
                   <img
                     src={"/icon/mail-dark.svg"}
                     className="h-[24px] pr-[8px]"
                   />
-                  {
-                    sales.email ?   <a
-                    onClick={() => {
-                      fireGAevent({
-                        action: "partner_email",
-                        attribute: {
-                          partner_name: sales.name,
-                        },
-                      });
-                    }}
-                    href={`mailto:${sales.email}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[16px] font-semibold break-all"
-                  >
-                    {sales.email}
-                  </a>:"-"
-                  }
-                
+                  {sales.email ? (
+                    <a
+                      onClick={() => {
+                        fireGAevent({
+                          action: "partner_email",
+                          attribute: {
+                            partner_name: sales.name,
+                          },
+                        });
+                      }}
+                      href={`mailto:${sales.email}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[16px] font-semibold break-all"
+                    >
+                      {sales.email}
+                    </a>
+                  ) : (
+                    "-"
+                  )}
                 </div>
                 <div className="flex align-start ">
                   <img
                     src={"/icon/instagram-dark.svg"}
                     className="h-[24px] pr-[8px]"
                   />
-                  {
-                    sales.instagram_username ? 
+                  {sales.instagram_username ? (
                     <a
-                    onClick={() => {
-                      fireGAevent({
-                        action: "partner_social_media",
-                        attribute: {
-                          partner_name: sales.name,
-                        },
-                      });
-                    }}
-                    href={sales.instagram_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[16px] font-semibold break-all !underline"
-                  >
-                    {sales.instagram_username}
-                  </a>:"-"
-                  }
-                 
+                      onClick={() => {
+                        fireGAevent({
+                          action: "partner_social_media",
+                          attribute: {
+                            partner_name: sales.name,
+                          },
+                        });
+                      }}
+                      href={sales.instagram_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[16px] font-semibold break-all !underline"
+                    >
+                      {sales.instagram_username}
+                    </a>
+                  ) : (
+                    "-"
+                  )}
                 </div>
-              
               </div>
             </div>
           </div>
