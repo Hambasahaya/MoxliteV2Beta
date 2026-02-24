@@ -1,18 +1,32 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
-
-const loader = new GLTFLoader();
 
 export interface LoadedModel {
   scene: THREE.Group;
   animations: THREE.AnimationClip[];
 }
 
-export const loadGLBModel = (path: string): Promise<LoadedModel> => {
+let loaderInstance: any = null;
+
+const getGLTFLoader = async () => {
+  if (loaderInstance) return loaderInstance;
+  
+  try {
+    const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
+    loaderInstance = new GLTFLoader();
+    return loaderInstance;
+  } catch (error) {
+    console.error("Failed to load GLTFLoader:", error);
+    throw error;
+  }
+};
+
+export const loadGLBModel = async (path: string): Promise<LoadedModel> => {
+  const loader = await getGLTFLoader();
+  
   return new Promise((resolve, reject) => {
     loader.load(
       path,
-      (gltf) => {
+      (gltf: any) => {
         // Center and scale the model
         const box = new THREE.Box3().setFromObject(gltf.scene);
         const center = box.getCenter(new THREE.Vector3());
@@ -32,11 +46,11 @@ export const loadGLBModel = (path: string): Promise<LoadedModel> => {
         });
       },
       // Progress callback
-      (progress) => {
+      (progress: any) => {
         console.log(`Loading GLB: ${(progress.loaded / progress.total * 100).toFixed(0)}%`);
       },
       // Error callback
-      (error) => {
+      (error: any) => {
         console.error("Error loading GLB model:", error);
         reject(error);
       }

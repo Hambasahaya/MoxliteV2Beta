@@ -32,7 +32,7 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
   const orbitStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const cameraTargetRef = useRef(new THREE.Vector3(0, 0, 0));
   const cameraDistanceRef = useRef(15);
-  const cameraPolarRef = useRef(Math.PI / 4);
+  const cameraPolarRef = useRef(Math.PI / 4);   
   const cameraAzimuthRef = useRef(Math.PI / 4);
   
   // Track if scene is initialized
