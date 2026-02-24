@@ -7,7 +7,7 @@ const Maintenance = () => {
       }}
       className="h-screen w-screen flex flex-col justify-center items-center text-white p-6 md:p-0"
     >
-      <img src="/icon/moxlite-icon-1.svg" className="h-[36px] lg:h-[58px]" />
+      <img src="/icon/moxlite-icon-1.svg" className="h-[36px] lg:h-[58px]" alt="Moxlite Logo" />
       <h1 className="text-[18px] lg:text-[48px] font-bold mt-6 mb-2 text-center">
         Good things are on the way
       </h1>

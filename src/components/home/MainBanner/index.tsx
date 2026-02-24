@@ -48,6 +48,7 @@ const MainBanner = () => {
             <motion.img
               src="/icon/moxlite-icon-1.svg"
               className="h-[36px] lg:h-[58px]"
+              alt="Moxlite Stage Lighting Logo"
               initial={{ opacity: 0, y: 50 }} // Muncul dari bawah
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
@@ -69,7 +70,7 @@ const MainBanner = () => {
             animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.5 } } }}
           >
-            {/* Bagian Pertama - "Reimagining" */}
+            {/* Main Heading - Only H1 for SEO */}
             <motion.div
               className="flex flex-wrap items-center"
               initial={{ y: 50, opacity: 0 }}
@@ -81,29 +82,29 @@ const MainBanner = () => {
               </h1>
               <div className="bg-white w-fit px-[16px] lg:px-[24px]">
                 <AnimatePresence mode="wait">
-                  <motion.h1
+                  <motion.span
                     key={texts[index]}
                     initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -10, opacity: 0 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="text-black text-[40px] lg:text-[60px] font-bold"
+                    className="text-black text-[40px] lg:text-[60px] font-bold inline-block"
                   >
                     {texts[index]}
-                  </motion.h1>
+                  </motion.span>
                 </AnimatePresence>
               </div>
             </motion.div>
 
-            {/* Bagian Kedua - "with Moxlite" */}
-            <motion.h1
+            {/* Secondary Heading - Changed to H2 for SEO */}
+            <motion.h2
               className="text-white text-[40px] lg:text-[72px] font-bold"
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, ease: "easeOut", delay: 1.2 }}
             >
               with Moxlite
-            </motion.h1>
+            </motion.h2>
 
             {/* Bagian Ketiga - Button */}
             <motion.div
@@ -127,7 +128,7 @@ const MainBanner = () => {
           </motion.div>
 
           <div className="w-full flex justify-center">
-            <img src="/icon/chevrons-down.svg" className="h-[48px] pb-2" />
+            <img src="/icon/chevrons-down.svg" className="h-[48px] pb-2" alt="Scroll Down" />
           </div>
         </div>
       </div>

@@ -37,7 +37,7 @@ const Navbar = () => {
       <div className="fixed top-0 left-0 w-full z-[100]">
         <div className="bg-black text-[#f8fafc] px-[120px] py-[22px] hidden lg:flex justify-between items-center">
           <Link href={ROUTES.HOME.path}>
-            <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
+            <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" alt="Moxlite Home" />
           </Link>
           <div className="flex justify-between">
             <Link
@@ -177,7 +177,7 @@ const Navbar = () => {
               }}
               href={ROUTES.HOME.path}
             >
-              <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
+              <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" alt="Moxlite Mobile Home" />
             </Link>
             <div className="relative h-[30px] w-[30px] overflow-hidden">
               <AnimatePresence>
@@ -186,6 +186,7 @@ const Navbar = () => {
                     key="hamburger"
                     src="/icon/hamburger.svg"
                     className="absolute h-[30px] cursor-pointer"
+                    alt="Open Menu"
                     initial={{ x: 30, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: -30, opacity: 0 }}

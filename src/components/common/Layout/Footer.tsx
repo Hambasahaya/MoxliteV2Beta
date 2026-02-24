@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <div className="px-[24px] py-[40px] lg:px-[120px] lg:py-[120px] flex flex-col lg:flex-row lg:justify-between text-[#f8fafc] text-[16px] font-medium leading-[1.2] bg-[radial-gradient(65.83%_240.71%_at_50%_-18.88%,#030408_40%,#081F3B_60%,#3E9C92_92.17%)]">
       <div className="max-w-[400px]">
-        <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" />
+        <img src="/icon/moxlite-icon-1.svg" className="h-[20px]" alt="Moxlite Logo" />
         <p className="my-[24px]">
           Moxlite provides lighting solutions for stage performances,
           architectural installations, and entertainment venues, offering a wide
@@ -21,7 +21,7 @@ const Footer = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src="/icon/instagram.svg" className="h-[20px] mr-[27px]" />
+            <img src="/icon/instagram.svg" className="h-[20px] mr-[27px]" alt="Moxlite Instagram" />
           </Link>
           <Link
             onClick={() => {
@@ -32,7 +32,7 @@ const Footer = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src="/icon/youtube.svg" className="h-[20px] mr-[27px]" />
+            <img src="/icon/youtube.svg" className="h-[20px] mr-[27px]" alt="Moxlite YouTube" />
           </Link>
           <Link
             onClick={() => {

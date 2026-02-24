@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "destination": "/:path*",
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "www.(?<domain>.*)"
+        }
+      ],
+      "destination": "https://:domain/:path*"
+    }
+  ]
+}
