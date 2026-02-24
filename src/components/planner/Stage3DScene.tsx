@@ -39,6 +39,12 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
   const isInitializedRef = useRef(false);
   const animationIdRef = useRef<number>(0);
   const templateModelRef = useRef<THREE.Group | null>(null);
+  const stageMeshRef = useRef<THREE.Mesh | null>(null);
+  const gridHelperRef = useRef<THREE.LineSegments | null>(null);
+  const axesHelperRef = useRef<THREE.LineSegments | null>(null);
+  
+  // Template rotation refs
+  const templateRotationRef = useRef({ x: 0, y: 0 });
 
   const dispatch = useDispatch();
   const stage = useSelector((state: RootState) => {
@@ -131,16 +137,19 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
     stageMesh.castShadow = true;
     stageMesh.receiveShadow = true;
     scene.add(stageMesh);
+    stageMeshRef.current = stageMesh;
 
     // Add stage grid
     const gridHelper = new THREE.GridHelper(stage.width * 2, 20, 0x444444, 0x222222);
     gridHelper.position.y = 0.02;
     scene.add(gridHelper);
+    gridHelperRef.current = gridHelper;
 
     // Axes helper
     const axesHelper = new THREE.AxesHelper(5);
     axesHelper.position.y = 0.05;
     scene.add(axesHelper);
+    axesHelperRef.current = axesHelper;
 
     // Mouse interaction handlers
     const onMouseMove = (event: MouseEvent) => {
@@ -466,6 +475,43 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
     };
   }, [stage?.templatePath]);
 
+  // Hide/show stage platform based on template
+  useEffect(() => {
+    if (stageMeshRef.current && gridHelperRef.current && axesHelperRef.current) {
+      const hasTemplate = !!stage?.templatePath;
+      stageMeshRef.current.visible = !hasTemplate;
+      gridHelperRef.current.visible = !hasTemplate;
+      axesHelperRef.current.visible = !hasTemplate;
+    }
+  }, [stage?.templatePath]);
+
+  // Handle template rotation
+  useEffect(() => {
+    if (!templateModelRef.current) return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      const rotationSpeed = 0.1;
+      
+      switch(e.key) {
+        case 'ArrowRight':
+          templateModelRef.current!.rotation.y += rotationSpeed;
+          break;
+        case 'ArrowLeft':
+          templateModelRef.current!.rotation.y -= rotationSpeed;
+          break;
+        case 'ArrowUp':
+          templateModelRef.current!.rotation.x -= rotationSpeed;
+          break;
+        case 'ArrowDown':
+          templateModelRef.current!.rotation.x += rotationSpeed;
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
   return (
     <div className="relative w-full h-full">
       <div
@@ -475,11 +521,19 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
       />
       
       {/* Camera Controls Help */}
-      <div className="absolute bottom-4 left-4 bg-black/70 text-white text-xs p-3 rounded pointer-events-none">
+      <div className="absolute bottom-4 left-4 bg-black/70 text-white text-xs p-3 rounded pointer-events-none max-w-xs">
+        <p className="font-bold mb-2">🎮 Controls:</p>
         <p>🖱️ Left Drag: Move Light</p>
         <p>🖱️ Right Drag: Pan Camera</p>
         <p>🖱️ Middle Drag: Rotate 360°</p>
         <p>🎡 Scroll: Zoom In/Out</p>
+        {stage?.templatePath && (
+          <div className="mt-2 pt-2 border-t border-white/30">
+            <p className="font-bold mb-1">📐 Template Rotation:</p>
+            <p>⬅️➡️ Arrow Keys: Rotate Left/Right</p>
+            <p>⬆️⬇️ Arrow Keys: Rotate Up/Down</p>
+          </div>
+        )}
       </div>
     </div>
   );
