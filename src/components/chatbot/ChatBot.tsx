@@ -150,7 +150,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-end p-4 sm:p-6">
+    <div className="fixed inset-0 z-[110] flex items-center justify-end p-4 sm:p-6">
       {/* Overlay */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
@@ -158,7 +158,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       ></div>
 
       {/* Chat Box - Enhanced Design */}
-      <div className="relative w-full sm:w-[420px] h-[680px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden">
+      <div className="relative w-full sm:w-[420px] h-[680px] bg-white rounded-2xl shadow-2xl flex flex-col z-[110] overflow-hidden">
         {/* Gradient Background Header */}
         <div className="relative bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 text-white p-5 rounded-t-2xl flex justify-between items-start">
           {/* Decorative blobs */}
