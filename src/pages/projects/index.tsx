@@ -26,7 +26,7 @@ const ProjectList = ({ projects, pageCount }: iProjectsProps) => {
       metadata={{
         title: "Projects - Moxlite",
         desc: "Discover Moxlite's innovative projects and see how we bring ideas to life",
-        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/Moxlite_Logo.png`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/projects`,
       }}
     >

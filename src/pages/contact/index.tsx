@@ -33,7 +33,7 @@ const Contact = () => {
       metadata={{
         title: "Contact Us - Moxlite",
         desc: "Shaping the future ofentertainment lighting! Reach Out to Moxlite -We're Here to Help Looking for guidance in choosing the perfect lighting solution for your stage? Have questions about our product range or services? We're ready to assist. Connect with us through our contact form, email, or phone. +62 812-1117-5907 info@moxlite.com @moxlite.prolight",
-        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/Moxlite_Logo.png`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/contact`,
       }}
     >

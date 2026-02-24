@@ -26,7 +26,7 @@ const News = ({ news, pageCount }: iNewsProps) => {
       metadata={{
         title: "News - Moxlite",
         desc: "Stay updated with the latest news, insights, and updates from Moxlite",
-        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/Moxlite_Logo.png`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/news`,
       }}
     >

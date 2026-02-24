@@ -69,7 +69,7 @@ const Sales = ({ sales, locations }: iSalesProps) => {
       metadata={{
         title: "Sales - Moxlite",
         desc: "Browse official Moxlite sales partners across regions to get genuine Moxlite products and services.",
-        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/Moxlite_Logo.png`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/sales`,
       }}
     >

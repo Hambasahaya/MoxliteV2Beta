@@ -128,7 +128,7 @@ function isEmailValid(email:string) {
       metadata={{
         title: "Register - Moxlite",
         desc: "Apply to become an official Moxlite sales partner. Start your partnership with Moxlite today.",
-        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/Moxlite_Logo.png`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/sales/register`,
       }}
     >

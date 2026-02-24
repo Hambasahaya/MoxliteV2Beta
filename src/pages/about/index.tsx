@@ -13,7 +13,7 @@ const About = ({ data }: iAboutProps) => {
       metadata={{
         title: "About Us - Moxlite",
         desc: "Discover Moxlite 0 + Installed Fixtures 0 + Cities in Indonesia 0 + Pleased Client Discover Our Journey, Our Values, and Our Commitment to You Illuminating Spaces, Amplifying Experiences Moxlite began with a simple vision: to create high-performance stage lighting solutions that transform environments and create unforgettable experiences. From our humble beginnings in Indonesia, we've ...",
-        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/Moxlite_Logo.png`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/about`,
       }}
     >

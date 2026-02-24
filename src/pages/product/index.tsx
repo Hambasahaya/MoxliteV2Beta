@@ -56,7 +56,7 @@ const ProductList = ({
       metadata={{
         title: "Product - Moxlite",
         desc: "Moxlite Product Range A Diverse Selection of Stage Lighting Solutions Tailored to Your Needs View More HADES View More SCARLET I View More CATRICE View More AMOS+ View More OPTIC IV View More POSEIDON View More MOREEN View More MEDUSA+ View More MAXINE View More LIME View More ATHEN ZOOM View More APHRODITE View More ...",
-        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/main_thumbnail.jpg`,
+        thumbnail: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/Moxlite_Logo.png`,
         url: `${ENV.NEXT_PUBLIC_FE_BASE_URL}/product`,
       }}
     >
