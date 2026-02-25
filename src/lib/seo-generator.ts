@@ -10,29 +10,12 @@ export const generateCitySEO = (city: string) => {
   return {
     title: `${SEO_KEYWORDS.primary} ${city} | Moxlite - ${SEO_KEYWORDS.secondary[0]}`,
     description: `Jual dan sewa ${SEO_KEYWORDS.primary.toLowerCase()} di ${city}. Layanan ${SEO_KEYWORDS.secondary[0].toLowerCase()} profesional untuk event, konser, pertunjukan di ${city} dan sekitarnya.`,
+    keywords: `${SEO_KEYWORDS.primary} ${city}, ${SEO_KEYWORDS.secondary[0]} ${city}`,
+    ogTitle: `${SEO_KEYWORDS.primary} ${city} | Moxlite`,
+    ogDescription: `Penyewa dan penjual ${SEO_KEYWORDS.primary.toLowerCase()} profesional di ${city}`,
+    ogImage: `${DOMAIN}/image/og-city-${sanitizedCity}.jpg`,
+    ogUrl: `${DOMAIN}/lighting/${sanitizedCity}`,
     canonical: `${DOMAIN}/lighting/${sanitizedCity}`,
-    openGraph: {
-      type: "website",
-      locale: "id_ID",
-      url: `${DOMAIN}/lighting/${sanitizedCity}`,
-      title: `${SEO_KEYWORDS.primary} ${city} | Moxlite`,
-      description: `Penyewa dan penjual ${SEO_KEYWORDS.primary.toLowerCase()} profesional di ${city}`,
-      images: [
-        {
-          url: `${DOMAIN}/image/og-city-${sanitizedCity}.jpg`,
-          width: 1200,
-          height: 630,
-          alt: `${SEO_KEYWORDS.primary} ${city}`,
-        },
-      ],
-    },
-    robotsProps: {
-      noindex: false,
-      nofollow: false,
-      maxSnippet: -1,
-      maxImagePreview: "large",
-      maxVideoPreview: -1,
-    },
   };
 };
 
@@ -48,29 +31,12 @@ export const generateProductSEO = (
   return {
     title: `${productName} | Moxlite - ${productCategory}`,
     description: description,
+    keywords: `${productName}, ${productCategory}, moxlite`,
+    ogTitle: productName,
+    ogDescription: description,
+    ogImage: `${DOMAIN}/image/product-${slug}.jpg`,
+    ogUrl: `${DOMAIN}/product/${slug}`,
     canonical: `${DOMAIN}/product/${slug}`,
-    openGraph: {
-      type: "product",
-      locale: "id_ID",
-      url: `${DOMAIN}/product/${slug}`,
-      title: productName,
-      description: description,
-      images: [
-        {
-          url: `${DOMAIN}/image/product-${slug}.jpg`,
-          width: 1200,
-          height: 630,
-          alt: productName,
-        },
-      ],
-    },
-    robotsProps: {
-      noindex: false,
-      nofollow: false,
-      maxSnippet: -1,
-      maxImagePreview: "large",
-      maxVideoPreview: -1,
-    },
   };
 };
 
@@ -87,31 +53,13 @@ export const generateArticleSEO = (
   return {
     title: `${title} | Moxlite News`,
     description: description,
+    ogTitle: title,
+    ogDescription: description,
+    ogImage: `${DOMAIN}/image/news-${slug}.jpg`,
+    ogUrl: `${DOMAIN}/news/${slug}`,
     canonical: `${DOMAIN}/news/${slug}`,
-    openGraph: {
-      type: "article",
-      locale: "id_ID",
-      url: `${DOMAIN}/news/${slug}`,
-      title: title,
-      description: description,
-      publishedTime: publishedDate,
-      authors: author ? [author] : ["Moxlite"],
-      images: [
-        {
-          url: `${DOMAIN}/image/news-${slug}.jpg`,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
-    },
-    robotsProps: {
-      noindex: false,
-      nofollow: false,
-      maxSnippet: -1,
-      maxImagePreview: "large",
-      maxVideoPreview: -1,
-    },
+    publishedTime: publishedDate,
+    author: author || "Moxlite",
   };
 };
 

@@ -1,6 +1,238 @@
 # Next-SEO Implementation Guide
 
-Dokumentasi setup dan penggunaan **next-seo** di Moxlite Web.
+Dokumentasi setup dan penggunaan **next-seo** di Moxlite Web untuk JSON-LD Structured Data.
+
+## ✅ Yang Sudah Dilakukan
+
+### 1. **Instalasi Package**
+
+```bash
+npm install next-seo
+```
+
+### 2. **File & Struktur yang Dibuat**
+
+#### `src/constant/seo.config.ts`
+
+- **getDefaultSEOMeta()**: Metadata SEO global
+- **Schema definitions**: LocalBusiness, Product, FAQ, Article, Organization
+- **SEO_KEYWORDS**: Kata kunci utama & secondary
+- **SEO_CITIES**: Daftar kota untuk programmatic SEO
+
+#### `src/lib/seo-generator.ts`
+
+Helper functions untuk generate SEO metadata:
+
+- `generateCitySEO()` - SEO untuk halaman kota
+- `generateProductSEO()` - SEO untuk halaman produk
+- `generateArticleSEO()` - SEO untuk artikel/berita
+- `generateBreadcrumb()` - Generate breadcrumb navigation
+
+#### `src/components/common/SEOHead.tsx`
+
+- **SEOHead component** - Untuk set meta tags (title, description, OG, Twitter)
+
+#### `src/components/common/StructuredData.tsx`
+
+- **StructuredData** - Generic JSON-LD component
+- Exports dari next-seo:
+  - `ProductJsonLd` - Product schema
+  - `ArticleJsonLd` - Article schema
+  - `FAQJsonLd` - FAQ schema
+  - `BreadcrumbJsonLd` - Breadcrumb schema
+  - `LocalBusinessJsonLd` - Local business schema
+
+#### `src/pages/_document.tsx`
+
+- Organization schema JSON-LD di head
+- Lang attribute set ke "id"
+
+#### `src/pages/sitemap.xml.ts`
+
+- Auto-generate sitemap dengan static + city routes
+
+---
+
+## 🚀 Cara Penggunaan
+
+### **1. Untuk Halaman Produk**
+
+```tsx
+import { SEOHead } from "@/components/common/SEOHead";
+import {
+  ProductJsonLd,
+  BreadcrumbJsonLd,
+} from "@/components/common/StructuredData";
+import { generateProductSEO, generateBreadcrumb } from "@/lib/seo-generator";
+
+const ProductPage = ({ product }) => {
+  const seo = generateProductSEO(
+    product.name,
+    "Lampu Panggung",
+    product.description,
+    product.slug,
+  );
+
+  return (
+    <>
+      <SEOHead
+        title={seo.title}
+        description={seo.description}
+        canonical={seo.canonical}
+        ogImage={seo.ogImage}
+        ogTitle={seo.ogTitle}
+        ogDescription={seo.ogDescription}
+      />
+      <ProductJsonLd
+        productName={product.name}
+        description={product.description}
+        images={[product.image]}
+        brand="Moxlite"
+        price={product.price}
+      />
+      <BreadcrumbJsonLd
+        items={generateBreadcrumb(`/product/${product.slug}`)}
+      />
+      {/* Content */}
+    </>
+  );
+};
+```
+
+### **2. Untuk Halaman Kota (Programmatic SEO)**
+
+```tsx
+import { SEOHead } from "@/components/common/SEOHead";
+import { StructuredData } from "@/components/common/StructuredData";
+import {
+  generateCitySEO,
+  generateCityStructuredData,
+} from "@/lib/seo-generator";
+
+const CityPage = ({ city }) => {
+  const seo = generateCitySEO(city);
+  const schema = generateCityStructuredData(city);
+
+  return (
+    <>
+      <SEOHead
+        title={seo.title}
+        description={seo.description}
+        canonical={seo.canonical}
+        ogImage={seo.ogImage}
+      />
+      <StructuredData data={schema} />
+      {/* Content */}
+    </>
+  );
+};
+```
+
+### **3. Untuk Halaman Artikel**
+
+```tsx
+import { SEOHead } from "@/components/common/SEOHead";
+import { ArticleJsonLd } from "@/components/common/StructuredData";
+import { generateArticleSEO } from "@/lib/seo-generator";
+
+const ArticlePage = ({ article }) => {
+  const seo = generateArticleSEO(
+    article.title,
+    article.excerpt,
+    article.slug,
+    article.date,
+  );
+
+  return (
+    <>
+      <SEOHead {...seo} />
+      <ArticleJsonLd
+        title={article.title}
+        description={article.excerpt}
+        image={article.image}
+        url={`https://moxlite.com/news/${article.slug}`}
+        datePublished={article.date}
+        author={article.author}
+      />
+      {/* Content */}
+    </>
+  );
+};
+```
+
+### **4. Untuk Halaman FAQ**
+
+```tsx
+import { SEOHead } from "@/components/common/SEOHead";
+import { FAQJsonLd } from "@/components/common/StructuredData";
+
+const FAQPage = ({ faqs }) => {
+  return (
+    <>
+      <SEOHead
+        title="FAQ - Moxlite"
+        description="Pertanyaan yang sering diajakan"
+        canonical="https://moxlite.com/faq"
+      />
+      <FAQJsonLd faqs={faqs} />
+      {/* FAQ content */}
+    </>
+  );
+};
+```
+
+---
+
+## 📚 Imports Reference
+
+```tsx
+// SEO Head Component
+import { SEOHead } from "@/components/common/SEOHead";
+
+// JSON-LD Components
+import {
+  StructuredData,
+  ProductJsonLd,
+  ArticleJsonLd,
+  FAQJsonLd,
+  BreadcrumbJsonLd,
+  LocalBusinessJsonLd,
+} from "@/components/common/StructuredData";
+
+// Generators
+import {
+  generateCitySEO,
+  generateProductSEO,
+  generateArticleSEO,
+  generateBreadcrumb,
+  generateCityStructuredData,
+} from "@/lib/seo-generator";
+
+// Config
+import {
+  getDefaultSEOMeta,
+  organizationSchema,
+  SEO_CITIES,
+  SEO_KEYWORDS,
+  DOMAIN,
+} from "@/constant/seo.config";
+```
+
+---
+
+## ✅ SEO Checklist Per Page
+
+- [ ] Add `<SEOHead>` dengan title, description, canonical
+- [ ] Add JSON-LD structured data (ProductJsonLd, ArticleJsonLd, dll)
+- [ ] Add breadcrumb jika relevan
+- [ ] Set OG image (1200x630px)
+- [ ] Verify dengan Google Schema Validator
+- [ ] Test OG tags dengan fbshare.me
+- [ ] Cek mobile-friendly
+
+---
+
+**Setup Status**: ✅ Ready
 
 ## ✅ Yang Sudah Dilakukan
 

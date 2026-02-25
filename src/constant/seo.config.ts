@@ -1,55 +1,21 @@
 export const DOMAIN = "https://moxlite.com";
 
-export const getDefaultSEO = () => ({
+/**
+ * Metadata untuk halaman - gunakan di <head> dengan next/head atau metadata API
+ */
+export const getDefaultSEOMeta = () => ({
   title: "Lampu Panggung Profesional | Moxlite",
   description:
     "Jual dan sewa lampu panggung, lighting konser, lampu beam dan par LED terbaik di Indonesia.",
+  keywords:
+    "lampu panggung, lighting konser, lampu LED, sewa lighting, par led, beam light",
+  ogTitle: "Lampu Panggung Profesional | Moxlite",
+  ogDescription:
+    "Jual dan sewa lampu panggung, lighting konser, lampu beam dan par LED terbaik di Indonesia.",
+  ogImage: `${DOMAIN}/image/og-image.jpg`,
+  ogUrl: DOMAIN,
+  twitterHandle: "@moxlite",
   canonical: DOMAIN,
-  openGraph: {
-    type: "website",
-    locale: "id_ID",
-    url: DOMAIN,
-    site_name: "Moxlite",
-    images: [
-      {
-        url: `${DOMAIN}/image/og-image.jpg`,
-        width: 1200,
-        height: 630,
-        alt: "Moxlite - Lampu Panggung LED Profesional",
-        type: "image/jpeg",
-      },
-    ],
-  },
-  twitter: {
-    handle: "@moxlite",
-    site: "@moxlite",
-    cardType: "summary_large_image",
-  },
-  additionalMetaTags: [
-    {
-      name: "viewport",
-      content: "width=device-width, initial-scale=1",
-    },
-    {
-      name: "keywords",
-      content:
-        "lampu panggung, lighting konser, lampu LED, sewa lighting, par led, beam light",
-    },
-    {
-      httpEquiv: "x-ua-compatible",
-      content: "IE=edge",
-    },
-    {
-      name: "theme-color",
-      content: "#000000",
-    },
-  ],
-  additionalLinkTags: [
-    {
-      rel: "icon",
-      href: "/favicon_new.ico",
-    },
-  ],
 });
 
 export const SEO_KEYWORDS = {
