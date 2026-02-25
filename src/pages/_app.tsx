@@ -34,15 +34,14 @@ const saira = Saira({ subsets: ["latin"], variable: "--font-saira" });
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <SnackbarProvider autoHideDuration={3000} anchorOrigin={{horizontal:"center", vertical:"top"}}>
-  <ReCaptchaProvider reCaptchaKey={ENV.NEXT_PUBLIC_RECAPTCHA_KEY}>
-    <div className={`${inter.variable} ${saira.variable}`}>
-        
-      <Component {...pageProps} />
-      <ProgressBar />
-      <FloatingChatButton />
-      <PlannerAccessButton />
-    </div>
-    </ReCaptchaProvider>
+      <ReCaptchaProvider reCaptchaKey={ENV.NEXT_PUBLIC_RECAPTCHA_KEY}>
+        <div className={`${inter.variable} ${saira.variable}`}>
+          <Component {...pageProps} />
+          <ProgressBar />
+          <FloatingChatButton />
+          <PlannerAccessButton />
+        </div>
+      </ReCaptchaProvider>
     </SnackbarProvider>
   );
 }

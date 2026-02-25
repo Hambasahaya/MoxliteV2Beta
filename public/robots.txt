@@ -1,14 +1,36 @@
+# Robots.txt untuk Moxlite
+
 # Allow all bots to crawl the site
 User-agent: *
 Allow: /
 
-# Disallow admin and private areas if needed
-# Disallow: /admin/
-# Disallow: /private/
+# Disallow admin, api, and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /planner/
+Disallow: /sales/
 
-# Specify the sitemap location
+# Disallow specific files
+Disallow: /*.json
+
+# Slow down aggressive bots
+User-agent: MJ12bot
+Crawl-delay: 10
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+
+# Sitemap location
 Sitemap: https://moxlite.com/sitemap.xml
 
-# Specify canonical domain (non-www)
-# This tells search engines to prefer the non-www version
+# Canonical domain preference
 Host: moxlite.com
