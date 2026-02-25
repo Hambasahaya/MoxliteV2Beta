@@ -24,7 +24,7 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
   const draggedObjectRef = useRef<THREE.Object3D | null>(null);
   const dragPlaneRef = useRef(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0));
   const dragPointRef = useRef(new THREE.Vector3());
-  
+
   // Camera control refs
   const isPanningRef = useRef(false);
   const isOrbitingRef = useRef(false);
@@ -32,9 +32,9 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
   const orbitStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const cameraTargetRef = useRef(new THREE.Vector3(0, 0, 0));
   const cameraDistanceRef = useRef(15);
-  const cameraPolarRef = useRef(Math.PI / 4);   
+  const cameraPolarRef = useRef(Math.PI / 4);
   const cameraAzimuthRef = useRef(Math.PI / 4);
-  
+
   // Track if scene is initialized
   const isInitializedRef = useRef(false);
   const animationIdRef = useRef<number>(0);
@@ -42,7 +42,7 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
   const stageMeshRef = useRef<THREE.Mesh | null>(null);
   const gridHelperRef = useRef<THREE.LineSegments | null>(null);
   const axesHelperRef = useRef<THREE.LineSegments | null>(null);
-  
+
   // Template rotation refs
   const templateRotationRef = useRef({ x: 0, y: 0 });
 
@@ -60,7 +60,7 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
     const x = cameraDistanceRef.current * Math.sin(cameraPolarRef.current) * Math.cos(cameraAzimuthRef.current);
     const y = cameraDistanceRef.current * Math.cos(cameraPolarRef.current) + 3;
     const z = cameraDistanceRef.current * Math.sin(cameraPolarRef.current) * Math.sin(cameraAzimuthRef.current);
-    
+
     camera.position.set(
       cameraTargetRef.current.x + x,
       cameraTargetRef.current.y + y,
@@ -69,21 +69,18 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
     camera.lookAt(cameraTargetRef.current);
   };
 
-  // Initialize Three.js scene - ONLY ONCE
   useEffect(() => {
     if (!containerRef.current || !stage || isInitializedRef.current) return;
-    
+
     isInitializedRef.current = true;
 
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight;
 
-    // Scene setup
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(stage.backgroundColor);
     sceneRef.current = scene;
 
-    // Camera
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     cameraDistanceRef.current = Math.max(stage.width, stage.depth) * 2;
     updateCameraPosition(camera);
@@ -171,18 +168,18 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
         // Get camera's local coordinate system
         const forward = new THREE.Vector3();
         camera.getWorldDirection(forward);
-        
+
         // Get right vector (perpendicular to forward and world up)
         const right = new THREE.Vector3();
         right.crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
-        
+
         // Get actual up vector (perpendicular to forward and right)
         const up = new THREE.Vector3();
         up.crossVectors(right, forward).normalize();
 
         // Pan speed - higher value for more responsive panning
         const panSpeed = 0.05;
-        
+
         // Move camera target based on mouse delta
         cameraTargetRef.current.addScaledVector(right, -deltaX * panSpeed);
         cameraTargetRef.current.addScaledVector(up, deltaY * panSpeed);
@@ -201,10 +198,10 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
         // Only update if there's significant movement
         if (Math.abs(deltaX) > 0.5 || Math.abs(deltaY) > 0.5) {
           const orbitSpeed = 0.005;
-          
+
           // Update azimuth (rotation around Y axis) - allows unlimited 360 degree rotation
           cameraAzimuthRef.current += deltaX * orbitSpeed;
-          
+
           // Update polar (up/down rotation) - clamp to avoid flipping
           cameraPolarRef.current += deltaY * orbitSpeed;
           cameraPolarRef.current = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPolarRef.current));
@@ -236,13 +233,13 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
 
         if (intersects.length > 0) {
           let selected = intersects[0].object;
-          
+
           // If clicked on a child, get the parent lightGroup
           if (selected.userData.lightId) {
             const lightId = selected.userData.lightId as string;
             selected = lightsMapRef.current.get(lightId) || selected;
           }
-          
+
           draggedObjectRef.current = selected;
           dragPlaneRef.current.setFromNormalAndCoplanarPoint(
             new THREE.Vector3(0, 1, 0),
@@ -316,7 +313,7 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
       renderer.domElement.removeEventListener("wheel", onWheel);
       renderer.domElement.removeEventListener("contextmenu", onContextMenu);
       renderer.domElement.removeEventListener("auxclick", onAuxClick);
-      
+
       if (containerRef.current && renderer.domElement.parentElement === containerRef.current) {
         containerRef.current.removeChild(renderer.domElement);
       }
@@ -447,7 +444,7 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
         try {
           const loadedModel = await loadGLBModel(stage.templatePath);
           templateModelRef.current = loadedModel.scene;
-          
+
           // Add to scene at stage position
           if (templateModelRef.current) {
             templateModelRef.current.position.y = 0.2;
@@ -491,8 +488,8 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
 
     const handleKeyPress = (e: KeyboardEvent) => {
       const rotationSpeed = 0.1;
-      
-      switch(e.key) {
+
+      switch (e.key) {
         case 'ArrowRight':
           templateModelRef.current!.rotation.y += rotationSpeed;
           break;
@@ -519,7 +516,7 @@ export default function Stage3DScene({ onLightSelected }: Stage3DSceneProps) {
         className="w-full h-full bg-gradient-to-b from-gray-900 to-black rounded-lg overflow-hidden"
         style={{ minHeight: "600px" }}
       />
-      
+
       {/* Camera Controls Help */}
       <div className="absolute bottom-4 left-4 bg-black/70 text-white text-xs p-3 rounded pointer-events-none max-w-xs">
         <p className="font-bold mb-2">🎮 Controls:</p>

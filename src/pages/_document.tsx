@@ -9,6 +9,21 @@ export default function Document() {
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16_new.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon_new.png" />
         <link rel="manifest" href="/site.webmanifest" />
+        {/* Google Site Verification */}
+        <meta name="google-site-verification" content="J1ptSsXzWwUPHbbVb-fUPAQ8Xwopy4Hev89C0ndfAxU" />
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XBRMX19Q9L"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-XBRMX19Q9L');
+            `,
+          }}
+        />
+        <script src="https://analytics.ahrefs.com/analytics.js" data-key="VtWljmW0BhHFallVUeDxzA" async></script>
       </Head>
       <body>
         <Main />
