@@ -1,16 +1,24 @@
-// Daftar produk yang tersedia
-const PRODUCTS = [
-  "studio basic",
-  "studio basic plus",
-  "holystrom",
-  "berlin",
-  "parled",
-  "optic",
-  "amos",
-  "ares",
-];
+/**
+ * Chatbot Service - AI-powered Product Recommendations
+ * Uses product knowledge base to provide intelligent responses
+ */
 
-// Interface untuk chat message
+import {
+  searchProducts,
+  getProductsBySeries,
+  getProductsByBudget,
+  getBestSellersBySeries,
+  compareProducts,
+  getRecommendations,
+  formatPrice,
+  getPriceRange,
+  getAllProducts,
+  getAllProductNames,
+  getAllProductPrefixes,
+  Product,
+} from "./productKnowledgeBase";
+
+// Chat message interface
 export interface ChatMessage {
   id: string;
   type: "user" | "bot";
@@ -18,15 +26,17 @@ export interface ChatMessage {
   timestamp: Date;
 }
 
-// Interface untuk user preferences
+// User preferences interface
 export interface UserPreferences {
   budget?: number;
   type?: "cust rental" | "cust project";
+  useCase?: string;
   [key: string]: any;
 }
 
 /**
- * Generate dummy response berdasarkan budget dan tipe user
+ * Main chatbot response generator
+ * Analyzes user message and returns intelligent response
  */
 export function generateChatbotResponse(
   userMessage: string,
@@ -34,142 +44,532 @@ export function generateChatbotResponse(
 ): string {
   const lowerMessage = userMessage.toLowerCase();
 
-  // Response untuk budget inquiry
+  // Check for price inquiries
   if (
-    lowerMessage.includes("budget") ||
     lowerMessage.includes("harga") ||
-    /\d+/.test(userMessage)
+    lowerMessage.includes("price") ||
+    lowerMessage.includes("berapa") ||
+    lowerMessage.includes("biaya")
   ) {
-    const budgetMatch = userMessage.match(/\d+/);
-    if (budgetMatch) {
-      const budget = parseInt(budgetMatch[0]);
-      return generateBudgetBasedResponse(budget, preferences.type);
-    }
+    return handlePriceInquiry(userMessage, preferences);
   }
 
-  // Response untuk tanyakan tipe customer
+  // Check for product advantages/features
+  if (
+    lowerMessage.includes("kelebihan") ||
+    lowerMessage.includes("keunggulan") ||
+    lowerMessage.includes("advantage") ||
+    lowerMessage.includes("fitur") ||
+    lowerMessage.includes("feature") ||
+    lowerMessage.includes("spesifikasi") ||
+    lowerMessage.includes("specs") ||
+    lowerMessage.includes("kenapa") ||
+    lowerMessage.includes("bagus") ||
+    lowerMessage.includes("bagus?")
+  ) {
+    return handleAdvantagesInquiry(userMessage, preferences);
+  }
+
+  // Check for product comparison
+  if (
+    lowerMessage.includes("bandingkan") ||
+    lowerMessage.includes("compare") ||
+    lowerMessage.includes("perbedaan") ||
+    lowerMessage.includes("difference") ||
+    lowerMessage.includes("mana yang") ||
+    lowerMessage.includes("mana lebih") ||
+    lowerMessage.includes("bagus mana") ||
+    lowerMessage.includes("lebih baik") ||
+    (lowerMessage.includes("atau") && 
+     (searchProducts(userMessage).length > 0 || 
+      getAllProductPrefixes().some(prefix => lowerMessage.includes(prefix.toLowerCase()))))
+  ) {
+    return handleComparisonInquiry(userMessage, preferences);
+  }
+
+  // Check for product search
+  if (
+    lowerMessage.includes("cari") ||
+    lowerMessage.includes("search") ||
+    lowerMessage.includes("produk") ||
+    lowerMessage.includes("product")
+  ) {
+    return handleProductSearch(userMessage, preferences);
+  }
+
+  // Check for use case recommendations
+  if (
+    lowerMessage.includes("untuk") ||
+    lowerMessage.includes("untuk apa") ||
+    lowerMessage.includes("kebutuhan") ||
+    lowerMessage.includes("acara") ||
+    lowerMessage.includes("event") ||
+    lowerMessage.includes("use case")
+  ) {
+    return handleUseCaseInquiry(userMessage, preferences);
+  }
+
+  // Check for customer type
   if (
     lowerMessage.includes("rental") ||
     lowerMessage.includes("sewa") ||
     lowerMessage.includes("cust rental")
   ) {
-    return generateTypeBasedResponse("cust rental", preferences.budget);
+    return `✨ Sempurna! Anda memilih model **Rental/Sewa**.
+
+Dengan model ini, Anda bisa membeli unit dari kami dan kami akan membantu merentalkannya untuk pelanggan lain, sehingga investasi Anda lebih menguntungkan.
+
+💰 Berapa budget yang Anda siapkan untuk pembelian? 
+Silakan inputkan angka dalam juta Rupiah (misalnya: 50, 100, 200).
+
+Kami akan merekomendasikan produk terbaik yang sesuai dengan ROI optimal! 🎯`;
   }
 
   if (
     lowerMessage.includes("project") ||
     lowerMessage.includes("pembelian") ||
     lowerMessage.includes("beli") ||
-    lowerMessage.includes("membeli") ||
     lowerMessage.includes("cust project")
   ) {
-    return generateTypeBasedResponse("cust project", preferences.budget);
+    return `✨ Bagus! Anda memilih model **Project/Pembelian**.
+
+Mode ini cocok untuk kebutuhan project spesifik Anda, baik untuk event sekali pakai atau setup permanent di venue.
+
+💰 Berapa budget yang Anda siapkan untuk project ini?
+Silakan inputkan angka dalam juta Rupiah (misalnya: 50, 100, 200).
+
+Kami akan merekomendasikan paket produk terbaik untuk project Anda! 🚀`;
   }
 
-  // Response default
+  // Check for budget input
+  const budgetMatch = userMessage.match(/\d+/);
+  if (budgetMatch) {
+    const budget = parseInt(budgetMatch[0]) * 1000000; // Convert juta to rupiah
+    return handleBudgetBasedRecommendation(budget, preferences);
+  }
+
+  // Default response
   return getDefaultResponse();
 }
 
 /**
- * Generate response berdasarkan budget
+ * Handle price inquiries
  */
-function generateBudgetBasedResponse(
-  budget: number,
-  type?: string
-): string {
-  let typeText = "kebutuhan";
-  if (type === "cust rental") {
-    typeText = "sewa/rental";
-  } else if (type === "cust project") {
-    typeText = "project";
+function handlePriceInquiry(userMessage: string, preferences: UserPreferences): string {
+  const searchResults = searchProducts(userMessage);
+
+  if (searchResults.length === 0) {
+    // Try to find product prefixes the user might be looking for
+    const allPrefixes = getAllProductPrefixes();
+    const messageWords = userMessage.toLowerCase().split(" ");
+    
+    const matchedPrefix = allPrefixes.find((prefix) =>
+      messageWords.some((word) => prefix.toLowerCase().includes(word) || word.includes(prefix.toLowerCase()))
+    );
+
+    if (matchedPrefix) {
+      // User mentioned a product prefix, search for it
+      const fallbackResults = searchProducts(matchedPrefix);
+      if (fallbackResults.length > 0) {
+        let response = `💰 **Informasi Harga - ${matchedPrefix}**\n\n`;
+        fallbackResults.slice(0, 5).forEach((product, index) => {
+          response += `${index + 1}. **${product.model}**\n`;
+          response += `   Spesifikasi: ${product.description}\n`;
+          response += `   Harga: ${formatPrice(product.price)}\n\n`;
+        });
+        response += `ℹ️ Tips: Hubungi tim sales kami untuk penawaran khusus atau cicilan! 💼`;
+        return response;
+      }
+    }
+
+    // If still no results, show available product list
+    return `📍 Produk yang Anda cari tidak ditemukan.
+
+**Coba cari salah satu produk ini:**
+
+🔴 **Laser Series:**
+• HADES VI, HADES X, HADES XX, HADES XXX, HADES IP
+
+💡 **Moving Light Series:**
+• AMOS, AMOS PLUS, AMOS PRO
+• ARES, ARES PLUS
+• SCARLET, SCARLET PLUS, SCARLET HYBRID, IP SCARLET HYBRID
+
+🌊 **Moving Wash Series:**
+• HERA LITE, MEDUSA LITE, IP MEDUSA LITE
+• MEDUSA, MEDUSA PLUS, IP MEDUSA PLUS, IP MEDUSA PRO
+
+✨ **SFX Series:**
+• SPARKY, FLAME, BUBBLE FOG MACHINE
+• CO2 BARREL, CO2 SHOT, CO2 GUN
+• CONFETTI GUN, CONFETTI BLASTER
+
+Coba tanyakan: "Harga AMOS" atau "Berapa SCARLET?" 😊`;
   }
 
-  if (budget < 1000000) {
-    return `Untuk budget Rp ${budget.toLocaleString("id-ID")} Juta dengan ${typeText}:
+  let response = `💰 **Informasi Harga Produk**\n\n`;
 
-💡 Rekomendasi Produk:
+  searchResults.slice(0, 5).forEach((product, index) => {
+    response += `${index + 1}. **${product.model}**\n`;
+    response += `   Spesifikasi: ${product.description}\n`;
+    response += `   Harga: ${formatPrice(product.price)}\n\n`;
+  });
 
-✓ Studio Basic
-✓ Studio Basic Plus
+  response += `ℹ️ Tips: Hubungi tim sales kami untuk mendapatkan penawaran khusus! 💼`;
 
-Produk ini sangat cocok untuk kebutuhan dasar dengan harga terjangkau dan performa handal. Sempurna untuk pemula! 🎯`;
-  } else if (budget < 5000000) {
-    return `Untuk budget Rp ${budget.toLocaleString("id-ID")} Juta dengan ${typeText}:
-
-💡 Rekomendasi Produk:
-
-✓ Berlin
-✓ Parled
-
-Produk ini menawarkan fitur lengkap dengan kualitas premium dan harga yang kompetitif. Great choice! ⭐`;
-  } else if (budget < 10000000) {
-    return `Untuk budget Rp ${budget.toLocaleString("id-ID")} Juta dengan ${typeText}:
-
-💡 Rekomendasi Produk:
-
-✓ Optic
-✓ Amos
-
-Produk ini adalah pilihan terbaik untuk profesional dengan teknologi terkini dan performa maksimal. Excellent! 🚀`;
-  } else {
-    return `Untuk budget Rp ${budget.toLocaleString("id-ID")} Juta dengan ${typeText}:
-
-💡 Rekomendasi Produk:
-
-✓ Ares
-✓ Holystrom
-
-Produk flagship kami dengan teknologi paling canggih, sempurna untuk kebutuhan enterprise dan project berskala besar. Premium quality! 👑`;
-  }
+  return response;
 }
 
 /**
- * Generate response berdasarkan tipe customer (cust rental / cust project)
+ * Handle product advantages inquiry
  */
-function generateTypeBasedResponse(type: string, budget?: number): string {
-  let typeLabel = "";
-  if (type === "cust rental") {
-    typeLabel = "Sewa/Rental (Membeli & Kami Rentalkan)";
-  } else if (type === "cust project") {
-    typeLabel = "Project (Kebutuhan Project Anda)";
+function handleAdvantagesInquiry(userMessage: string, preferences: UserPreferences): string {
+  const searchResults = searchProducts(userMessage);
+
+  if (searchResults.length === 0) {
+    // Try product prefix matching for better results
+    const allPrefixes = getAllProductPrefixes();
+    const messageWords = userMessage.toLowerCase().split(" ");
+    
+    const matchedPrefix = allPrefixes.find((prefix) =>
+      messageWords.some((word) => prefix.toLowerCase().includes(word) || word.includes(prefix.toLowerCase()))
+    );
+
+    if (matchedPrefix) {
+      const fallbackResults = searchProducts(matchedPrefix);
+      if (fallbackResults.length > 0) {
+        return handleAdvantagesInquiry(matchedPrefix, preferences);
+      }
+    }
+
+    return `Maaf, saya belum bisa menemukan produk spesifik yang Anda tanyakan.
+
+**Coba tanyakan tentang produk ini:**
+
+🔴 **Laser:** HADES VI, HADES X, HADES XX, HADES XXX
+💡 **Moving Light:** AMOS, ARES, SCARLET (dengan variannya)
+🌊 **Moving Wash:** MEDUSA, HERA (dengan variannya)
+✨ **SFX:** SPARKY, CO2 GUN, CONFETTI, FLAME
+
+Contoh: "Apa kelebihan AMOS?" atau "Keunggulan SCARLET HYBRID?" 🤔`;
   }
 
-  if (budget) {
-    return generateBudgetBasedResponse(budget, type);
+  const product = searchResults[0];
+  let response = `📊 **Keunggulan ${product.model}**\n\n`;
+
+  response += `**Spesifikasi:**\n${product.description}\n\n`;
+
+  // Add advantages based on product type
+  if (product.series === "Laser") {
+    response += `✨ **Keunggulan Laser Series:**\n`;
+    response += `• Performa laser yang powerful untuk audience besar\n`;
+    response += `• Efek visual yang stunning dan modern\n`;
+    response += `• Cocok untuk konser, festival, dan acara skala besar\n`;
+    response += `• Presisi tinggi dengan kontrol penuh\n\n`;
+  } else if (product.series === "Moving Light") {
+    response += `✨ **Keunggulan Moving Light Series:**\n`;
+    response += `• Beam sharp dan fokus untuk pencahayaan presisi\n`;
+    response += `• BSW/LED dengan color mixing untuk kreativitas unlimited\n`;
+    response += `• Cocok untuk theater, concert, dan special events\n`;
+    response += `• Efisiensi energi optimal dengan hasil maksimal\n\n`;
+  } else if (product.series === "Moving Wash") {
+    response += `✨ **Keunggulan Moving Wash Series:**\n`;
+    response += `• Coverage area luas untuk wash general lighting\n`;
+    response += `• B-Eye effect untuk dynamic visual effects\n`;
+    response += `• Ideal untuk venue, club, dan general stage wash\n`;
+    response += `• Smooth color transitions dan smooth dimming\n\n`;
+  } else if (product.series === "SFX") {
+    response += `✨ **Keunggulan SFX Series:**\n`;
+    response += `• Efek dramatis untuk highlight moment di event\n`;
+    response += `• CO2, Confetti, Flame - lengkap untuk setiap occasion\n`;
+    response += `• Aman dan mudah dioperasikan\n`;
+    response += `• Menciptakan wow factor yang memorable\n\n`;
   }
 
-  return `Terima kasih! Anda memilih ${typeLabel}.
+  // Price comparison with series
+  const seriesProducts = getProductsBySeries(product.series);
+  if (seriesProducts.length > 1) {
+    const priceRange = getPriceRange(product.series);
+    response += `💰 **Range Harga ${product.series}:**\n`;
+    response += `• Mulai dari: ${formatPrice(priceRange.min)}\n`;
+    response += `• Hingga: ${formatPrice(priceRange.max)}\n`;
+    response += `• Rata-rata: ${formatPrice(priceRange.avg)}\n\n`;
+  }
 
-🔹 Kami menyediakan berbagai pilihan lighting dari harga terjangkau hingga premium.
+  response += `❓ Ada pertanyaan lain yang bisa kami bantu? 😊`;
 
-Berapa budget yang Anda siapkan?
-Silakan inputkan nominal angka (dalam juta Rupiah) agar kami bisa merekomendasikan produk yang paling sesuai. ✨`;
+  return response;
 }
 
 /**
- * Response default
+ * Handle comparison inquiry
  */
-function getDefaultResponse(): string {
-  return `Halo! 👋 Selamat datang di Moxlite Lighting Recommendation System.
+function handleComparisonInquiry(userMessage: string, preferences: UserPreferences): string {
+  let searchResults = searchProducts(userMessage);
 
-Saya siap membantu Anda menemukan lampu yang sempurna untuk kebutuhan Anda!
+  // If search doesn't find enough products, try extracting product names manually
+  if (searchResults.length < 2) {
+    // Get all product prefixes and search for them in the message
+    const allPrefixes = getAllProductPrefixes();
+    const lowerMessage = userMessage.toLowerCase();
+    
+    const foundProducts: Product[] = [];
+    allPrefixes.forEach((prefix) => {
+      if (lowerMessage.includes(prefix.toLowerCase())) {
+        const results = searchProducts(prefix);
+        if (results.length > 0) {
+          foundProducts.push(results[0]); // Get first result for each prefix
+        }
+      }
+    });
 
-Untuk memulai, silakan ceritakan:
+    if (foundProducts.length >= 2) {
+      return generateComparisonResponse(foundProducts, "");
+    }
 
-1️⃣  Customer Rental
-    Membeli dari kami & kami rentalkan untuk Anda
+    // Try to get best sellers for comparison by series
+    const series = ["Laser", "Moving Light", "Moving Wash", "SFX"].find((s) =>
+      userMessage.toLowerCase().includes(s.toLowerCase())
+    );
 
-2️⃣  Customer Project
-    Membeli untuk kebutuhan project Anda
+    if (series) {
+      const bestSellers = getBestSellersBySeries(series, 3);
+      return generateComparisonResponse(bestSellers, series);
+    }
 
-3️⃣  Budget yang Anda siapkan?
-    Inputkan angka dalam juta Rupiah
+    return `Untuk membandingkan produk, silakan sebutkan nama produk yang ingin dibandingkan.
 
-Jangan ragu untuk bertanya! 😊`;
+Misalnya:
+• "Bandingkan AMOS vs ARES"
+• "Beda AMOS dan SCARLET apa?"
+• "Mana yang bagus ARES atau SCARLET?"
+• "MEDUSA mana yang lebih bagus?"
+
+Apa yang ingin Anda bandingkan? 🤔`;
+  }
+
+  return generateComparisonResponse(searchResults.slice(0, 3), "");
 }
 
 /**
- * Greeting message untuk chat awal
+ * Generate detailed comparison response
+ */
+function generateComparisonResponse(products: Product[], category: string): string {
+  if (products.length === 0) return "Produk tidak ditemukan.";
+
+  let response = `📊 **Perbandingan ${category || "Produk"} Moxlite**\n\n`;
+
+  // Create comparison table
+  response += `| Model | Spesifikasi | Harga |\n`;
+  response += `|-------|-----------|-------|\n`;
+
+  products.forEach((product) => {
+    response += `| ${product.model} | ${product.description} | ${formatPrice(product.price)} |\n`;
+  });
+
+  response += `\n💡 **Analisis:**\n`;
+
+  // Price analysis
+  const prices = products.map((p) => p.price);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const bestValue = products.find((p) => p.price === minPrice);
+  const premium = products.find((p) => p.price === maxPrice);
+
+  response += `\n💰 **Harga:**\n`;
+  response += `• Paling ekonomis: ${bestValue?.model} (${formatPrice(minPrice)})\n`;
+  response += `• Paling premium: ${premium?.model} (${formatPrice(maxPrice)})\n`;
+  response += `• Selisih harga: ${formatPrice(maxPrice - minPrice)}\n`;
+
+  // Add feature-based recommendation
+  response += `\n🎯 **Analisis Fitur:**\n`;
+  products.forEach((product) => {
+    const hasLED = product.description.toLowerCase().includes("led");
+    const hasLamp = product.description.toLowerCase().includes("lamp");
+    const hasWaterproof = product.description.toLowerCase().includes("waterproof");
+    const hasCMY = product.description.toLowerCase().includes("cmy");
+    const hasFraming = product.description.toLowerCase().includes("framing");
+    
+    let features = [];
+    if (hasLED) features.push("💡 LED");
+    if (hasLamp) features.push("🔦 Lamp");
+    if (hasCMY) features.push("🎨 CMY Color");
+    if (hasFraming) features.push("🖼️ Framing");
+    if (hasWaterproof) features.push("💧 Waterproof");
+    
+    response += `• ${product.model}: ${features.length > 0 ? features.join(" | ") : "Fitur standar"}\n`;
+  });
+
+  response += `\n📈 **Rekomendasi Berdasarkan Kebutuhan:**\n`;
+  if (bestValue) {
+    response += `💰 **Budget terbatas?** → ${bestValue.model} (${formatPrice(bestValue.price)})\n`;
+  }
+  if (products.length > 1) {
+    const midOption = products[Math.floor(products.length / 2)];
+    response += `⚖️ **Keseimbangan Harga-Performa?** → ${midOption.model} (${formatPrice(midOption.price)})\n`;
+  }
+  if (premium) {
+    response += `👑 **Performa Terbaik?** → ${premium.model} (${formatPrice(premium.price)})\n`;
+  }
+
+  response += `\n💡 **Kesimpulan:** Pilih berdasarkan kebutuhan Anda - apakah prioritas budget, fitur lengkap, atau performa maksimal?\n`;
+  response += `❓ Tanyakan lebih detail tentang produk mana yang cocok untuk kebutuhan Anda! 😊`;
+
+  return response;
+}
+
+/**
+ * Handle product search
+ */
+function handleProductSearch(userMessage: string, preferences: UserPreferences): string {
+  const searchResults = searchProducts(userMessage);
+
+  if (searchResults.length === 0) {
+    // Try product prefix matching
+    const allPrefixes = getAllProductPrefixes();
+    const messageWords = userMessage.toLowerCase().split(" ");
+    
+    const matchedPrefix = allPrefixes.find((prefix) =>
+      messageWords.some((word) => prefix.toLowerCase().includes(word) || word.includes(prefix.toLowerCase()))
+    );
+
+    if (matchedPrefix) {
+      const fallbackResults = searchProducts(matchedPrefix);
+      if (fallbackResults.length > 0) {
+        return handleProductSearch(matchedPrefix, preferences);
+      }
+    }
+
+    return `❌ Produk tidak ditemukan.
+
+**Coba cari dari kategori berikut:**
+
+🔴 **Laser Series:**
+• HADES VI, HADES X, HADES XX, HADES XXX, HADES IP
+• "Cari laser" atau "Produk laser apa"
+
+💡 **Moving Light Series:**
+• AMOS, AMOS PLUS, AMOS PRO
+• ARES, ARES PLUS
+• SCARLET, SCARLET PLUS, SCARLET HYBRID
+• "Cari AMOS" atau "Produk moving light"
+
+🌊 **Moving Wash Series:**
+• HERA LITE, MEDUSA LITE, MEDUSA, MEDUSA PLUS
+• "Cari MEDUSA" atau "Moving wash apa"
+
+✨ **SFX Series:**
+• SPARKY, FLAME, BUBBLE FOG, CO2, CONFETTI
+• "Cari SFX" atau "Produk special effect"
+
+Kategori apa yang Anda cari? 🔍`;
+  }
+
+  let response = `✅ **Hasil Pencarian Produk**\n\n`;
+  response += `Ditemukan ${searchResults.length} produk:\n\n`;
+
+  searchResults.slice(0, 5).forEach((product, index) => {
+    response += `${index + 1}. **${product.model}**\n`;
+    response += `   📍 ${product.series}\n`;
+    response += `   📝 ${product.description}\n`;
+    response += `   💰 ${formatPrice(product.price)}\n\n`;
+  });
+
+  if (searchResults.length > 5) {
+    response += `... dan ${searchResults.length - 5} produk lainnya\n\n`;
+  }
+
+  response += `🎯 Ingin tahu lebih detail tentang produk tertentu? Tanyakan keunggulan, harga, atau bandingkan dengan produk lain! 😊`;
+
+  return response;
+}
+
+/**
+ * Handle use case recommendations
+ */
+function handleUseCaseInquiry(userMessage: string, preferences: UserPreferences): string {
+  const recommendations = getRecommendations(userMessage);
+
+  if (recommendations.length === 0) {
+    return `Saya ingin membantu merekomendasikan produk yang tepat untuk kebutuhan Anda.
+
+Silakan sebutkan jenis event atau kebutuhan Anda:
+• Concert / Konser
+• Club / Bar
+• Wedding / Pernikahan
+• Event / Acara umum
+• Outdoor / Panggung Outdoor
+• Pemula / Beginner
+
+Apa kebutuhan Anda? 🎯`;
+  }
+
+  let response = `🎯 **Rekomendasi Produk untuk Kebutuhan Anda**\n\n`;
+
+  recommendations.slice(0, 4).forEach((product, index) => {
+    response += `${index + 1}. **${product.model}**\n`;
+    response += `   Spesifikasi: ${product.description}\n`;
+    response += `   Harga: ${formatPrice(product.price)}\n\n`;
+  });
+
+  response += `💡 **Mengapa produk ini cocok:**\n`;
+  response += `• Performa terbukti untuk kebutuhan spesifik Anda\n`;
+  response += `• ROI optimal dengan fitur yang relevan\n`;
+  response += `• Dukungan service purna jual terbaik dari kami\n\n`;
+
+  response += `📞 Hubungi tim sales kami untuk konsultasi lebih detail dan penawaran khusus! 🚀`;
+
+  return response;
+}
+
+/**
+ * Handle budget-based recommendation
+ */
+function handleBudgetBasedRecommendation(budget: number, preferences: UserPreferences): string {
+  const products = getProductsByBudget(0, budget);
+
+  if (products.length === 0) {
+    return `Maaf, budget Rp ${(budget / 1000000).toLocaleString("id-ID")} juta belum mencukupi untuk produk kami yang termurah.
+
+Produk kami dimulai dari Rp ${formatPrice(getAllProducts().reduce((min, p) => Math.min(min, p.price), Infinity))}.
+
+Silakan tingkatkan budget atau hubungi tim sales kami untuk opsi cicilan/leasing! 💼`;
+  }
+
+  let response = `✨ **Rekomendasi Produk untuk Budget Rp ${(budget / 1000000).toLocaleString("id-ID")} Juta**\n\n`;
+
+  // Categorize by value
+  const bestValue = products.sort((a, b) => b.price - a.price)[0]; // Best specs per budget
+  const mostAffordable = products.sort((a, b) => a.price - b.price)[0]; // Cheapest
+
+  response += `🏆 **Pilihan Terbaik (Best Value):**\n`;
+  response += `• ${bestValue.model}\n`;
+  response += `• Spesifikasi: ${bestValue.description}\n`;
+  response += `• Harga: ${formatPrice(bestValue.price)}\n\n`;
+
+  response += `💰 **Pilihan Ekonomis:**\n`;
+  response += `• ${mostAffordable.model}\n`;
+  response += `• Spesifikasi: ${mostAffordable.description}\n`;
+  response += `• Harga: ${formatPrice(mostAffordable.price)}\n\n`;
+
+  // Show series breakdown
+  const allSeries = new Set(products.map((p) => p.series));
+  response += `📊 **Kategori Tersedia:**\n`;
+  Array.from(allSeries).forEach((series) => {
+    const count = products.filter((p) => p.series === series).length;
+    response += `• ${series} (${count} pilihan)\n`;
+  });
+
+  response += `\n💡 **Tips Memilih:**\n`;
+  response += `${preferences.type === "cust rental" ? `• Mode Rental: Pilih produk yang populer untuk ROI tinggi\n` : `• Mode Project: Pilih sesuai kebutuhan spesifik event Anda\n`}`;
+  response += `• Hubungi sales untuk konsultasi gratis dan penawaran spesial! 🎯\n`;
+  response += `• Ada opsi cicilan dan leasing untuk kemudahan Anda 📞`;
+
+  return response;
+}
+
+/**
+ * Greeting message
  */
 export function getGreetingMessage(): ChatMessage {
   return {
@@ -178,4 +578,35 @@ export function getGreetingMessage(): ChatMessage {
     content: getDefaultResponse(),
     timestamp: new Date(),
   };
+}
+
+/**
+ * Default response
+ */
+function getDefaultResponse(): string {
+  return `👋 **Selamat Datang di Moxlite AI Assistant!**
+
+Saya siap membantu Anda menemukan solusi lighting yang sempurna.
+
+**Apa yang bisa saya bantu?**
+
+🎯 **Tanyakan tentang:**
+• 💰 **Harga** - "Berapa harga AMOS?" atau "Produk di bawah 15 juta?"
+• 🌟 **Keunggulan produk** - "Apa kelebihan SCARLET HYBRID?"
+• 📊 **Perbandingan** - "Bandingkan AMOS vs ARES"
+• 🔍 **Produk spesifik** - "Cari produk Laser" atau "Apa itu MEDUSA?"
+• 🎪 **Rekomendasi** - "Produk untuk concert" atau "Untuk wedding apa?"
+
+📋 **Atau mulai dengan:**
+1️⃣ Pilih tipe: **Rental/Sewa** atau **Project/Pembelian**
+2️⃣ Sebutkan budget dalam juta rupiah
+3️⃣ Biarkan kami rekomendasikan solusi terbaik!
+
+**Kategori Produk Kami:**
+🔴 Laser - Performanya tinggi untuk skala besar
+💡 Moving Light - Beam & Wash profesional
+🌊 Moving Wash - Coverage luas & efek dinamis
+✨ SFX - Special effects untuk wow moment
+
+Mari mulai! Apa yang bisa kami rekomendasikan untuk Anda hari ini? 🚀`;
 }
