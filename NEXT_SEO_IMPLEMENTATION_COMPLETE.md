@@ -108,7 +108,7 @@
 
    ```ts
    twitter: {
-     handle: "@moxlite",           // Your actual handle
+     handle: "@moxlite",            
      site: "@moxlite",
      cardType: "summary_large_image",
    }

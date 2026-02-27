@@ -36,18 +36,22 @@ const News = ({ news, pageCount }: iNewsProps) => {
         </h1>
       </div>
 
-      <Highlighted
-        {...{
-          ...highlightedNews,
-          GAevent: {
-            action: "news_headline",
-            attribute: {
-              news_title: highlightedNews.name,
-            },
-          },
-        }}
-      />
-      <div className="border-t border-t-[#CBD5E1] mx-[24px] lg:mx-[120px]" />
+      {highlightedNews && (
+        <>
+          <Highlighted
+            {...{
+              ...highlightedNews,
+              GAevent: {
+                action: "news_headline",
+                attribute: {
+                  news_title: highlightedNews?.name,
+                },
+              },
+            }}
+          />
+          <div className="border-t border-t-[#CBD5E1] mx-[24px] lg:mx-[120px]" />
+        </>
+      )}
 
       <div className="pt-[40px] pb-[40px] px-[24px] lg:px-[120px] lg:pt-[80px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {news?.slice(1)?.map((e, i) => (

@@ -1,0 +1,59 @@
+# Enable GZIP compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Cache images for 1 year (31536000 seconds)
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|avif|svg|ico)$">
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 year"
+  </IfModule>
+  <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </IfModule>
+</FilesMatch>
+
+# Cache fonts for 1 year
+<FilesMatch "\.(woff|woff2|eot|ttf|otf)$">
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 year"
+  </IfModule>
+  <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </IfModule>
+</FilesMatch>
+
+# Cache CSS and JavaScript for 30 days
+<FilesMatch "\.(css|js)$">
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 30 days"
+  </IfModule>
+  <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=2592000"
+  </IfModule>
+</FilesMatch>
+
+# Cache video files for 30 days
+<FilesMatch "\.(mp4|webm|m3u8|ts)$">
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 30 days"
+  </IfModule>
+  <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=2592000"
+  </IfModule>
+</FilesMatch>
+
+# Don't cache HTML files (always fetch fresh)
+<FilesMatch "\.html?$">
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 0 seconds"
+  </IfModule>
+  <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </IfModule>
+</FilesMatch>

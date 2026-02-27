@@ -43,7 +43,7 @@ const Footer = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src="/icon/shopping-bag.svg" className="h-[20px] mr-[27px]" />
+            <img src="/icon/shopping-bag.svg" className="h-[20px] mr-[27px]" alt="Shop Moxlite lighting products on Tokopedia" />
           </Link>
         </div>
       </div>
@@ -54,7 +54,7 @@ const Footer = () => {
         </h4>
 
         <div className="mb-[16px] flex">
-          <img src="/icon/location_on.svg" className="h-[20px] mr-1" />
+          <img src="/icon/location_on.svg" className="h-[20px] mr-1" alt="Moxlite office location in Tangerang, Banten" />
           <p>
             Rukan Crown, Jl. Green Lake City Boulevard No.25, RT.005/RW.008,
             Petir, Kec. Cipondoh, Kota Tangerang, Banten 15147
@@ -72,7 +72,7 @@ const Footer = () => {
           rel="noopener noreferrer"
         >
           <div className="mb-[16px] flex">
-            <img src="/icon/whatsapp.svg" className="h-[20px] mr-1" />
+            <img src="/icon/whatsapp.svg" className="h-[20px] mr-1" alt="Contact Moxlite via WhatsApp messaging" />
             <p>+62 852 1567 6696</p>
           </div>
         </Link>
@@ -89,7 +89,7 @@ const Footer = () => {
           rel="noopener noreferrer"
         >
           <div className="mb-[16px] flex">
-            <img src="/icon/mail.svg" className="h-[20px] mr-1" />
+            <img src="/icon/mail.svg" className="h-[20px] mr-1" alt="Email Moxlite for lighting solutions and support" />
             <p>info@moxlite.com</p>
           </div>
         </Link>

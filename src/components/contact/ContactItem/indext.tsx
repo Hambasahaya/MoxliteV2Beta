@@ -15,7 +15,7 @@ const ContactItem = ({ title, content }: iContactItem) => {
             }
           }}
         >
-          <img src={e.iconUrl} className="h-[24px] invert filter pr-[8px]" />
+          <img src={e.iconUrl} className="h-[24px] invert filter pr-[8px]" alt={`${e.label} contact method`} />
           <a
             href={e.redirectUrl}
             target="_blank"

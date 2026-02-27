@@ -2,31 +2,17 @@ import Layout from "@/components/common/Layout";
 import ContactItem from "@/components/contact/ContactItem/indext";
 import { ENV } from "@/constant/ENV";
 import { fireGAevent } from "@/lib/gtag";
-import { useEffect, useRef } from "react";
+import { useState } from "react";
 
 const Contact = () => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [showMap, setShowMap] = useState(false);
 
-  useEffect(() => {
-    const handlePointerEnter = () => {
-      fireGAevent({
-        action: "contact_office map_location",
-      });
-    };
-
-    if (iframeRef.current) {
-      iframeRef.current.addEventListener("pointerenter", handlePointerEnter);
-    }
-
-    return () => {
-      if (iframeRef.current) {
-        iframeRef.current.removeEventListener(
-          "pointerenter",
-          handlePointerEnter
-        );
-      }
-    };
-  }, []);
+  const handleMapClick = () => {
+    fireGAevent({
+      action: "contact_office_map_location",
+    });
+    setShowMap(true);
+  };
 
   return (
     <Layout
@@ -96,16 +82,25 @@ const Contact = () => {
           </div>
         </div>
 
-        <div className="w-full h-[400px]">
-          <iframe
-            ref={iframeRef}
-            title="Moxlite Lighting Location"
-            className="w-full h-full border-0 rounded-lg"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63463.41985961862!2d106.63296990371094!3d-6.202391377983057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f9a5901566e3%3A0xededc616007328e9!2sMoxlite%20Lighting!5e0!3m2!1sen!2sid!4v1739719217413!5m2!1sen!2sid"
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+        <div className="w-full h-[400px] rounded-lg overflow-hidden cursor-pointer relative group">
+          <a
+            href="https://maps.google.com/maps?q=Moxlite+Lighting,+Tangerang"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={handleMapClick}
+            className="w-full h-full block"
+          >
+            <img
+              src="https://maps.googleapis.com/maps/api/staticmap?center=-6.202391,106.632970&zoom=14&size=600x400&markers=color:blue%7Clabel:M%7C-6.202391,106.632970&key=AIzaSyDO0GvchJG-4e0FVT8fV0f5V5YC3zvgIew&style=feature:water|color:0xcad2f5&style=feature:land|color:0xf3f3f3"
+              alt="Moxlite Lighting office location at Rukan Crown, Tangerang, Banten"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center">
+              <div className="text-white text-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <p className="text-sm font-semibold">View Full Map</p>
+              </div>
+            </div>
+          </a>
         </div>
       </div>
     </Layout>

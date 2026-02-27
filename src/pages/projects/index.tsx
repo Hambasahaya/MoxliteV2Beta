@@ -36,18 +36,22 @@ const ProjectList = ({ projects, pageCount }: iProjectsProps) => {
         </h1>
       </div>
 
-      <Highlighted
-        {...{
-          ...highlightedProject,
-          GAevent: {
-            action: "project_headline",
-            attribute: {
-              project_title: highlightedProject.name,
-            },
-          },
-        }}
-      />
-      <div className="border-t border-t-[#CBD5E1] mx-[24px] lg:mx-[120px]" />
+      {highlightedProject && (
+        <>
+          <Highlighted
+            {...{
+              ...highlightedProject,
+              GAevent: {
+                action: "project_headline",
+                attribute: {
+                  project_title: highlightedProject?.name,
+                },
+              },
+            }}
+          />
+          <div className="border-t border-t-[#CBD5E1] mx-[24px] lg:mx-[120px]" />
+        </>
+      )}
 
       <div className="pt-[40px] pb-[40px] px-[24px] lg:px-[120px] lg:pt-[80px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {projects?.slice(1)?.map((e, i) => (

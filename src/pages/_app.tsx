@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import "@/styles/strapi_styles.css";
 import type { AppProps } from "next/app";
+import Script from "next/script";
 import { Inter, Saira } from "next/font/google";
 import dynamic from "next/dynamic";
 import { ReCaptchaProvider } from "next-recaptcha-v3";
@@ -18,6 +19,7 @@ const FloatingChatButton: any = dynamic(
   () => import("@/components/chatbot/FloatingChatButton"),
   {
     ssr: false,
+    loading: () => null,
   }
 );
 
@@ -25,6 +27,7 @@ const PlannerAccessButton: any = dynamic(
   () => import("@/components/planner/PlannerAccessButton"),
   {
     ssr: false,
+    loading: () => null,
   }
 );
 
@@ -33,15 +36,34 @@ const saira = Saira({ subsets: ["latin"], variable: "--font-saira" });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <SnackbarProvider autoHideDuration={3000} anchorOrigin={{horizontal:"center", vertical:"top"}}>
-      <ReCaptchaProvider reCaptchaKey={ENV.NEXT_PUBLIC_RECAPTCHA_KEY}>
-        <div className={`${inter.variable} ${saira.variable}`}>
-          <Component {...pageProps} />
-          <ProgressBar />
-          <FloatingChatButton />
-          <PlannerAccessButton />
-        </div>
-      </ReCaptchaProvider>
-    </SnackbarProvider>
+    <>
+      <Script
+        id="optimize-performance"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            if ('requestIdleCallback' in window) {
+              requestIdleCallback(function() {
+                // Load non-critical resources in idle time
+              });
+            } else {
+              setTimeout(function() {
+                // Fallback for browsers that don't support requestIdleCallback
+              }, 2);
+            }
+          `,
+        }}
+      />
+      <SnackbarProvider autoHideDuration={3000} anchorOrigin={{horizontal:"center", vertical:"top"}}>
+        <ReCaptchaProvider reCaptchaKey={ENV.NEXT_PUBLIC_RECAPTCHA_KEY}>
+          <div className={`${inter.variable} ${saira.variable}`}>
+            <Component {...pageProps} />
+            <ProgressBar />
+            <FloatingChatButton />
+            <PlannerAccessButton />
+          </div>
+        </ReCaptchaProvider>
+      </SnackbarProvider>
+    </>
   );
 }
