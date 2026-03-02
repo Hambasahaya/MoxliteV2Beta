@@ -92,10 +92,7 @@ export const translateText = async (
     return TRANSLATION_CACHE[cacheKey];
   }
 
-  // Check if request is already pending
-  if (PENDING_REQUESTS[cacheKey]) {
-    return PENDING_REQUESTS[cacheKey];
-  }
+const PENDING_REQUESTS: Partial<Record<string, Promise<string>>> = {};
 
   // Create batched request
   const promise = new Promise<string>((resolve, reject) => {
