@@ -26,7 +26,6 @@ const generateSiteMap = (routes: any[]) => {
  `;
 };
 
-// Static routes
 const staticRoutes = [
   {
     url: DOMAIN,
@@ -67,7 +66,7 @@ const cityRoutes = SEO_CITIES.map((city) => ({
   priority: 0.8,
 }));
 
-// Combine all routes
+
 const allRoutes = [...staticRoutes, ...cityRoutes];
 
 const Sitemap = () => {};

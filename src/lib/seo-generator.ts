@@ -41,7 +41,6 @@ export const generateProductSEO = (
 };
 
 /**
- * Generate SEO metadata for news/article pages
  */
 export const generateArticleSEO = (
   title: string,
@@ -64,14 +63,13 @@ export const generateArticleSEO = (
 };
 
 /**
- * Generate structured data for city pages
  */
 export const generateCityStructuredData = (city: string) => {
   return getLocalBusinessSchema(city);
 };
 
 /**
- * Get all cities for sitemap
+ 
  */
 export const getAllCitiesForSitemap = () => {
   return SEO_CITIES.map((city) => ({
