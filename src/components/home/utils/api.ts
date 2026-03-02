@@ -8,13 +8,13 @@ export const getLatestproducts = async (): Promise<iLatestProduct[]> => {
       `${ENV.NEXT_PUBLIC_API_BASE_URL}/api/products?sort=name:desc&pagination[pageSize]=4`
     );
     const result = await rawRes.json();
-    const products: iLatestProduct[] = result.data.map((e: any) => ({
+    const products: iLatestProduct[] = result?.data?.map((e: any) => ({
       slug: e?.slug ?? "",
       name: e?.name ?? "",
       thumbnail: e?.main_image?.url ?? "",
       category: e?.product_category?.name ?? "",
       discontinue: e?.discontinued ?? false,
-    }));
+    })) ?? [];
 
     return products;
   } catch (error) {
@@ -28,13 +28,13 @@ export const getLatestNews = async (): Promise<iLatestNews[]> => {
       `${ENV.NEXT_PUBLIC_API_BASE_URL}/api/news?sort=publishedAt:desc&pagination[pageSize]=3`
     );
     const result = await rawRes.json();
-    const news: iLatestNews[] = result.data.map((e: any) => ({
+    const news: iLatestNews[] = result?.data?.map((e: any) => ({
       url: `${ROUTES.NEWS.path}/${e?.slug ?? "undefined"}`,
       name: e?.title ?? "",
       thumbnail: e?.main_image?.url ?? "",
       desc: e?.summary ?? "",
       date: e?.publishedAt ?? "",
-    }));
+    })) ?? [];
 
     return news;
   } catch (error) {
@@ -48,11 +48,11 @@ export const getLatestProjects = async (): Promise<iLatestProject[]> => {
       `${ENV.NEXT_PUBLIC_API_BASE_URL}/api/projects?sort=publishedAt:desc&pagination[pageSize]=3`
     );
     const result = await rawRes.json();
-    const projects: iLatestProject[] = result.data.map((e: any) => ({
+    const projects: iLatestProject[] = result?.data?.map((e: any) => ({
       slug: e?.slug ?? "",
       name: e?.title ?? "",
       thumbnail: e?.main_image?.url ?? "",
-    }));
+    })) ?? [];
 
     return projects;
   } catch (error) {

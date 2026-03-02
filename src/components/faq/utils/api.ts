@@ -6,11 +6,11 @@ export const getFaqs = async (): Promise<iFaq[]> => {
     const rawRes = await fetch(`${ENV.NEXT_PUBLIC_API_BASE_URL}/api/faqs`);
     const result = await rawRes.json();
 
-    const faqs: iFaq[] = result.data.map((e: iFaq) => ({
+    const faqs: iFaq[] = result?.data?.map((e: iFaq) => ({
       documentId: e?.documentId ?? "",
       question: e?.question ?? "",
       answer: e?.answer ?? "",
-    }));
+    })) ?? [];
 
     return faqs;
   } catch (error) {

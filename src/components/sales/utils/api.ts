@@ -8,7 +8,7 @@ export const getSales = async (): Promise<iGroupedSales[]> => {
     const result = await rawRes.json();
 
 
-    const sales: iSales[] = result.data.map((e: iSales) => ({
+    const sales: iSales[] = result?.data?.map((e: iSales) => ({
     id:e.id??"",
       documentId:e.documentId??"",
       contact_person:e.contact_person??"",
@@ -32,7 +32,7 @@ export const getSales = async (): Promise<iGroupedSales[]> => {
         country:e.location?.country??'',
         slug:e.location?.slug??'',
       }
-    }));
+    })) ?? [];
 
     const salesObject = sales.reduce((r,a)=>{
       (r as any)[a.location.city] = (r as any)[a.location.city] || [];
@@ -63,14 +63,14 @@ export const getLocations = async (): Promise<iGroupedLocation[]> => {
     const rawRes = await fetch(`${ENV.NEXT_PUBLIC_API_BASE_URL}/api/locations`);
     const result = await rawRes.json();
 
-    const locations: iLocation[] = result.data.map((e: iLocation) => ({
+    const locations: iLocation[] = result?.data?.map((e: iLocation) => ({
         id:e.id??"",
         documentId:e.documentId??"",
         city:e.city??'',
         country:e.country??'',
         slug:e.slug??'',
  
-    }));
+    })) ?? [];
 
     const locationObject = locations.reduce((r,a)=>{
       (r as any)[a.country] = (r as any)[a.country] || [];

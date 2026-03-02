@@ -21,7 +21,7 @@ export const getProjects = async ({
 
     const result = await rawRes.json();
     const projects: iNewsCard[] =
-      result.data.map((e: any) => ({
+      result?.data?.map((e: any) => ({
         url: `${ROUTES.PROJECT.path}/${e?.slug ?? "undefined"}`,
         name: e?.title ?? "",
         thumbnail: e?.main_image?.url ?? "",

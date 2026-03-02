@@ -15,13 +15,13 @@ export const getNews = async ({
     );
 
     const result = await rawRes.json();
-    const news: iNewsCard[] = result.data.map((e: any) => ({
+    const news: iNewsCard[] = result?.data?.map((e: any) => ({
       url: `${ROUTES.NEWS.path}/${e?.slug ?? "undefined"}`,
       name: e?.title ?? "",
       thumbnail: e?.main_image?.url ?? "",
       desc: e?.summary ?? "",
       date: e?.publishedAt ?? "",
-    }));
+    })) ?? [];
 
     const pageCount = result?.meta?.pagination?.pageCount ?? 0;
 
