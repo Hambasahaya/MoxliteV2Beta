@@ -302,3 +302,14 @@ export const isTranslationCached = (text: string, language: Language): boolean =
   const key = generateCacheKey(text, language);
   return getFromMemoryCache(key) !== null || getFromLocalStorage(key) !== null;
 };
+
+/**
+ * Backward compatibility - alias for translateText
+ * Use translateText directly for new code
+ */
+export const preloadTranslation = async (
+  text: string,
+  targetLanguage: Language
+): Promise<string> => {
+  return translateText(text, targetLanguage);
+};
