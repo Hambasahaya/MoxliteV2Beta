@@ -20,14 +20,13 @@ const nextConfig: NextConfig = {
   // Optimize HTTP/2 server push
   compress: true,
   
-  // Reduce initial JS payload
-  swcMinify: true,
+ 
   
   // Optimize package imports
   experimental: {
     optimizePackageImports: ["@reduxjs/toolkit", "framer-motion", "three"],
     // Enable React optimizations
-    React: { useSuspense: true },
+    
   },
 
   // Webpack optimization
