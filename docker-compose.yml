@@ -2,14 +2,21 @@ name: moxlite-web
 
 services:
   web:
-    image: ghcr.io/akar-codehaus/moxlite-web:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_FE_BASE_URL: ${NEXT_PUBLIC_FE_BASE_URL}
+        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID}
+        NEXT_PUBLIC_RECAPTCHA_KEY: ${NEXT_PUBLIC_RECAPTCHA_KEY}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    ports:
+      - "3000:3000"
     env_file:
       - .env
     networks:
       - frontend-network
       - backend-network
-    labels:
-      - com.centurylinklabs.watchtower.enable=true
 
 networks:
   frontend-network:
