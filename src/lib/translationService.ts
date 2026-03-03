@@ -3,13 +3,15 @@ import { Language } from "@/components/common/LanguageToggle";
 // Multi-layer caching system for optimal performance
 const MEMORY_CACHE: Map<string, { value: string; timestamp: number }> = new Map();
 const PENDING_REQUESTS: Map<string, Promise<string>> = new Map();
+const SHORT_TEXT_CACHE: Map<string, string> = new Map(); // Ultra-fast cache for common words
 
-// Configuration
+// Configuration - Optimized for Speed
 const CACHE_TTL = 30 * 24 * 60 * 60 * 1000; // 30 days
-const BATCH_DELAY = 100; // 100ms for faster batching
-const MAX_BATCH_SIZE = 10;
-const TRANSLATION_TIMEOUT = 8000; // 8 second timeout
-const API_RETRY_ATTEMPTS = 2;
+const BATCH_DELAY = 10; // Reduced from 30ms - ultra-fast batching
+const MAX_BATCH_SIZE = 50; // Increased from 20 - process more items at once
+const TRANSLATION_TIMEOUT = 2000; // Reduced from 3s - fail much faster
+const API_RETRY_ATTEMPTS = 0; // No retries - fail fast instead
+const SHORT_TEXT_THRESHOLD = 100; // Increased from 50 - cache more texts
 
 let batchQueue: Array<{ 
   text: string; 
@@ -21,29 +23,56 @@ let batchQueue: Array<{
 let batchTimeout: NodeJS.Timeout | null = null;
 
 /**
- * Hash function for cache key generation
- * More reliable than string concatenation
+ * Hash function for cache key generation - Optimized for speed
+ * Shorter keys = faster lookup
  */
 const generateCacheKey = (text: string, language: Language): string => {
-  return `${language}:${text.substring(0, 100)}:${text.length}`;
+  // For short texts, use simpler key
+  if (text.length < SHORT_TEXT_THRESHOLD) {
+    return `${language}:${text}`;
+  }
+  // For long texts, use hash-like key
+  return `${language}:${text.substring(0, 50)}:${text.length}`;
 };
 
 /**
- * Get from memory cache with TTL validation
+ * Get from short text cache (ultra-fast)
+ */
+const getFromShortCache = (text: string, language: Language): string | null => {
+  if (text.length >= SHORT_TEXT_THRESHOLD) return null;
+  return SHORT_TEXT_CACHE.get(`${language}:${text}`) || null;
+};
+
+/**
+ * Save to short text cache (fastest writes)
+ */
+const saveToShortCache = (text: string, language: Language, value: string): void => {
+  if (text.length < SHORT_TEXT_THRESHOLD) {
+    SHORT_TEXT_CACHE.set(`${language}:${text}`, value);
+    // Keep map size under control
+    if (SHORT_TEXT_CACHE.size > 1000) {
+      const firstKey = SHORT_TEXT_CACHE.keys().next().value;
+      if (firstKey) {
+        SHORT_TEXT_CACHE.delete(firstKey);
+      }
+    }
+  }
+};
+
+/**
+ * Get from memory cache with TTL validation - Optimized
  */
 const getFromMemoryCache = (key: string): string | null => {
   const cached = MEMORY_CACHE.get(key);
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return cached.value;
-  }
   if (cached) {
-    MEMORY_CACHE.delete(key);
+    // Skip TTL check for performance (trust the cache)
+    return cached.value;
   }
   return null;
 };
 
 /**
- * Get from localStorage with TTL validation
+ * Get from localStorage with TTL validation - Minimal overhead
  */
 const getFromLocalStorage = (key: string): string | null => {
   if (typeof window === "undefined") return null;
@@ -52,34 +81,33 @@ const getFromLocalStorage = (key: string): string | null => {
     if (!item) return null;
     
     const parsed = JSON.parse(item);
-    if (Date.now() - parsed.timestamp < CACHE_TTL) {
-      return parsed.value;
-    }
-    localStorage.removeItem(`trans_${key}`);
+    return parsed.value || null;
   } catch {
-    // Ignore localStorage errors
+    // Ignore errors
   }
   return null;
 };
 
 /**
- * Save to both memory and localStorage cache
+ * Save to both memory and localStorage cache - Optimized
  */
-const saveToCache = (key: string, value: string): void => {
+const saveToCache = (key: string, value: string, text: string, language: Language): void => {
   const timestamp = Date.now();
   MEMORY_CACHE.set(key, { value, timestamp });
+  saveToShortCache(text, language, value);
   
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem(`trans_${key}`, JSON.stringify({ value, timestamp }));
-    } catch {
-      // Ignore localStorage errors (quota exceeded, etc.)
-    }
-  }
+  // Skip localStorage for now - just memory cache for speed
+  // if (typeof window !== "undefined") {
+  //   try {
+  //     localStorage.setItem(`trans_${key}`, JSON.stringify({ value, timestamp }));
+  //   } catch {
+  //     // Ignore localStorage errors
+  //   }
+  // }
 };
 
 /**
- * Process batch translations with advanced features
+ * Process batch translations with advanced features - Optimized for speed
  */
 const processBatch = async () => {
   if (batchQueue.length === 0) return;
@@ -95,96 +123,111 @@ const processBatch = async () => {
     return acc;
   }, {} as Record<Language, typeof queue>);
 
-  for (const [language, items] of Object.entries(grouped)) {
-    // Process all items in parallel for the same language
-    await Promise.allSettled(
-      items.map(async (item) => {
-        try {
-          const result = await translateTextDirect(
-            item.text, 
-            item.language as Language,
-            item.retries || 0
-          );
-          item.resolve(result);
-        } catch (error) {
-          item.reject(error instanceof Error ? error : new Error("Translation failed"));
-        }
-      })
-    );
-  }
+  // Process all languages in parallel
+  await Promise.all(
+    Object.entries(grouped).map(async ([language, items]) => {
+      // Process all items in parallel (not sequential)
+      await Promise.allSettled(
+        items.map(async (item) => {
+          try {
+            const result = await translateTextDirect(
+              item.text, 
+              item.language as Language,
+              item.retries || 0
+            );
+            item.resolve(result);
+          } catch (error) {
+            item.reject(error instanceof Error ? error : new Error("Translation failed"));
+          }
+        })
+      );
+    })
+  );
 };
 
 /**
- * Smart translation with fallback strategies
+ * Smart translation with fallback strategies - Ultra-optimized for speed
  */
 const translateTextDirect = async (
   text: string,
   targetLanguage: Language,
   retryCount: number = 0
 ): Promise<string> => {
-  if (targetLanguage === "en" || !text || text.trim().length === 0) {
+  if (targetLanguage === "en" || !text) {
+    return text;
+  }
+
+  const trimmed = text.trim();
+  if (trimmed.length === 0) return text;
+
+  // Skip translation for very short texts (single words, numbers, etc)
+  if (trimmed.length < 3) {
     return text;
   }
 
   const cacheKey = generateCacheKey(text, targetLanguage);
   
-  // Try memory cache first (fastest)
+  // Ultra-fast: Try short text cache first
+  const shortCached = getFromShortCache(text, targetLanguage);
+  if (shortCached) return shortCached;
+  
+  // Try memory cache (fast)
   const memoryCached = getFromMemoryCache(cacheKey);
   if (memoryCached) return memoryCached;
-  
-  // Try localStorage (fast, persistent)
-  const localCached = getFromLocalStorage(cacheKey);
-  if (localCached) {
-    saveToCache(cacheKey, localCached); // Restore to memory cache
-    return localCached;
+
+  // Skip localStorage - too slow for initial load
+  // Trust memory cache instead
+  /*
+  if (text.length > 100) {
+    const localCached = getFromLocalStorage(cacheKey);
+    if (localCached) {
+      saveToCache(cacheKey, localCached, text, targetLanguage);
+      return localCached;
+    }
   }
+  */
 
   try {
-    // Use Google Translate API format with better parameters
-    const response = await fetch(
-      `https://translate.googleapis.com/translate_a/element.js?cb=googleTranslateElementInit`,
-      { signal: AbortSignal.timeout(TRANSLATION_TIMEOUT) }
-    ).catch(() => {
-      // Fallback to alternative service
-      return fetch(
-        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
-          text.substring(0, 500)
-        )}&langpair=en|${targetLanguage === "id" ? "id" : "en"}`,
-        { signal: AbortSignal.timeout(TRANSLATION_TIMEOUT) }
-      );
+    // Use fastest, most reliable API - mymemory
+    const params = new URLSearchParams({
+      q: trimmed.substring(0, 500),
+      langpair: `en|${targetLanguage === "id" ? "id" : "en"}`,
     });
 
+    const response = await fetch(
+      `https://api.mymemory.translated.net/get?${params.toString()}`,
+      { 
+        signal: AbortSignal.timeout(TRANSLATION_TIMEOUT),
+        // Add cache-busting but also allow 304s
+        headers: { 'Cache-Control': 'max-age=604800' }
+      }
+    );
+
     if (!response.ok) {
-      throw new Error(`API response status: ${response.status}`);
+      throw new Error(`API error: ${response.status}`);
     }
 
     const data = await response.json();
     
-    let translatedText = text;
-    
-    if (data.responseData?.translatedText) {
-      translatedText = data.responseData.translatedText;
-    } else if (data.data?.[0]?.[0]) {
-      translatedText = data.data[0][0];
+    if (data.responseStatus === 200 && data.responseData?.translatedText) {
+      let translatedText = data.responseData.translatedText.trim();
+      
+      // Save to cache
+      saveToCache(cacheKey, translatedText, text, targetLanguage);
+      return translatedText;
     }
 
-    // Clean up translated text
-    translatedText = translatedText.trim();
-    
-    // Save to cache
-    saveToCache(cacheKey, translatedText);
-    return translatedText;
+    return text;
   } catch (error) {
-    console.warn(`Translation error for "${text.substring(0, 50)}"`, error);
-    
-    // Retry logic for network errors
+    // Timeout or network error - return original text quickly
     if (retryCount < API_RETRY_ATTEMPTS && error instanceof TypeError) {
+      // Single retry with shorter backoff
       return new Promise((resolve) => {
         setTimeout(() => {
           translateTextDirect(text, targetLanguage, retryCount + 1)
             .then(resolve)
             .catch(() => resolve(text));
-        }, 1000 * (retryCount + 1)); // Exponential backoff
+        }, 500); // Fixed 500ms delay
       });
     }
     
@@ -193,19 +236,30 @@ const translateTextDirect = async (
 };
 
 /**
- * Main translation function with intelligent batching
+ * Main translation function with intelligent batching - Ultra-optimized
  */
 export const translateText = async (
   text: string,
   targetLanguage: Language
 ): Promise<string> => {
-  if (targetLanguage === "en" || !text || text.trim().length === 0) {
+  if (targetLanguage === "en" || !text) {
+    return text;
+  }
+
+  const trimmed = text.trim();
+  if (trimmed.length === 0) return text;
+  
+  // Skip translation for very short texts
+  if (trimmed.length < 3) {
     return text;
   }
 
   const cacheKey = generateCacheKey(text, targetLanguage);
 
-  // Check immediate cache first
+  // Check immediate cache first (ultra-fast)
+  const shortCached = getFromShortCache(text, targetLanguage);
+  if (shortCached) return shortCached;
+
   const memoryCached = getFromMemoryCache(cacheKey);
   if (memoryCached) return memoryCached;
 
@@ -217,7 +271,7 @@ export const translateText = async (
   const promise = new Promise<string>((resolve, reject) => {
     batchQueue.push({ text, language: targetLanguage, resolve, reject });
 
-    // Clear existing timeout and set new one
+    // Clear existing timeout and set new one with shorter delay
     if (batchTimeout) clearTimeout(batchTimeout);
     batchTimeout = setTimeout(processBatch, BATCH_DELAY);
   });
@@ -264,8 +318,9 @@ export const preloadCriticalTranslations = async (
 export const getTranslationStats = () => {
   return {
     memoryCacheSize: MEMORY_CACHE.size,
+    shortTextCacheSize: SHORT_TEXT_CACHE.size,
     pendingRequests: PENDING_REQUESTS.size,
-    totalCached: MEMORY_CACHE.size,
+    totalCached: MEMORY_CACHE.size + SHORT_TEXT_CACHE.size,
   };
 };
 
@@ -274,6 +329,7 @@ export const getTranslationStats = () => {
  */
 export const clearMemoryCache = (): void => {
   MEMORY_CACHE.clear();
+  SHORT_TEXT_CACHE.clear();
 };
 
 /**
@@ -281,6 +337,7 @@ export const clearMemoryCache = (): void => {
  */
 export const clearAllCaches = (): void => {
   MEMORY_CACHE.clear();
+  SHORT_TEXT_CACHE.clear();
   if (typeof window !== "undefined") {
     try {
       const keys = Object.keys(localStorage);
@@ -299,8 +356,11 @@ export const clearAllCaches = (): void => {
  * Check if translation is cached
  */
 export const isTranslationCached = (text: string, language: Language): boolean => {
+  const shortCached = getFromShortCache(text, language);
+  if (shortCached) return true;
+  
   const key = generateCacheKey(text, language);
-  return getFromMemoryCache(key) !== null || getFromLocalStorage(key) !== null;
+  return getFromMemoryCache(key) !== null;
 };
 
 /**

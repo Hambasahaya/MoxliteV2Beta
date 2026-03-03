@@ -13,14 +13,67 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
+    // Disable static imports for better control
+    dangerouslyAllowSVG: true,
   },
 
   // Optimize HTTP/2 server push
   compress: true,
-
-  // Preload scripts
+  
+  // Reduce initial JS payload
+  swcMinify: true,
+  
+  // Optimize package imports
   experimental: {
-    optimizePackageImports: ["@reduxjs/toolkit", "framer-motion"],
+    optimizePackageImports: ["@reduxjs/toolkit", "framer-motion", "three"],
+    // Enable React optimizations
+    React: { useSuspense: true },
+  },
+
+  // Webpack optimization
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Optimize client-side bundles
+      config.optimization = {
+        ...config.optimization,
+        // Split chunks more aggressively
+        splitChunks: {
+          chunks: "all",
+          cacheGroups: {
+            // Core Next.js framework
+            framework: {
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              name: "framework",
+              priority: 40,
+              reuseExistingChunk: true,
+            },
+            // Heavy libraries separate
+            heavy: {
+              test: /[\\/]node_modules[\\/](three|framer-motion|jspdf)[\\/]/,
+              name: "heavy",
+              priority: 30,
+              reuseExistingChunk: true,
+              minSize: 50000,
+            },
+            // Redux and state management
+            vendor: {
+              test: /[\\/]node_modules[\\/](@reduxjs|redux)[\\/]/,
+              name: "vendor",
+              priority: 20,
+              reuseExistingChunk: true,
+            },
+            // Common code shared by multiple chunks
+            common: {
+              minChunks: 2,
+              priority: 10,
+              reuseExistingChunk: true,
+              name: "common",
+            },
+          },
+        },
+      };
+    }
+    return config;
   },
 
   // Set cache headers for static assets

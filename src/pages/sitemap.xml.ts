@@ -22,14 +22,12 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     { url: "/planner", changefreq: "monthly", priority: 0.6 },
   ];
 
-  // Dynamic city routes untuk programmatic SEO
   const cityRoutes = SEO_CITIES.map((city) => ({
     url: `/lighting/${city.toLowerCase()}`,
     changefreq: "weekly",
     priority: 0.8,
   }));
 
-  // Combine all routes
   const allRoutes = [...staticRoutes, ...cityRoutes];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

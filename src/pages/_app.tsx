@@ -4,9 +4,12 @@ import type { AppProps } from "next/app";
 import Script from "next/script";
 import { Inter, Saira } from "next/font/google";
 import dynamic from "next/dynamic";
+import { useEffect } from "react";
 import { ReCaptchaProvider } from "next-recaptcha-v3";
 import { ENV } from "@/constant/ENV";
 import { SnackbarProvider } from "notistack";
+import { initializeCriticalResourceHints } from "@/lib/resourceHints";
+import { initializePerformanceMonitoring } from "@/lib/performanceMonitoring";
 
 const ProgressBar: any = dynamic(
   () => import("@/components/common/ProgressBar"),
@@ -35,6 +38,16 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const saira = Saira({ subsets: ["latin"], variable: "--font-saira" });
 
 export default function App({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    // Initialize optimization systems
+    try {
+      initializeCriticalResourceHints();
+      initializePerformanceMonitoring();
+    } catch (error) {
+      console.error("Failed to initialize optimizations:", error);
+    }
+  }, []);
+
   return (
     <>
       <Script
