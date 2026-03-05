@@ -55,7 +55,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
     if (budgetMatch) {
       setPreferences((prev) => ({
         ...prev,
-        budget: parseInt(budgetMatch[0]) * 1000000, // Convert to actual number
+        budget: parseInt(budgetMatch[0]) * 1000000,
       }));
     }
 
@@ -74,22 +74,29 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       setPreferences((prev) => ({ ...prev, type: "cust project" }));
     }
 
-    // Simulate typing delay (100-500ms)
-    await new Promise((resolve) =>
-      setTimeout(resolve, Math.random() * 400 + 100)
-    );
+    try {
+      // Call Gemini API to generate bot response
+      const botResponse = await generateChatbotResponse(inputValue, preferences);
+      const botMessage: ChatMessage = {
+        id: "bot-" + Date.now(),
+        type: "bot",
+        content: botResponse,
+        timestamp: new Date(),
+      };
 
-    // Generate bot response
-    const botResponse = generateChatbotResponse(inputValue, preferences);
-    const botMessage: ChatMessage = {
-      id: "bot-" + Date.now(),
-      type: "bot",
-      content: botResponse,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, botMessage]);
-    setIsLoading(false);
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Error generating response:", error);
+      const errorMessage: ChatMessage = {
+        id: "bot-" + Date.now(),
+        type: "bot",
+        content: "Maaf, terjadi kesalahan. Silakan coba lagi.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Handle reset chat
@@ -100,41 +107,86 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
     setUploadedFile(null);
   };
 
-  // Handle file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file upload with image preview
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (file && file.type.startsWith('image/')) {
       setUploadedFile(file);
       
-      // Add user message dengan info file
-      const userMessage: ChatMessage = {
-        id: "user-" + Date.now(),
-        type: "user",
-        content: `📎 Upload file: ${file.name}`,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, userMessage]);
-      setIsLoading(true);
-
-      // Simulate typing delay
-      setTimeout(() => {
-        // Dummy response untuk upload
-        const botMessage: ChatMessage = {
-          id: "bot-" + Date.now(),
-          type: "bot",
-          content: "Sorry, masih dalam rancangan mas ellon, tunggu nanti yaa 🛠️\n\nAnalisis file sketsa design panggung akan segera diluncurkan untuk memberikan rekomendasi produk yang lebih akurat!",
+      // Convert image to base64
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result as string;
+        
+        // Add user message dengan preview
+        const userMessage: ChatMessage = {
+          id: "user-" + Date.now(),
+          type: "user",
+          content: `📸 Analisis Design Stage: ${file.name}\n[Image Preview akan ditampilkan]`,
           timestamp: new Date(),
         };
 
-        setMessages((prev) => [...prev, botMessage]);
-        setIsLoading(false);
-      }, 800);
+        setMessages((prev) => [...prev, userMessage]);
+        setIsLoading(true);
+
+        try {
+          // Call API with image data
+          const response = await fetch("/api/chatbot", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: `Analisis design stage/panggung berikut dan berikan rekomendasi lampu yang cocok. Jelaskan: tipe stage, ukuran estimasi, jenis event, kompleksitas lighting, dan rekomendasi produk Moxlite yang sesuai berdasarkan layout yang terlihat.`,
+              imageData: base64Image,
+              imageType: file.type,
+              budget: preferences.budget,
+              type: preferences.type,
+              isImageAnalysis: true,
+            }),
+          });
+
+          const data = await response.json();
+          
+          if (data.success && data.response) {
+            const botMessage: ChatMessage = {
+              id: "bot-" + Date.now(),
+              type: "bot",
+              content: data.response,
+              timestamp: new Date(),
+            };
+            setMessages((prev) => [...prev, botMessage]);
+          } else {
+            const errorMessage: ChatMessage = {
+              id: "bot-" + Date.now(),
+              type: "bot",
+              content: "Maaf, gagal menganalisis gambar. Coba lagi atau gunakan deskripsi text.",
+              timestamp: new Date(),
+            };
+            setMessages((prev) => [...prev, errorMessage]);
+          }
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          const errorMessage: ChatMessage = {
+            id: "bot-" + Date.now(),
+            type: "bot",
+            content: "Terjadi kesalahan saat menganalisis gambar. Silakan coba lagi.",
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, errorMessage]);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      reader.readAsDataURL(file);
 
       // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+    } else {
+      alert("Silakan upload gambar (JPG, PNG, WebP, dll)");
     }
   };
 

@@ -35,121 +35,64 @@ export interface UserPreferences {
 }
 
 /**
- * Main chatbot response generator
- * Analyzes user message and returns intelligent response
+ * Call Chatbot API to generate response using Gemini
  */
-export function generateChatbotResponse(
+export async function callGeminiAPI(userMessage: string, preferences: UserPreferences): Promise<string> {
+  try {
+    console.log("Calling /api/chatbot with Gemini 3 Flash Preview...");
+    
+    const response = await fetch("/api/chatbot", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: userMessage,
+        budget: preferences.budget,
+        type: preferences.type,
+      }),
+    });
+
+    console.log("API Response Status:", response.status);
+
+    if (!response.ok) {
+      const responseText = await response.text().catch(() => "");
+      console.error("Chatbot API Error - Status:", response.status);
+      console.error("Chatbot API Error - Response:", responseText);
+      return getDefaultResponse();
+    }
+
+    const data = await response.json();
+    console.log("API Response received:", data.success ? "✅ Success" : "❌ Failed");
+
+    if (data.success && data.response) {
+      return data.response;
+    }
+
+    console.error("API returned error:", data.error);
+    return getDefaultResponse();
+  } catch (error) {
+    console.error("Error calling Chatbot API:", error);
+    return getDefaultResponse();
+  }
+}
+
+/**
+ * Main chatbot response generator
+ * Uses Gemini API to generate intelligent responses
+ */
+export async function generateChatbotResponse(
   userMessage: string,
   preferences: UserPreferences
-): string {
-  const lowerMessage = userMessage.toLowerCase();
-
-  // Check for price inquiries
-  if (
-    lowerMessage.includes("harga") ||
-    lowerMessage.includes("price") ||
-    lowerMessage.includes("berapa") ||
-    lowerMessage.includes("biaya")
-  ) {
-    return handlePriceInquiry(userMessage, preferences);
+): Promise<string> {
+  try {
+    // Use Gemini API for intelligent responses
+    const response = await callGeminiAPI(userMessage, preferences);
+    return response || getDefaultResponse();
+  } catch (error) {
+    console.error("Error in generateChatbotResponse:", error);
+    return getDefaultResponse();
   }
-
-  // Check for product advantages/features
-  if (
-    lowerMessage.includes("kelebihan") ||
-    lowerMessage.includes("keunggulan") ||
-    lowerMessage.includes("advantage") ||
-    lowerMessage.includes("fitur") ||
-    lowerMessage.includes("feature") ||
-    lowerMessage.includes("spesifikasi") ||
-    lowerMessage.includes("specs") ||
-    lowerMessage.includes("kenapa") ||
-    lowerMessage.includes("bagus") ||
-    lowerMessage.includes("bagus?")
-  ) {
-    return handleAdvantagesInquiry(userMessage, preferences);
-  }
-
-  // Check for product comparison
-  if (
-    lowerMessage.includes("bandingkan") ||
-    lowerMessage.includes("compare") ||
-    lowerMessage.includes("perbedaan") ||
-    lowerMessage.includes("difference") ||
-    lowerMessage.includes("mana yang") ||
-    lowerMessage.includes("mana lebih") ||
-    lowerMessage.includes("bagus mana") ||
-    lowerMessage.includes("lebih baik") ||
-    (lowerMessage.includes("atau") && 
-     (searchProducts(userMessage).length > 0 || 
-      getAllProductPrefixes().some(prefix => lowerMessage.includes(prefix.toLowerCase()))))
-  ) {
-    return handleComparisonInquiry(userMessage, preferences);
-  }
-
-  // Check for product search
-  if (
-    lowerMessage.includes("cari") ||
-    lowerMessage.includes("search") ||
-    lowerMessage.includes("produk") ||
-    lowerMessage.includes("product")
-  ) {
-    return handleProductSearch(userMessage, preferences);
-  }
-
-  // Check for use case recommendations
-  if (
-    lowerMessage.includes("untuk") ||
-    lowerMessage.includes("untuk apa") ||
-    lowerMessage.includes("kebutuhan") ||
-    lowerMessage.includes("acara") ||
-    lowerMessage.includes("event") ||
-    lowerMessage.includes("use case")
-  ) {
-    return handleUseCaseInquiry(userMessage, preferences);
-  }
-
-  // Check for customer type
-  if (
-    lowerMessage.includes("rental") ||
-    lowerMessage.includes("sewa") ||
-    lowerMessage.includes("cust rental")
-  ) {
-    return `✨ Sempurna! Anda memilih model **Rental/Sewa**.
-
-Dengan model ini, Anda bisa membeli unit dari kami dan kami akan membantu merentalkannya untuk pelanggan lain, sehingga investasi Anda lebih menguntungkan.
-
-💰 Berapa budget yang Anda siapkan untuk pembelian? 
-Silakan inputkan angka dalam juta Rupiah (misalnya: 50, 100, 200).
-
-Kami akan merekomendasikan produk terbaik yang sesuai dengan ROI optimal! 🎯`;
-  }
-
-  if (
-    lowerMessage.includes("project") ||
-    lowerMessage.includes("pembelian") ||
-    lowerMessage.includes("beli") ||
-    lowerMessage.includes("cust project")
-  ) {
-    return `✨ Bagus! Anda memilih model **Project/Pembelian**.
-
-Mode ini cocok untuk kebutuhan project spesifik Anda, baik untuk event sekali pakai atau setup permanent di venue.
-
-💰 Berapa budget yang Anda siapkan untuk project ini?
-Silakan inputkan angka dalam juta Rupiah (misalnya: 50, 100, 200).
-
-Kami akan merekomendasikan paket produk terbaik untuk project Anda! 🚀`;
-  }
-
-  // Check for budget input
-  const budgetMatch = userMessage.match(/\d+/);
-  if (budgetMatch) {
-    const budget = parseInt(budgetMatch[0]) * 1000000; // Convert juta to rupiah
-    return handleBudgetBasedRecommendation(budget, preferences);
-  }
-
-  // Default response
-  return getDefaultResponse();
 }
 
 /**

@@ -1,52 +1,42 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
 
-  // Image optimization
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
-    // Disable static imports for better control
     dangerouslyAllowSVG: true,
   },
 
-  // Optimize HTTP/2 server push
   compress: true,
   
  
-  
-  // Optimize package imports
   experimental: {
     optimizePackageImports: ["@reduxjs/toolkit", "framer-motion", "three"],
-    // Enable React optimizations
     
   },
 
-  // Webpack optimization
+  
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Optimize client-side bundles
+    
       config.optimization = {
         ...config.optimization,
-        // Split chunks more aggressively
         splitChunks: {
           chunks: "all",
           cacheGroups: {
-            // Core Next.js framework
             framework: {
               test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
               name: "framework",
               priority: 40,
               reuseExistingChunk: true,
             },
-            // Heavy libraries separate
             heavy: {
               test: /[\\/]node_modules[\\/](three|framer-motion|jspdf)[\\/]/,
               name: "heavy",

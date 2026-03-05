@@ -111,12 +111,11 @@ const stageSlice = createSlice({
       }
     },
 
-    // Select light
+
     selectLight: (state, action: PayloadAction<string | null>) => {
       state.selectedLightId = action.payload;
     },
 
-    // Delete light
     deleteLight: (state, action: PayloadAction<string>) => {
       const stage = state.stages.find((s) => s.id === state.currentStageId);
       if (!stage) return;
@@ -127,7 +126,7 @@ const stageSlice = createSlice({
       }
     },
 
-    // Update stage properties
+
     updateStageProperties: (
       state,
       action: PayloadAction<{
@@ -141,7 +140,6 @@ const stageSlice = createSlice({
       }
     },
 
-    // Clear all lights
     clearAllLights: (state) => {
       const stage = state.stages.find((s) => s.id === state.currentStageId);
       if (stage) {
@@ -150,7 +148,6 @@ const stageSlice = createSlice({
       }
     },
 
-    // Load template for current stage
     loadTemplate: (
       state,
       action: PayloadAction<{ templateId: string; templatePath: string; width: number; height: number; depth: number }>
@@ -162,7 +159,7 @@ const stageSlice = createSlice({
         currentStage.width = action.payload.width;
         currentStage.height = action.payload.height;
         currentStage.depth = action.payload.depth;
-        currentStage.lights = []; // Clear lights when loading new template
+        currentStage.lights = [];
       }
     },
 
