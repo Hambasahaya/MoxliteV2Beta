@@ -109,32 +109,39 @@ KEEP JSON CONCISE. No lengthy explanations.
 Temperature: 0.2 (deterministic only)
 `;
 
+// Clean markdown characters from text
+function cleanMarkdown(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/\*\*/g, '') // Remove bold **
+    .replace(/\*/g, '') // Remove italic *
+    .replace(/`/g, '') // Remove inline code `
+    .replace(/~~/g, '') // Remove strikethrough ~~
+    .replace(/#+\s/g, '') // Remove headers #
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links [text](url) -> text
+    .trim();
+}
+
 // Format stage analysis JSON into professional, clean response with CTA
 function formatStageAnalysis(jsonResponse: string): string {
   try {
     const analysis = JSON.parse(jsonResponse);
     
     let formatted = "\n";
-    formatted += "╔═══════════════════════════════════════════════════════╗\n";
-    formatted += "║  🎭 ANALISIS DESAIN STAGE & REKOMENDASI LAMPU MOXLITE  ║\n";
-    formatted += "╚═══════════════════════════════════════════════════════╝\n\n";
+    formatted += "🎭 ANALISIS DESAIN STAGE & REKOMENDASI LAMPU MOXLITE\n\n";
     
     // Stage Analysis Section
     if (analysis.stage_analysis) {
       const stage = analysis.stage_analysis;
       formatted += "📐 ANALISIS STAGE\n";
-      formatted += "┌─────────────────────────────────────────────────────┐\n";
-      formatted += `│ Ukuran:      ${stage.estimated_size.padEnd(42)}│\n`;
-      formatted += `│ Tipe Event:  ${stage.event_type.substring(0, 42).padEnd(42)}│\n`;
-      formatted += `│ Kompleksitas: ${stage.complexity_level.padEnd(41)}│\n`;
-      formatted += "└─────────────────────────────────────────────────────┘\n\n";
-      
+      formatted += `Ukuran: ${cleanMarkdown(stage.estimated_size)}\n`;
+      formatted += `Tipe Event: ${cleanMarkdown(stage.event_type)}\n`;
+      formatted += `Kompleksitas: ${cleanMarkdown(stage.complexity_level)}\n\n`;
       if (stage.assumptions && stage.assumptions.length > 0) {
         formatted += "💡 Catatan Penting:\n";
         stage.assumptions.forEach((assumption: string) => {
-          // Trim long assumptions to fit nicely
-          const trimmed = assumption.substring(0, 80);
-          formatted += `  • ${trimmed}${assumption.length > 80 ? '...' : ''}\n`;
+          const cleaned = cleanMarkdown(assumption).substring(0, 80);
+          formatted += `  • ${cleaned}${assumption.length > 80 ? '...' : ''}\n`;
         });
         formatted += "\n";
       }
@@ -142,52 +149,50 @@ function formatStageAnalysis(jsonResponse: string): string {
     
     // Lighting Recommendations Section  
     if (analysis.lighting_recommendation && Array.isArray(analysis.lighting_recommendation)) {
-      formatted += "💡 REKOMENDASI PERALATAN MOXLITE\n";
-      formatted += "┌─────────────────────────────────────────────────────┐\n\n";
+      formatted += "💡 REKOMENDASI PERALATAN MOXLITE\n\n";
       
       let totalUnits = 0;
       analysis.lighting_recommendation.forEach((rec: any, idx: number) => {
         totalUnits += rec.estimated_quantity;
-        formatted += `${idx + 1}. ${rec.category}\n`;
+        const cleanCategory = cleanMarkdown(rec.category);
+        const cleanPurpose = cleanMarkdown(rec.purpose);
+        const cleanReasoning = cleanMarkdown(rec.reasoning).substring(0, 70);
+        
+        formatted += `${idx + 1}. ${cleanCategory}\n`;
         formatted += `   📊 Unit: ${rec.estimated_quantity} pcs\n`;
-        formatted += `   🎯 Fungsi: ${rec.purpose}\n`;
-        formatted += `   ✓ Opsi Terbaik: ${rec.reasoning.substring(0, 70)}${rec.reasoning.length > 70 ? '...' : ''}\n\n`;
+        formatted += `   🎯 Fungsi: ${cleanPurpose}\n`;
+        formatted += `   ✓ Opsi Terbaik: ${cleanReasoning}${rec.reasoning.length > 70 ? '...' : ''}\n\n`;
       });
       
-      formatted += `Total Peralatan: ~${totalUnits} unit\n`;
-      formatted += "└─────────────────────────────────────────────────────┘\n\n";
+      formatted += `Total Peralatan: ~${totalUnits} unit\n\n`;
     }
     
     // Budget Strategy Section  
     if (analysis.budget_strategy) {
       const budget = analysis.budget_strategy;
+      const cleanFocus = cleanMarkdown(budget.priority_focus).substring(0, 50);
+      const cleanStrategy = cleanMarkdown(budget.optimization_strategy).substring(0, 50);
+      
       formatted += "💰 STRATEGI ALOKASI BUDGET\n";
-      formatted += "┌─────────────────────────────────────────────────────┐\n";
-      formatted += `│ Fokus Utama:\n│   ${budget.priority_focus.substring(0, 50)}\n`;
-      formatted += `│\n│ Rekomendasi:\n│   ${budget.optimization_strategy.substring(0, 50)}...\n`;
-      formatted += "└─────────────────────────────────────────────────────┘\n\n";
+      formatted += `Fokus Utama: ${cleanFocus}\n`;
+      formatted += `Rekomendasi: ${cleanStrategy}...\n\n`;
     }
     
     // Confidence Level
     if (analysis.confidence_level) {
-      formatted += `✅ Tingkat Kepercayaan: ${analysis.confidence_level}\n\n`;
+      const cleanConfidence = cleanMarkdown(analysis.confidence_level);
+      formatted += `✅ Tingkat Kepercayaan: ${cleanConfidence}\n\n`;
     }
     
     // CTA / Soft Selling Section
-    formatted += "╔═══════════════════════════════════════════════════════╗\n";
-    formatted += "║  📞 LANGKAH SELANJUTNYA                               ║\n";
-    formatted += "╚═══════════════════════════════════════════════════════╝\n";
+    formatted += "\n📞 LANGKAH SELANJUTNYA\n";
     formatted += "✨ Analisis Anda sudah siap! Sekarang waktunya untuk:\n\n";
     formatted += "🎁 DAPATKAN:\n";
     formatted += "  ✓ Quotation Detail GRATIS\n";
     formatted += "  ✓ Konsultasi Teknis dengan Expert Moxlite\n";
     formatted += "  ✓ Demo Unit & Test Drive Area\n";
     formatted += "  ✓ Flexible Rental/Project Solutions\n\n";
-    formatted += "📧 Hubungi Tim Kami:\n";
-    formatted += "  WhatsApp: +62-XXX-XXXX-XXXX\n";
-    formatted += "  Email: sales@moxlite.com\n";
-    formatted += "  Phone: (021) XXXX-XXXX\n\n";
-    formatted += "💬 Atau lanjutkan chat untuk pertanyaan lebih lanjut!\n";
+    formatted += "� Klik tombol Hubungin Tim Sales di bawah untuk menghubungi kami via WhatsApp!\n";
     
     return formatted.trim();
   } catch (e) {
@@ -337,12 +342,9 @@ export default async function handler(
             console.error("Error formatting lighting analysis:", e);
           }
         } else {
-          // For general chat, remove markdown codes and clean up
-          botResponse = botResponse
-            .replace(/```[a-z]*\n?/g, '') // Remove markdown code blocks
-            .replace(/\*\*/g, '') // Remove bold markdown
-            .replace(/\*/g, '') // Remove italic markdown
-            .replace(/`/g, '') // Remove inline code
+          // For general chat, clean up markdown and extra whitespace
+          botResponse = cleanMarkdown(botResponse)
+            .replace(/```[a-z]*\n?/g, '') // Remove code blocks
             .replace(/\n\n\n+/g, '\n\n') // Clean up excessive newlines
             .trim();
         }

@@ -24,6 +24,7 @@ export interface ChatMessage {
   type: "user" | "bot";
   content: string;
   timestamp: Date;
+  imageData?: string; // Base64 encoded image data for preview
 }
 
 // User preferences interface
@@ -114,9 +115,9 @@ function handlePriceInquiry(userMessage: string, preferences: UserPreferences): 
       // User mentioned a product prefix, search for it
       const fallbackResults = searchProducts(matchedPrefix);
       if (fallbackResults.length > 0) {
-        let response = `💰 **Informasi Harga - ${matchedPrefix}**\n\n`;
+        let response = `💰 Informasi Harga - ${matchedPrefix}\n\n`;
         fallbackResults.slice(0, 5).forEach((product, index) => {
-          response += `${index + 1}. **${product.model}**\n`;
+          response += `${index + 1}. ${product.model}\n`;
           response += `   Spesifikasi: ${product.description}\n`;
           response += `   Harga: ${formatPrice(product.price)}\n\n`;
         });
@@ -128,21 +129,21 @@ function handlePriceInquiry(userMessage: string, preferences: UserPreferences): 
     // If still no results, show available product list
     return `📍 Produk yang Anda cari tidak ditemukan.
 
-**Coba cari salah satu produk ini:**
+Coba cari salah satu produk ini:
 
-🔴 **Laser Series:**
+🔴 Laser Series:
 • HADES VI, HADES X, HADES XX, HADES XXX, HADES IP
 
-💡 **Moving Light Series:**
+💡 Moving Light Series:
 • AMOS, AMOS PLUS, AMOS PRO
 • ARES, ARES PLUS
 • SCARLET, SCARLET PLUS, SCARLET HYBRID, IP SCARLET HYBRID
 
-🌊 **Moving Wash Series:**
+🌊 Moving Wash Series:
 • HERA LITE, MEDUSA LITE, IP MEDUSA LITE
 • MEDUSA, MEDUSA PLUS, IP MEDUSA PLUS, IP MEDUSA PRO
 
-✨ **SFX Series:**
+✨ SFX Series:
 • SPARKY, FLAME, BUBBLE FOG MACHINE
 • CO2 BARREL, CO2 SHOT, CO2 GUN
 • CONFETTI GUN, CONFETTI BLASTER
@@ -150,10 +151,10 @@ function handlePriceInquiry(userMessage: string, preferences: UserPreferences): 
 Coba tanyakan: "Harga AMOS" atau "Berapa SCARLET?" 😊`;
   }
 
-  let response = `💰 **Informasi Harga Produk**\n\n`;
+  let response = `💰 Informasi Harga Produk\n\n`;
 
   searchResults.slice(0, 5).forEach((product, index) => {
-    response += `${index + 1}. **${product.model}**\n`;
+    response += `${index + 1}. ${product.model}\n`;
     response += `   Spesifikasi: ${product.description}\n`;
     response += `   Harga: ${formatPrice(product.price)}\n\n`;
   });
@@ -198,31 +199,31 @@ Contoh: "Apa kelebihan AMOS?" atau "Keunggulan SCARLET HYBRID?" 🤔`;
   }
 
   const product = searchResults[0];
-  let response = `📊 **Keunggulan ${product.model}**\n\n`;
+  let response = `📊 Keunggulan ${product.model}\n\n`;
 
-  response += `**Spesifikasi:**\n${product.description}\n\n`;
+  response += `Spesifikasi:\n${product.description}\n\n`;
 
   // Add advantages based on product type
   if (product.series === "Laser") {
-    response += `✨ **Keunggulan Laser Series:**\n`;
+    response += `✨ Keunggulan Laser Series:\n`;
     response += `• Performa laser yang powerful untuk audience besar\n`;
     response += `• Efek visual yang stunning dan modern\n`;
     response += `• Cocok untuk konser, festival, dan acara skala besar\n`;
     response += `• Presisi tinggi dengan kontrol penuh\n\n`;
   } else if (product.series === "Moving Light") {
-    response += `✨ **Keunggulan Moving Light Series:**\n`;
+    response += `✨ Keunggulan Moving Light Series:\n`;
     response += `• Beam sharp dan fokus untuk pencahayaan presisi\n`;
     response += `• BSW/LED dengan color mixing untuk kreativitas unlimited\n`;
     response += `• Cocok untuk theater, concert, dan special events\n`;
     response += `• Efisiensi energi optimal dengan hasil maksimal\n\n`;
   } else if (product.series === "Moving Wash") {
-    response += `✨ **Keunggulan Moving Wash Series:**\n`;
+    response += `✨ Keunggulan Moving Wash Series:\n`;
     response += `• Coverage area luas untuk wash general lighting\n`;
     response += `• B-Eye effect untuk dynamic visual effects\n`;
     response += `• Ideal untuk venue, club, dan general stage wash\n`;
     response += `• Smooth color transitions dan smooth dimming\n\n`;
   } else if (product.series === "SFX") {
-    response += `✨ **Keunggulan SFX Series:**\n`;
+    response += `✨ Keunggulan SFX Series:\n`;
     response += `• Efek dramatis untuk highlight moment di event\n`;
     response += `• CO2, Confetti, Flame - lengkap untuk setiap occasion\n`;
     response += `• Aman dan mudah dioperasikan\n`;
@@ -233,7 +234,7 @@ Contoh: "Apa kelebihan AMOS?" atau "Keunggulan SCARLET HYBRID?" 🤔`;
   const seriesProducts = getProductsBySeries(product.series);
   if (seriesProducts.length > 1) {
     const priceRange = getPriceRange(product.series);
-    response += `💰 **Range Harga ${product.series}:**\n`;
+    response += `💰 Range Harga ${product.series}:\n`;
     response += `• Mulai dari: ${formatPrice(priceRange.min)}\n`;
     response += `• Hingga: ${formatPrice(priceRange.max)}\n`;
     response += `• Rata-rata: ${formatPrice(priceRange.avg)}\n\n`;
@@ -300,7 +301,7 @@ Apa yang ingin Anda bandingkan? 🤔`;
 function generateComparisonResponse(products: Product[], category: string): string {
   if (products.length === 0) return "Produk tidak ditemukan.";
 
-  let response = `📊 **Perbandingan ${category || "Produk"} Moxlite**\n\n`;
+  let response = `📊 Perbandingan ${category || "Produk"} Moxlite\n\n`;
 
   // Create comparison table
   response += `| Model | Spesifikasi | Harga |\n`;
@@ -310,7 +311,7 @@ function generateComparisonResponse(products: Product[], category: string): stri
     response += `| ${product.model} | ${product.description} | ${formatPrice(product.price)} |\n`;
   });
 
-  response += `\n💡 **Analisis:**\n`;
+  response += `\n💡 Analisis:\n`;
 
   // Price analysis
   const prices = products.map((p) => p.price);
@@ -319,13 +320,13 @@ function generateComparisonResponse(products: Product[], category: string): stri
   const bestValue = products.find((p) => p.price === minPrice);
   const premium = products.find((p) => p.price === maxPrice);
 
-  response += `\n💰 **Harga:**\n`;
+  response += `\n💰 Harga:\n`;
   response += `• Paling ekonomis: ${bestValue?.model} (${formatPrice(minPrice)})\n`;
   response += `• Paling premium: ${premium?.model} (${formatPrice(maxPrice)})\n`;
   response += `• Selisih harga: ${formatPrice(maxPrice - minPrice)}\n`;
 
   // Add feature-based recommendation
-  response += `\n🎯 **Analisis Fitur:**\n`;
+  response += `\n🎯 Analisis Fitur:\n`;
   products.forEach((product) => {
     const hasLED = product.description.toLowerCase().includes("led");
     const hasLamp = product.description.toLowerCase().includes("lamp");
@@ -343,19 +344,19 @@ function generateComparisonResponse(products: Product[], category: string): stri
     response += `• ${product.model}: ${features.length > 0 ? features.join(" | ") : "Fitur standar"}\n`;
   });
 
-  response += `\n📈 **Rekomendasi Berdasarkan Kebutuhan:**\n`;
+  response += `\n📈 Rekomendasi Berdasarkan Kebutuhan:\n`;
   if (bestValue) {
-    response += `💰 **Budget terbatas?** → ${bestValue.model} (${formatPrice(bestValue.price)})\n`;
+    response += `💰 Budget terbatas? → ${bestValue.model} (${formatPrice(bestValue.price)})\n`;
   }
   if (products.length > 1) {
     const midOption = products[Math.floor(products.length / 2)];
-    response += `⚖️ **Keseimbangan Harga-Performa?** → ${midOption.model} (${formatPrice(midOption.price)})\n`;
+    response += `⚖️ Keseimbangan Harga-Performa? → ${midOption.model} (${formatPrice(midOption.price)})\n`;
   }
   if (premium) {
-    response += `👑 **Performa Terbaik?** → ${premium.model} (${formatPrice(premium.price)})\n`;
+    response += `👑 Performa Terbaik? → ${premium.model} (${formatPrice(premium.price)})\n`;
   }
 
-  response += `\n💡 **Kesimpulan:** Pilih berdasarkan kebutuhan Anda - apakah prioritas budget, fitur lengkap, atau performa maksimal?\n`;
+  response += `\n💡 Kesimpulan: Pilih berdasarkan kebutuhan Anda - apakah prioritas budget, fitur lengkap, atau performa maksimal?\n`;
   response += `❓ Tanyakan lebih detail tentang produk mana yang cocok untuk kebutuhan Anda! 😊`;
 
   return response;
@@ -527,29 +528,14 @@ export function getGreetingMessage(): ChatMessage {
  * Default response
  */
 function getDefaultResponse(): string {
-  return `👋 **Selamat Datang di Moxlite AI Assistant!**
+  return `👋 Halo! Selamat datang di Moxlite AI Assistant.
 
-Saya siap membantu Anda menemukan solusi lighting yang sempurna.
+Saya siap membantu Anda menemukan solusi lighting yang tepat untuk kebutuhan Anda.
 
-**Apa yang bisa saya bantu?**
+Anda dapat mencari:
+• Informasi harga dan produk
+• Rekomendasi equipment berdasarkan budget
+• Konsultasi solusi lighting untuk event Anda
 
-🎯 **Tanyakan tentang:**
-• 💰 **Harga** - "Berapa harga AMOS?" atau "Produk di bawah 15 juta?"
-• 🌟 **Keunggulan produk** - "Apa kelebihan SCARLET HYBRID?"
-• 📊 **Perbandingan** - "Bandingkan AMOS vs ARES"
-• 🔍 **Produk spesifik** - "Cari produk Laser" atau "Apa itu MEDUSA?"
-• 🎪 **Rekomendasi** - "Produk untuk concert" atau "Untuk wedding apa?"
-
-📋 **Atau mulai dengan:**
-1️⃣ Pilih tipe: **Rental/Sewa** atau **Project/Pembelian**
-2️⃣ Sebutkan budget dalam juta rupiah
-3️⃣ Biarkan kami rekomendasikan solusi terbaik!
-
-**Kategori Produk Kami:**
-🔴 Laser - Performanya tinggi untuk skala besar
-💡 Moving Light - Beam & Wash profesional
-🌊 Moving Wash - Coverage luas & efek dinamis
-✨ SFX - Special effects untuk wow moment
-
-Mari mulai! Apa yang bisa kami rekomendasikan untuk Anda hari ini? 🚀`;
+Bagaimana cara saya membantu Anda hari ini?`;
 }

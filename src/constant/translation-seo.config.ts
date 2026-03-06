@@ -180,11 +180,11 @@ export const CACHE_INVALIDATION = {
   rules: [
     {
       pattern: /content|article|product/,
-      invalidateAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      invalidateAge: 7 * 24 * 60 * 60 * 1000
     },
     {
       pattern: /seo|meta|description/,
-      invalidateAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+      invalidateAge: 14 * 24 * 60 * 60 * 1000, 
     },
   ],
 

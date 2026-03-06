@@ -71,7 +71,6 @@ export default function TemplatePickerModal({
           </div>
         </div>
 
-        {/* Templates Grid */}
         <div className="p-6">
           {filteredTemplates.length === 0 ? (
             <div className="text-center py-12">
