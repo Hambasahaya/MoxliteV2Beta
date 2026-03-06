@@ -24,7 +24,6 @@ const stageSlice = createSlice({
   name: "stage",
   initialState,
   reducers: {
-    // Create new stage
     createStage: (state, action: PayloadAction<Omit<Stage, "id" | "lights">>) => {
       const newStage: Stage = {
         ...action.payload,
@@ -41,7 +40,6 @@ const stageSlice = createSlice({
       state.selectedLightId = null;
     },
 
-    // Add light to stage
     addLightToStage: (
       state,
       action: PayloadAction<Omit<Light, "id">>
@@ -60,7 +58,6 @@ const stageSlice = createSlice({
       state.selectedLightId = newLight.id;
     },
 
-    // Update light position
     updateLightPosition: (
       state,
       action: PayloadAction<{
@@ -77,7 +74,6 @@ const stageSlice = createSlice({
       }
     },
 
-    // Update light rotation
     updateLightRotation: (
       state,
       action: PayloadAction<{
@@ -94,7 +90,6 @@ const stageSlice = createSlice({
       }
     },
 
-    // Update light properties
     updateLightProperties: (
       state,
       action: PayloadAction<{
@@ -163,7 +158,6 @@ const stageSlice = createSlice({
       }
     },
 
-    // Clear template from current stage
     clearTemplate: (state) => {
       const currentStage = state.stages.find((s) => s.id === state.currentStageId);
       if (currentStage) {
