@@ -147,7 +147,6 @@ export const initializeCriticalResourceHints = () => {
   preconnect("https://backstage.moxlite.com", true);
 
   // Preconnect to translation API
-  preconnect("https://api.mymemory.translated.net", true);
 
   // DNS prefetch for tracking
   dnsPrefetch("https://www.googletagmanager.com");

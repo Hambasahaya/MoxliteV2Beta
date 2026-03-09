@@ -9,34 +9,21 @@ import { ENV } from "@/constant/ENV";
 import { preloadTranslation } from "@/lib/translationService";
 import moment from "moment";
 import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 
 const NewsDetail = ({ news }: iNewsDetailProps) => {
   const router = useRouter();
-  const [language, setLanguage] = useState<Language>("en");
+  const { i18n } = useTranslation();
+  const language = i18n.language as Language;
   const [translatedTitle, setTranslatedTitle] = useState(news.title);
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("newsLanguage") as Language | null;
-    if (savedLanguage) {
-      setLanguage(savedLanguage);
-      // Preload translation for better UX
-      if (savedLanguage === "id") {
-        preloadTranslation(news.title, savedLanguage).then(setTranslatedTitle).catch(() => {});
-      }
-    }
-  }, [news.title]);
-
-  const handleLanguageChange = async (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem("newsLanguage", lang);
-
-    if (lang === "en") {
-      setTranslatedTitle(news.title);
+    if (language === "id") {
+      preloadTranslation(news.title, "id").then(setTranslatedTitle).catch(() => {});
     } else {
-      // Preload translation
-      preloadTranslation(news.title, lang).then(setTranslatedTitle).catch(() => {});
+      setTranslatedTitle(news.title);
     }
-  };
+  }, [news.title, language]);
 
   const currentUrl = `${ENV.NEXT_PUBLIC_FE_BASE_URL}${router.asPath}`;
   const enUrl = `${ENV.NEXT_PUBLIC_FE_BASE_URL}/news/${news.slug}`;
@@ -101,7 +88,7 @@ const NewsDetail = ({ news }: iNewsDetailProps) => {
         }}
       >
         <>
-          <LanguageToggle onLanguageChange={handleLanguageChange} currentLanguage={language} position="floating" />
+          <LanguageToggle position="floating" />
           <div className="w-full flex justify-center">
             <div className="relative p-[24px] md:p-0 lg:pt-[56px] lg:pb-[80px] w-full md:w-[80%] lg:w-[60%] flex flex-col items-center">
               <div className="relative w-full">
@@ -117,7 +104,7 @@ const NewsDetail = ({ news }: iNewsDetailProps) => {
                 </h1>
               </div>
               <div className="w-full">
-                <TranslatedContent content={news.content} language={language} type="HTML" />
+                <TranslatedContent content={news.content} type="HTML" />
               </div>
             </div>
           </div>

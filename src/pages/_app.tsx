@@ -11,6 +11,9 @@ import { SnackbarProvider } from "notistack";
 import { initializeCriticalResourceHints } from "@/lib/resourceHints";
 import { initializePerformanceMonitoring } from "@/lib/performanceMonitoring";
 
+// initialize i18next (detection + react bindings)
+import "@/i18n";
+
 const ProgressBar: any = dynamic(
   () => import("@/components/common/ProgressBar"),
   {
@@ -26,13 +29,6 @@ const FloatingChatButton: any = dynamic(
   }
 );
 
-const PlannerAccessButton: any = dynamic(
-  () => import("@/components/planner/PlannerAccessButton"),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-);
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const saira = Saira({ subsets: ["latin"], variable: "--font-saira" });
@@ -73,7 +69,6 @@ export default function App({ Component, pageProps }: AppProps) {
             <Component {...pageProps} />
             <ProgressBar />
             <FloatingChatButton />
-            <PlannerAccessButton />
           </div>
         </ReCaptchaProvider>
       </SnackbarProvider>

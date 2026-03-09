@@ -128,7 +128,7 @@ export const SEOHead = ({
 
       {/* Preload Critical Resources */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="dns-prefetch" href="https://api.mymemory.translated.net" />
+
 
       {/* Custom children for additional meta tags */}
       {children}

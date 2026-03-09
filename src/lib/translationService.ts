@@ -1,4 +1,5 @@
 import { Language } from "@/components/common/LanguageToggle";
+import i18n from "@/i18n"; // get current language when none provided
 
 // Multi-layer caching system for optimal performance
 const MEMORY_CACHE: Map<string, { value: string; timestamp: number }> = new Map();
@@ -9,7 +10,8 @@ const SHORT_TEXT_CACHE: Map<string, string> = new Map(); // Ultra-fast cache for
 const CACHE_TTL = 30 * 24 * 60 * 60 * 1000; // 30 days
 const BATCH_DELAY = 10; // Reduced from 30ms - ultra-fast batching
 const MAX_BATCH_SIZE = 50; // Increased from 20 - process more items at once
-const TRANSLATION_TIMEOUT = 2000; // Reduced from 3s - fail much faster
+// Translation timeout used by client fetch. set to 10s to avoid premature aborts
+const TRANSLATION_TIMEOUT = 10000;
 const API_RETRY_ATTEMPTS = 0; // No retries - fail fast instead
 const SHORT_TEXT_THRESHOLD = 100; // Increased from 50 - cache more texts
 
@@ -165,7 +167,7 @@ const translateTextDirect = async (
     return text;
   }
 
-  const cacheKey = generateCacheKey(text, targetLanguage);
+  const cacheKey = generateCacheKey(text, targetLanguage); // note: handled above by language variable
   
   // Ultra-fast: Try short text cache first
   const shortCached = getFromShortCache(text, targetLanguage);
@@ -188,31 +190,24 @@ const translateTextDirect = async (
   */
 
   try {
-    // Use fastest, most reliable API - mymemory
+    // Proxy request through our own API route to avoid CORS
+    // send the entire trimmed text to the proxy (long queries are allowed)
     const params = new URLSearchParams({
-      q: trimmed.substring(0, 500),
-      langpair: `en|${targetLanguage === "id" ? "id" : "en"}`,
+      q: trimmed,
+      lang: targetLanguage === "id" ? "id" : "en",
     });
 
-    const response = await fetch(
-      `https://api.mymemory.translated.net/get?${params.toString()}`,
-      { 
-        signal: AbortSignal.timeout(TRANSLATION_TIMEOUT),
-        // Add cache-busting but also allow 304s
-        headers: { 'Cache-Control': 'max-age=604800' }
-      }
-    );
+    const response = await fetch(`/api/translate?${params.toString()}`, {
+      headers: { 'Cache-Control': 'no-cache' },
+    });
 
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      throw new Error(`Proxy translation API error: ${response.status}`);
     }
 
     const data = await response.json();
-    
-    if (data.responseStatus === 200 && data.responseData?.translatedText) {
-      let translatedText = data.responseData.translatedText.trim();
-      
-      // Save to cache
+    if (data.translatedText) {
+      let translatedText = data.translatedText.trim();
       saveToCache(cacheKey, translatedText, text, targetLanguage);
       return translatedText;
     }
@@ -240,9 +235,10 @@ const translateTextDirect = async (
  */
 export const translateText = async (
   text: string,
-  targetLanguage: Language
+  targetLanguage?: Language
 ): Promise<string> => {
-  if (targetLanguage === "en" || !text) {
+  const language: Language = targetLanguage || (typeof window !== 'undefined' ? (i18n.language as Language) : 'en');
+  if (language === "en" || !text) {
     return text;
   }
 
@@ -254,10 +250,10 @@ export const translateText = async (
     return text;
   }
 
-  const cacheKey = generateCacheKey(text, targetLanguage);
+  const cacheKey = generateCacheKey(text, language);
 
   // Check immediate cache first (ultra-fast)
-  const shortCached = getFromShortCache(text, targetLanguage);
+  const shortCached = getFromShortCache(text, language);
   if (shortCached) return shortCached;
 
   const memoryCached = getFromMemoryCache(cacheKey);
@@ -269,7 +265,7 @@ export const translateText = async (
   }
 
   const promise = new Promise<string>((resolve, reject) => {
-    batchQueue.push({ text, language: targetLanguage, resolve, reject });
+    batchQueue.push({ text, language, resolve, reject });
 
     // Clear existing timeout and set new one with shorter delay
     if (batchTimeout) clearTimeout(batchTimeout);

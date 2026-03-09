@@ -19,7 +19,6 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     { url: "/about", changefreq: "monthly", priority: 0.8 },
     { url: "/contact", changefreq: "monthly", priority: 0.7 },
     { url: "/faq", changefreq: "monthly", priority: 0.7 },
-    { url: "/planner", changefreq: "monthly", priority: 0.6 },
   ];
 
   const cityRoutes = SEO_CITIES.map((city) => ({

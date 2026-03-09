@@ -27,7 +27,7 @@ export const TRANSLATION_CONFIG = {
   // API Configuration
   api: {
     // Primary API
-    primary: "https://api.mymemory.translated.net/get",
+    primary: "/api/translate",
     // Fallback API
     fallback: "https://translate.googleapis.com/translate_a/element.js",
     // Retry attempts untuk failed requests
