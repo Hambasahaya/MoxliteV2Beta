@@ -20,8 +20,94 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [preferences, setPreferences] = useState<UserPreferences>({});
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [userTypeSelected, setUserTypeSelected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const sessionIdRef = useRef<string>("");
+  const messageCountRef = useRef<number>(0);
+  const sessionStartRef = useRef<Date>(new Date());
+
+  // Initialize and track session
+  useEffect(() => {
+    if (isOpen) {
+      // Session started
+      sessionStartRef.current = new Date();
+      sessionIdRef.current = `session-${Date.now()}`;
+      messageCountRef.current = 0;
+
+      // Track session start
+      const trackSessionStart = async () => {
+        try {
+          // Get user location from IP
+          const geoResponse = await fetch(
+            "https://ipapi.co/json/",
+            { method: "GET" }
+          ).catch(() => null);
+          
+          let geoData: any = {};
+          if (geoResponse) {
+            geoData = await geoResponse.json();
+          }
+
+          // Send session start to analytics
+          const res = await fetch("/api/admin/chatbot-analytics?action=add-session", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-admin-token": process.env.NEXT_PUBLIC_ADMIN_TOKEN || "moxlite-admin-2024",
+            },
+            body: JSON.stringify({
+              sessionStart: new Date().toISOString(),
+              country: geoData.country_name || "Unknown",
+              city: geoData.city || "Unknown",
+              region: geoData.region || "Unknown",
+              userType: preferences.type || "unknown",
+            }),
+          }).catch((err) => {
+            console.log("Analytics tracking (non-critical):", err);
+            return null;
+          });
+
+          if (res?.ok) {
+            const data = await res.json();
+            if (data.data?.id) {
+              sessionIdRef.current = data.data.id;
+            }
+          }
+        } catch (error) {
+          console.log("Analytics error (non-critical):", error);
+        }
+      };
+
+      trackSessionStart();
+    } else {
+      // Session ended - send session end
+      if (sessionIdRef.current) {
+        const trackSessionEnd = async () => {
+          try {
+            await fetch("/api/admin/chatbot-analytics?action=update-session", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "x-admin-token": process.env.NEXT_PUBLIC_ADMIN_TOKEN || "moxlite-admin-2024",
+              },
+              body: JSON.stringify({
+                sessionId: sessionIdRef.current,
+                messageCount: messageCountRef.current,
+                sessionEnd: new Date().toISOString(),
+              }),
+            }).catch((err) => {
+              console.log("Analytics tracking (non-critical):", err);
+            });
+          } catch (error) {
+            console.log("Analytics error (non-critical):", error);
+          }
+        };
+
+        trackSessionEnd();
+      }
+    }
+  }, [isOpen, preferences.type]);
 
   // Auto scroll ke bottom
   const scrollToBottom = () => {
@@ -32,11 +118,85 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
     scrollToBottom();
   }, [messages]);
 
+  // Auto-save questions to knowledge base
+  const saveToKnowledgeBase = async (
+    question: string,
+    answer: string
+  ) => {
+    // Determine category based on keywords
+    const lowerQuestion = question.toLowerCase();
+    let category = "General";
+
+    if (
+      lowerQuestion.includes("harga") ||
+      lowerQuestion.includes("biaya") ||
+      lowerQuestion.includes("price")
+    ) {
+      category = "Pricing";
+    } else if (
+      lowerQuestion.includes("spesifikasi") ||
+      lowerQuestion.includes("spec") ||
+      lowerQuestion.includes("fitur")
+    ) {
+      category = "Product Specs";
+    } else if (
+      lowerQuestion.includes("rental") ||
+      lowerQuestion.includes("sewa")
+    ) {
+      category = "Rental Info";
+    } else if (
+      lowerQuestion.includes("project") ||
+      lowerQuestion.includes("projek")
+    ) {
+      category = "Project Services";
+    } else if (
+      lowerQuestion.includes("garansi") ||
+      lowerQuestion.includes("warranty")
+    ) {
+      category = "Warranty & Support";
+    } else if (
+      lowerQuestion.includes("kontak") ||
+      lowerQuestion.includes("hubungi")
+    ) {
+      category = "Contact";
+    }
+
+    // Extract keywords (simple word extraction)
+    const words = question
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(
+        (word) =>
+          word.length > 3 && !["yang", "dari", "untuk", "dengan", "pada"].includes(word)
+      )
+      .slice(0, 5);
+
+    // Call knowledge base API to save
+    await fetch("/api/admin/knowledge-base", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-token": process.env.NEXT_PUBLIC_ADMIN_TOKEN || "moxlite-admin-2024",
+      },
+      body: JSON.stringify({
+        category,
+        question: question.trim(),
+        answer: answer.trim(),
+        keywords: [...new Set(words)], // Remove duplicates
+      }),
+    }).catch((err) => {
+      console.log("KB save failed:", err);
+    });
+  };
+
   // Handle send message
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!inputValue.trim()) return;
+
+    // Increment message count for analytics
+    messageCountRef.current += 1;
 
     // Tambah user message
     const userMessage: ChatMessage = {
@@ -85,6 +245,13 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       };
 
       setMessages((prev) => [...prev, botMessage]);
+
+      // Auto-save user question to knowledge base (non-blocking)
+      try {
+        await saveToKnowledgeBase(inputValue, botResponse);
+      } catch (error) {
+        console.log("KB save error (non-critical):", error);
+      }
     } catch (error) {
       console.error("Error generating response:", error);
       const errorMessage: ChatMessage = {
@@ -113,6 +280,27 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
     if (file && file.type.startsWith('image/')) {
       setUploadedFile(file);
       
+      // Track upload usage
+      if (sessionIdRef.current) {
+        try {
+          await fetch("/api/admin/chatbot-analytics?action=update-session", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "x-admin-token": process.env.NEXT_PUBLIC_ADMIN_TOKEN || "moxlite-admin-2024",
+            },
+            body: JSON.stringify({
+              sessionId: sessionIdRef.current,
+              usedUpload: true,
+            }),
+          }).catch((err) => {
+            console.log("Analytics tracking (non-critical):", err);
+          });
+        } catch (error) {
+          console.log("Analytics error (non-critical):", error);
+        }
+      }
+      
       // Convert image to base64
       const reader = new FileReader();
       reader.onloadend = async () => {
@@ -132,7 +320,9 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
 
         try {
           // Call API with image data
-          const response = await fetch("/api/chatbot", {
+          const apiBaseUrl = typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000';
+          const chatbotUrl = `${apiBaseUrl}/api/chatbot`;
+          const response = await fetch(chatbotUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -189,16 +379,130 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
     }
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     generateQuotationPDF({
       messages,
       preferences,
       recommendations: [],
     });
+    
+    // Track export usage
+    if (sessionIdRef.current) {
+      try {
+        await fetch("/api/admin/chatbot-analytics?action=update-session", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "x-admin-token": process.env.NEXT_PUBLIC_ADMIN_TOKEN || "moxlite-admin-2024",
+          },
+          body: JSON.stringify({
+            sessionId: sessionIdRef.current,
+            usedExport: true,
+          }),
+        }).catch((err) => {
+          console.log("Analytics tracking (non-critical):", err);
+        });
+      } catch (error) {
+        console.log("Analytics error (non-critical):", error);
+      }
+    }
+  };
+
+  // Handle user type selection
+  const handleUserTypeSelection = (type: "cust rental" | "cust project") => {
+    setPreferences((prev) => ({ ...prev, type }));
+    setUserTypeSelected(true);
+    setMessages([getGreetingMessage()]);
+  };
+
+  const handleResetChat = () => {
+    setUserTypeSelected(false);
+    setMessages([getGreetingMessage()]);
+    setPreferences({});
   };
 
   if (!isOpen) return null;
 
+  // User Type Selection Screen
+  if (!userTypeSelected) {
+    return (
+      <div className="fixed inset-0 z-[110] flex items-center justify-center md:justify-end p-2 sm:p-4 md:p-6">
+        {/* Overlay */}
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+          onClick={onClose}
+        ></div>
+
+        {/* Selection Box */}
+        <div className="relative w-full h-auto sm:h-auto md:w-[440px] bg-white rounded-2xl shadow-2xl flex flex-col z-[110] overflow-hidden max-h-[95vh] p-6 sm:p-8">
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl transition"
+          >
+            ✕
+          </button>
+
+          {/* Header */}
+          <div className="text-center mb-8 mt-4">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-[#667eea] to-[#764ba2] rounded-full flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 24 24" className="w-8 h-8 fill-white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3-8c0 1.66-1.34 3-3 3s-3-1.34-3-3 1.34-3 3-3 3 1.34 3 3z"/>
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Moxlite Assistant</h2>
+            <p className="text-gray-600 mb-2">Selamat datang! 👋</p>
+            <p className="text-sm text-gray-500">Pilih jenis layanan Anda untuk mendapatkan rekomendasi yang tepat</p>
+          </div>
+
+          {/* Selection Buttons */}
+          <div className="space-y-3 mb-6">
+            {/* Rental Option */}
+            <button
+              onClick={() => handleUserTypeSelection("cust rental")}
+              className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#667eea] hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition group flex items-start gap-4"
+            >
+              <div className="text-3xl">🏪</div>
+              <div className="flex-1 text-left">
+                <h3 className="font-bold text-gray-800 group-hover:text-[#667eea] transition text-lg mb-1">
+                  Rental Lampu
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Sewa peralatan lighting untuk event atau acara Anda
+                </p>
+              </div>
+              <div className="text-xl group-hover:text-[#667eea] transition">→</div>
+            </button>
+
+            {/* Project Option */}
+            <button
+              onClick={() => handleUserTypeSelection("cust project")}
+              className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#764ba2] hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 transition group flex items-start gap-4"
+            >
+              <div className="text-3xl">🎬</div>
+              <div className="flex-1 text-left">
+                <h3 className="font-bold text-gray-800 group-hover:text-[#764ba2] transition text-lg mb-1">
+                  Project Khusus
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Konsultasi dan solusi custom untuk project instalasi tetap
+                </p>
+              </div>
+              <div className="text-xl group-hover:text-[#764ba2] transition">→</div>
+            </button>
+          </div>
+
+          {/* Footer Info */}
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 text-sm text-gray-600 border border-purple-100">
+            <p className="font-semibold text-gray-700 mb-1">💡 Tips</p>
+            <p>Pemilihan ini membantu kami memberikan rekomendasi produk dan harga yang paling sesuai dengan kebutuhan Anda.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main Chat Interface
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center md:justify-end p-2 sm:p-4 md:p-6">
       {/* Overlay */}
@@ -209,27 +513,42 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
 
       {/* Chat Box - Responsive Design */}
       <div className="relative w-full h-[calc(100vh-1rem)] sm:h-[680px] md:w-[440px] md:h-[720px] bg-white rounded-2xl shadow-2xl flex flex-col z-[110] overflow-hidden max-h-[95vh]">
-        {/* Gradient Background Header */}
-        <div className="relative bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 text-white p-3 sm:p-5 rounded-t-2xl flex justify-between items-start flex-shrink-0">
+        {/* Gradient Background Header - Purple Theme */}
+        <div className="relative bg-gradient-to-r from-[#667eea] via-[#667eea] to-[#764ba2] text-white p-3 sm:p-5 rounded-t-2xl flex justify-between items-start flex-shrink-0">
           {/* Decorative blobs */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
           
           <div className="relative z-10 flex-1">
             <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
-              <div className="text-2xl sm:text-3xl">💡</div>
+              <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center flex-shrink-0">
+                <svg viewBox="0 0 24 24" className="w-full h-full fill-white" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3-8c0 1.66-1.34 3-3 3s-3-1.34-3-3 1.34-3 3-3 3 1.34 3 3z"/>
+                </svg>
+              </div>
               <div>
                 <h3 className="font-bold text-base sm:text-lg">Moxlite Assistant</h3>
-                <p className="text-xs sm:text-sm text-blue-100">AI Rekomendasi Lampu</p>
+                <p className="text-xs sm:text-sm text-purple-100">
+                  {preferences.type === "cust rental" ? "🏪 Rental Mode" : "🎬 Project Mode"}
+                </p>
               </div>
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="relative z-10 text-white hover:bg-white/20 rounded-full p-1.5 sm:p-2 transition flex-shrink-0"
-          >
-            ✕
-          </button>
+          <div className="relative z-10 flex gap-2 items-center flex-shrink-0">
+            <button
+              onClick={handleResetChat}
+              className="text-white hover:bg-white/20 rounded-full p-1.5 sm:p-2 transition text-sm sm:text-base"
+              title="Ubah jenis layanan"
+            >
+              🔄
+            </button>
+            <button
+              onClick={onClose}
+              className="text-white hover:bg-white/20 rounded-full p-1.5 sm:p-2 transition flex-shrink-0"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Messages Container */}
@@ -254,7 +573,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
                 <div
                   className={`px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-2xl text-xs sm:text-sm whitespace-pre-wrap leading-relaxed transition break-words ${
                     message.type === "user"
-                      ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-none shadow-md"
+                      ? "bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white rounded-br-none shadow-md"
                       : "bg-white text-gray-800 border border-gray-200 rounded-bl-none shadow-sm"
                   }`}
                 >
@@ -283,9 +602,9 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
             <div className="flex justify-start">
               <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-none px-4 py-3 shadow-sm leading-relaxed">
                 <div className="flex gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: "0.1s"}}></div>
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></div>
+                  <div className="w-2 h-2 bg-[#667eea] rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-[#667eea] rounded-full animate-bounce" style={{animationDelay: "0.1s"}}></div>
+                  <div className="w-2 h-2 bg-[#667eea] rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></div>
                 </div>
               </div>
             </div>
@@ -303,12 +622,12 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Ketik pesan..."
               disabled={isLoading}
-              className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 text-xs sm:text-sm"
+              className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#667eea] focus:border-transparent disabled:bg-gray-100 text-xs sm:text-sm"
             />
             <button
               type="submit"
               disabled={isLoading || !inputValue.trim()}
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-full transition disabled:opacity-50 font-medium text-sm flex-shrink-0"
+              className="bg-gradient-to-r from-[#667eea] to-[#764ba2] hover:from-[#5568d3] hover:to-[#653a8a] text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-full transition disabled:opacity-50 font-medium text-sm flex-shrink-0"
             >
               ➤
             </button>
@@ -331,7 +650,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
             <button
               onClick={handleExportPDF}
               disabled={messages.length <= 1}
-              className="text-[10px] sm:text-xs bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg transition disabled:opacity-50 flex flex-col items-center justify-center gap-0.5 sm:gap-1 font-medium shadow-md"
+              className="text-[10px] sm:text-xs bg-gradient-to-br from-[#667eea] to-[#764ba2] hover:from-[#5568d3] hover:to-[#653a8a] text-white px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg transition disabled:opacity-50 flex flex-col items-center justify-center gap-0.5 sm:gap-1 font-medium shadow-md"
               title="Export quotation PDF"
             >
               <span className="text-sm sm:text-base">📄</span>

@@ -6,17 +6,27 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_FE_BASE_URL: ${NEXT_PUBLIC_FE_BASE_URL}
-        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID}
-        NEXT_PUBLIC_RECAPTCHA_KEY: ${NEXT_PUBLIC_RECAPTCHA_KEY}
-        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+        NEXT_PUBLIC_FE_BASE_URL: ${NEXT_PUBLIC_FE_BASE_URL:-https://moxlite.com}
+        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID:-G-4L66RV0D2F}
+        NEXT_PUBLIC_RECAPTCHA_KEY: ${NEXT_PUBLIC_RECAPTCHA_KEY:-6LczF_MqAAAAAB92sOvF0LRHCTt2JdJ4xJ6VFl5b}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-https://backstage.moxlite.com}
     ports:
       - "3000:3000"
     env_file:
       - .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
     networks:
       - frontend-network
       - backend-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 networks:
   frontend-network:

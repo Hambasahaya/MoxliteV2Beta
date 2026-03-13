@@ -40,9 +40,11 @@ export interface UserPreferences {
  */
 export async function callGeminiAPI(userMessage: string, preferences: UserPreferences): Promise<string> {
   try {
-    console.log("Calling /api/chatbot with Gemini 3 Flash Preview...");
+    const apiBaseUrl = typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000';
+    const chatbotUrl = `${apiBaseUrl}/api/chatbot`;
+    console.log("Calling", chatbotUrl, "with Gemini 3 Flash Preview...");
     
-    const response = await fetch("/api/chatbot", {
+    const response = await fetch(chatbotUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

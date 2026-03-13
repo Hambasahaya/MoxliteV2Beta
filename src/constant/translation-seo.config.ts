@@ -27,7 +27,7 @@ export const TRANSLATION_CONFIG = {
   // API Configuration
   api: {
     // Primary API
-    primary: "/api/translate",
+    primary: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000'}/api/translate`,
     // Fallback API
     fallback: "https://translate.googleapis.com/translate_a/element.js",
     // Retry attempts untuk failed requests

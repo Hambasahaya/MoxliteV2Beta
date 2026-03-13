@@ -208,10 +208,13 @@ export const logPerformanceReport = () => {
  */
 export const reportMetricsToAnalytics = async (
   metrics: Partial<PerformanceMetrics>,
-  endpoint = "/api/analytics/performance"
+  endpoint?: string
 ) => {
   try {
-    await fetch(endpoint, {
+    const apiBaseUrl = typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000';
+    const analyticsEndpoint = endpoint || `${apiBaseUrl}/api/analytics/performance`;
+    
+    await fetch(analyticsEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

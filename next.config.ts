@@ -2,8 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+
   eslint: {
     ignoreDuringBuilds: true,
+  },
+
+  env: {
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   },
 
   images: {
@@ -15,17 +20,13 @@ const nextConfig: NextConfig = {
   },
 
   compress: true,
-  
- 
+
   experimental: {
     optimizePackageImports: ["@reduxjs/toolkit", "framer-motion", "three"],
-    
   },
 
-  
   webpack: (config, { isServer }) => {
     if (!isServer) {
-    
       config.optimization = {
         ...config.optimization,
         splitChunks: {
@@ -44,14 +45,12 @@ const nextConfig: NextConfig = {
               reuseExistingChunk: true,
               minSize: 50000,
             },
-            // Redux and state management
             vendor: {
               test: /[\\/]node_modules[\\/](@reduxjs|redux)[\\/]/,
               name: "vendor",
               priority: 20,
               reuseExistingChunk: true,
             },
-            // Common code shared by multiple chunks
             common: {
               minChunks: 2,
               priority: 10,
@@ -65,10 +64,18 @@ const nextConfig: NextConfig = {
     return config;
   },
 
-  // Set cache headers for static assets
+  // 🔧 FIX API SSR ERROR
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/:path*`,
+      },
+    ];
+  },
+
   async headers() {
     return [
-      // Cache images for 1 year (31536000 seconds)
       {
         source: "/image/:path*",
         headers: [
@@ -76,13 +83,8 @@ const nextConfig: NextConfig = {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
           },
-          {
-            key: "Expires",
-            value: new Date(Date.now() + 31536000000).toUTCString(),
-          },
         ],
       },
-      // Cache SVG icons for 1 year
       {
         source: "/icon/:path*",
         headers: [
@@ -90,13 +92,8 @@ const nextConfig: NextConfig = {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
           },
-          {
-            key: "Expires",
-            value: new Date(Date.now() + 31536000000).toUTCString(),
-          },
         ],
       },
-      // Cache model files for 1 year
       {
         source: "/model/:path*",
         headers: [
@@ -104,13 +101,8 @@ const nextConfig: NextConfig = {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
           },
-          {
-            key: "Expires",
-            value: new Date(Date.now() + 31536000000).toUTCString(),
-          },
         ],
       },
-      // Cache video files for 30 days
       {
         source: "/video/:path*",
         headers: [
@@ -118,40 +110,11 @@ const nextConfig: NextConfig = {
             key: "Cache-Control",
             value: "public, max-age=2592000",
           },
-          {
-            key: "Expires",
-            value: new Date(Date.now() + 2592000000).toUTCString(),
-          },
-        ],
-      },
-      // Cache optimized images from Next.js Image component
-      {
-        source: "/_next/image(.*)",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-          {
-            key: "Expires",
-            value: new Date(Date.now() + 31536000000).toUTCString(),
-          },
-        ],
-      },
-      // Cache static files (.js, .css, .woff, etc)
-      {
-        source: "/robots.txt",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=604800",
-          },
         ],
       },
     ];
   },
-  
-  // Redirect www to non-www (301 permanent redirect for SEO)
+
   async redirects() {
     return [
       {

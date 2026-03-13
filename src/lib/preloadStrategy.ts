@@ -118,35 +118,35 @@ export const DEFAULT_CRITICAL_PRELOAD: PreloadConfig[] = [
   // Hero section data
   {
     name: "heroSlides",
-    url: "/api/hero-slides",
+    url: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000'}/api/hero-slides`,
     priority: "critical",
     timeout: 1500,
   },
   // Navigation/menu data
   {
     name: "navigation",
-    url: "/api/navigation",
+    url: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000'}/api/navigation`,
     priority: "critical",
     timeout: 1500,
   },
   // Product categories
   {
     name: "categories",
-    url: "/api/categories",
+    url: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000'}/api/categories`,
     priority: "high",
     timeout: 2000,
   },
   // Featured products
   {
     name: "featured",
-    url: "/api/products/featured",
+    url: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000'}/api/products/featured`,
     priority: "high",
     timeout: 2000,
   },
   // News/blog posts
   {
     name: "news",
-    url: "/api/news",
+    url: `${typeof window !== 'undefined' ? window.location.origin : process.env.NEXT_PUBLIC_FE_BASE_URL || 'http://localhost:3000'}/api/news`,
     priority: "normal",
     timeout: 2000,
   },
