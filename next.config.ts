@@ -123,10 +123,10 @@ const nextConfig: NextConfig = {
         has: [
           {
             type: "host",
-            value: "www.(?<domain>.*)",
+            value: "www.moxlite.com",
           },
         ],
-        destination: "https://:domain/:path*",
+        destination: "https://moxlite.com/:path*",
       },
     ];
   },
