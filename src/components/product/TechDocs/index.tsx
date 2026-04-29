@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 import { tabs } from "./schema";
 import Dropdown from "@/components/common/Dropdown";
 import { iTechDocs } from "./types";
 import Link from "next/link";
 import { fireGAevent } from "@/lib/gtag";
+import { useAuth } from "@/lib/authContext";
+import { activityTracker } from "@/lib/activityTracker";
+import { useSnackbar } from "notistack";
 
 const TechDocs = ({
   productName,
@@ -13,6 +17,73 @@ const TechDocs = ({
   items,
 }: iTechDocs) => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleDownloadClick = async (
+    e: React.MouseEvent,
+    fileName: string,
+    fileUrl: string,
+    documentType: string
+  ) => {
+    e.preventDefault();
+
+    const fileSize =
+      items
+        .find((doc) => doc.type === activeTab.value)
+        ?.files.find((file) => file.name === fileName)?.size || 0;
+
+    if (authLoading) {
+      enqueueSnackbar("Checking your login session...", { variant: "info" });
+      return;
+    }
+
+    if (!isAuthenticated) {
+      await activityTracker.trackDownloadBlocked(user, fileName, documentType, {
+        productName,
+        productCategory,
+        productFamily,
+        fileSize,
+      });
+      enqueueSnackbar("Please login to download files", { variant: "warning" });
+      router.push(
+        `/auth/login?redirect=${encodeURIComponent(router.asPath)}`
+      );
+      return;
+    }
+
+    // Track download activity
+    await activityTracker.trackDownload(
+      user,
+      fileName,
+      documentType,
+      {
+        productName,
+        productCategory,
+        productFamily,
+        fileSize,
+      }
+    );
+
+    // Track GA event
+    fireGAevent({
+      action:
+        activeTab.value
+          .replace(/\s+/g, "_")
+          .replace(/([a-z])([A-Z])/g, "$1_$2")
+          .replace(/[^a-zA-Z0-9_]/g, "")
+          .toLowerCase() + "_download",
+      attribute: {
+        product_name: productName,
+        product_category: productCategory,
+        product_family: productFamily,
+        downloaded_filename: fileName,
+      },
+    });
+
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <>
@@ -23,6 +94,20 @@ const TechDocs = ({
         <h2 className="text-[30px] text-black font-bold mb-[40px]">
           Technical Documents
         </h2>
+
+        {!authLoading && !isAuthenticated && (
+          <div className="bg-[#FEF3C7] border border-[#FCD34D] rounded-lg p-4 mb-6">
+            <p className="text-[14px] text-[#92400E] mb-2">
+              <strong>Login Required:</strong> You need to login to download technical documents.
+            </p>
+            <Link
+              href={`/auth/login?redirect=${encodeURIComponent(router.asPath)}`}
+              className="inline-block mt-2 px-4 py-2 bg-[#FBBF24] text-[#1F2937] text-[14px] font-medium rounded hover:bg-[#F59E0B] transition"
+            >
+              Login Now
+            </Link>
+          </div>
+        )}
 
         <div className="w-full bg-[#CBD5E1] p-2 rounded-lg hidden lg:flex justify-between relative">
           {tabs.map((tab) => (
@@ -90,31 +175,23 @@ const TechDocs = ({
               <div className="col-span-3 hidden lg:flex p-[14px] font-medium text-[#09090B] text-[14px]">
                 {e.size} KB
               </div>
-              <div className="col-span-4 lg:col-span-2 p-[14px] font-medium text-[#0284C7] text-[14px] w-full text-end cursor-pointer hover:font-bold hover:underline">
-                <Link
-                  onClick={() => {
-                    fireGAevent({
-                      action:
-                        activeTab.value
-                          .replace(/\s+/g, "_")
-                          .replace(/([a-z])([A-Z])/g, "$1_$2")
-                          .replace(/[^a-zA-Z0-9_]/g, "")
-                          .toLowerCase() + "_donwload",
-                      attribute: {
-                        product_name: productName,
-                        product_category: productCategory,
-                        product_family: productFamily,
-                        downloaded_filename: e.name,
-                      },
-                    });
-                  }}
-                  href={e.url}
-                  passHref
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <div className="col-span-4 lg:col-span-2 p-[14px] font-medium text-[#0284C7] text-[14px] w-full text-end">
+                <button
+                  type="button"
+                  onClick={(event) =>
+                    handleDownloadClick(event, e.name, e.url, activeTab.value)
+                  }
+                  disabled={authLoading}
+                  className={`text-right hover:font-bold hover:underline ${
+                    !isAuthenticated ? "opacity-70" : ""
+                  } ${authLoading ? "cursor-wait" : "cursor-pointer"}`}
                 >
-                  Download
-                </Link>
+                  {authLoading
+                    ? "Checking..."
+                    : isAuthenticated
+                      ? "Download"
+                      : "Login to Download"}
+                </button>
               </div>
             </div>
           ))}

@@ -1,6 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import MoxliteOnDutyCard from "../MoxliteOnDutyCard";
+import QuickAccess from "../QuickAccess";
 import { ROUTES } from "@/constant/ROUTES";
 import Link from "next/link";
 import { iLatestProject } from "../types";
@@ -47,6 +48,10 @@ const MoxliteOnDuty = ({ contents }: { contents: iLatestProject[] }) => {
           {contents.map((e, i) => (
             <MoxliteOnDutyCard key={i} {...e} />
           ))}
+        </div>
+
+        <div className="mt-[60px]">
+          <QuickAccess />
         </div>
       </motion.div>
     </div>

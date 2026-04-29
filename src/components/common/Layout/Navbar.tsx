@@ -4,12 +4,22 @@ import { useRouter } from "next/router";
 import { ROUTES } from "@/constant/ROUTES";
 import Link from "next/link";
 import { fireGAevent } from "@/lib/gtag";
+import { useAuth } from "@/lib/authContext";
 
 const Navbar = () => {
   const [isExpand, setIsExpand] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const router = useRouter();
   const currPath = router.asPath;
   const menuMobileRef = useRef<HTMLDivElement>(null);
+  const { user, logout, isAuthenticated } = useAuth();
+  const accountLabel = user?.displayName || user?.email?.split("@")[0] || "Account";
+
+  const handleLogout = async () => {
+    await logout();
+    setShowUserMenu(false);
+    router.push("/");
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -163,6 +173,58 @@ const Navbar = () => {
                 {ROUTES.FAQ.label}
               </span>
             </Link>
+            {isAuthenticated ? (
+              <div className="relative pl-[36px]">
+                <button
+                  type="button"
+                  onClick={() => setShowUserMenu((prev) => !prev)}
+                  className="max-w-[140px] truncate font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92]"
+                >
+                  {accountLabel}
+                </button>
+                {showUserMenu && (
+                  <div className="absolute right-0 top-[30px] w-[180px] rounded-[4px] border border-white/10 bg-black py-2 text-sm shadow-xl">
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setShowUserMenu(false)}
+                      className="block px-4 py-2 text-[#f8fafc] hover:text-[#3E9C92]"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/account-settings"
+                      onClick={() => setShowUserMenu(false)}
+                      className="block px-4 py-2 text-[#f8fafc] hover:text-[#3E9C92]"
+                    >
+                      Account Settings
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="block w-full px-4 py-2 text-left text-[#f8fafc] hover:text-[#3E9C92]"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                onClick={() => {
+                  fireGAevent({ action: "navigation_login" });
+                }}
+                href={ROUTES.LOGIN.path}
+                className="pl-[36px] cursor-pointer"
+              >
+                <span
+                  className={`font-[500] text-[15px] leading-[16.94px] hover:text-[#3E9C92] ${
+                    currPath.includes(ROUTES.LOGIN.path) ? "text-[#3E9C92]" : ""
+                  }`}
+                >
+                  {ROUTES.LOGIN.label}
+                </span>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -212,7 +274,7 @@ const Navbar = () => {
           <div
             className={`px-[20px] overflow-hidden transition-all duration-500 ${
               isExpand
-                ? "max-h-[390px] opacity-100 pt-[40px] pb-[10px]"
+                ? "max-h-[520px] opacity-100 pt-[40px] pb-[10px]"
                 : "max-h-0 opacity-0 pt-[0px]"
             }`}
           >
@@ -320,6 +382,52 @@ const Navbar = () => {
             >
               {ROUTES.FAQ.label}
             </div>
+            {isAuthenticated ? (
+              <>
+                <div
+                  onClick={() => {
+                    router.push("/dashboard");
+                  }}
+                  className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+                    isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  Dashboard
+                </div>
+                <div
+                  onClick={() => {
+                    router.push("/account-settings");
+                  }}
+                  className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+                    isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  Account Settings
+                </div>
+                <div
+                  onClick={handleLogout}
+                  className={`pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+                    isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  Logout
+                </div>
+              </>
+            ) : (
+              <div
+                onClick={() => {
+                  fireGAevent({ action: "navigation_login" });
+                  router.push(ROUTES.LOGIN.path);
+                }}
+                className={`${
+                  currPath.includes(ROUTES.LOGIN.path) ? "text-[#3E9C92]" : ""
+                } pb-[10px] font-[500] text-[15px] cursor-pointer leading-[16.94px] hover:text-[#3E9C92] overflow-hidden transition-all duration-500 ${
+                  isExpand ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                {ROUTES.LOGIN.label}
+              </div>
+            )}
           </div>
         </div>
       </div>

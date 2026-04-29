@@ -11,6 +11,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.0",
     "@tailwindcss/postcss": "^4.0.6",
+    "firebase": "^12.12.1",
+    "firebase-admin": "^13.8.0",
     "framer-motion": "^12.4.2",
     "hls.js": "^1.6.1",
     "i18next": "^25.8.14",

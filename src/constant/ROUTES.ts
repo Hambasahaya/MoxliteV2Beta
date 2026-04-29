@@ -35,4 +35,8 @@ export const ROUTES = {
     label: "FAQ",
     path: "/faq",
   },
+  LOGIN: {
+    label: "Login",
+    path: "/auth/login",
+  },
 };

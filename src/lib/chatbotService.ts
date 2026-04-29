@@ -527,17 +527,71 @@ export function getGreetingMessage(): ChatMessage {
 }
 
 /**
+ * Role-specific confirmation message
+ */
+export function getRoleConfirmationMessage(userType?: string): string {
+  if (userType === "cust rental") {
+    return `✅ Sempurna! Saya akan membantu Anda sebagai **Rental Business Consultant**.
+
+🎯 Saya siap membantu dengan:
+✓ Strategi profitabilitas & ROI equipment rental
+✓ Tips reliability & durability untuk frequent rental use
+✓ Maintenance & warranty insights untuk fleet management
+✓ Market insights & kompetitor analysis rental industry
+✓ Rekomendasi produk yang cocok untuk rental business
+
+📊 Contoh pertanyaan yang bisa Anda tanyakan:
+• "Produk mana yang paling profitable untuk disewa?"
+• "Berapa hitungan ROI untuk SCARLET HYBRID kalau disewa?"
+• "Bagaimana maintenance cost untuk rental padat-padat?"
+• "Apa program khusus untuk rental company dari Moxlite?"
+• "Produk apa yang paling diminati di rental market?"
+
+Mari kita mulai! 💼 Apa yang bisa saya bantu untuk bisnis rental Anda?`;
+  } else if (userType === "cust project") {
+    return `✅ Bagus! Saya akan membantu Anda sebagai **Project Lighting Design Consultant**.
+
+🎯 Saya siap membantu dengan:
+✓ Analisis kebutuhan lighting spesifik project Anda
+✓ Rekomendasi equipment yang perfect fit untuk venue/event
+✓ Detil technical specifications & perbandingan produk
+✓ Dimensioning & sizing untuk venue Anda
+✓ Budget optimization & value engineering
+
+🎭 Contoh pertanyaan yang bisa Anda tanyakan:
+• "Berapa banyak unit yang perlu untuk venue 50m x 30m?"
+• "Apa perbedaan SCARLET PLUS vs SCARLET HYBRID untuk outdoor?"
+• "Bagaimana total power consumption untuk setup kami?"
+• "Bisakah Moxlite integrate dengan sistem DMX existing kami?"
+• "Setup apa yang cocok untuk konser outdoor tanpa tent?"
+
+Mari kita desain lighting solution yang sempurna! 🎬 Ceritakan detail project Anda.`;
+  }
+  return "Silakan tanyakan apa yang bisa saya bantu! 😊";
+}
+
+/**
  * Default response
  */
 function getDefaultResponse(): string {
   return `👋 Halo! Selamat datang di Moxlite AI Assistant.
 
-Saya siap membantu Anda menemukan solusi lighting yang tepat untuk kebutuhan Anda.
+🎭 Untuk memberikan bantuan yang paling relevan, silakan beritahu saya:
 
-Anda dapat mencari:
-• Informasi harga dan produk
-• Rekomendasi equipment berdasarkan budget
-• Konsultasi solusi lighting untuk event Anda
+Apakah Anda:
 
-Bagaimana cara saya membantu Anda hari ini?`;
+1️⃣ **Perusahaan Rental Lampu** (Sewa/Rental)
+   • Anda membeli lampu Moxlite untuk disewakan ke customer  
+   • Ingin optimalisasi ROI, tips rental business
+   • Butuh konsultasi maintenance & fleet management
+
+2️⃣ **Proyem Khusus / Pembelian Langsung** (Project)
+   • Anda butuh lighting untuk project/event spesifik Anda
+   • Ingin rekomendasi yang sesuai kebutuhan unik project
+   • Perlu sizing & design consultation untuk venue Anda
+
+Ketik: "Rental" untuk business rental, atau "Project" untuk project khusus 🚀
+
+Atau tanyakan langsung apa yang Anda butuhkan! 😊`;
 }
+

@@ -6,6 +6,7 @@ import {
   UserPreferences,
   generateChatbotResponse,
   getGreetingMessage,
+  getRoleConfirmationMessage,
 } from "@/lib/chatbotService";
 import { generateQuotationPDF } from "@/lib/pdfService";
 
@@ -219,22 +220,42 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       }));
     }
 
+    const wasRoleSelected = !preferences.type;
+    let selectedRole: string | undefined;
+
     if (
       inputValue.toLowerCase().includes("rental") ||
       inputValue.toLowerCase().includes("sewa") ||
-      inputValue.toLowerCase().includes("cust rental")
+      inputValue.toLowerCase().includes("cust rental") ||
+      inputValue.toLowerCase().match(/^rental$|^sewa$|^1$/)
     ) {
+      selectedRole = "cust rental";
       setPreferences((prev) => ({ ...prev, type: "cust rental" }));
     } else if (
       inputValue.toLowerCase().includes("project") ||
       inputValue.toLowerCase().includes("pembelian") ||
       inputValue.toLowerCase().includes("beli") ||
-      inputValue.toLowerCase().includes("cust project")
+      inputValue.toLowerCase().includes("cust project") ||
+      inputValue.toLowerCase().match(/^project$|^projek$|^pembelian$|^2$/)
     ) {
+      selectedRole = "cust project";
       setPreferences((prev) => ({ ...prev, type: "cust project" }));
     }
 
     try {
+      // If user selected a role for the first time, show confirmation first
+      if (wasRoleSelected && selectedRole) {
+        const confirmationMessage: ChatMessage = {
+          id: "bot-" + Date.now(),
+          type: "bot",
+          content: getRoleConfirmationMessage(selectedRole),
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, userMessage, confirmationMessage]);
+        setIsLoading(false);
+        return;
+      }
+
       // Call Gemini API to generate bot response
       const botResponse = await generateChatbotResponse(inputValue, preferences);
       const botMessage: ChatMessage = {

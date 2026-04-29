@@ -1,0 +1,22 @@
+type UserActivity
+  @table(
+    name: "UserActivity"
+    singular: "userActivity"
+    plural: "userActivities"
+  ) {
+  id: UUID! @default(expr: "uuidV4()")
+  userId: String!
+  userEmail: String
+  action: String!
+  page: String
+  fileName: String
+  documentType: String
+  productName: String
+  productCategory: String
+  productFamily: String
+  actionDetails: Any
+  userAgent: String
+  ipAddress: String
+  sessionId: String
+  createdAt: Timestamp! @default(expr: "request.time")
+}
