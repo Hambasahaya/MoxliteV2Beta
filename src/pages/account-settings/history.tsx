@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useSnackbar } from "notistack";
 import ProtectedRoute from "@/lib/protectedRoute";
+import { useAuth } from "@/lib/authContext";
+import {
+  ActivityHistoryService,
+  type ActivityHistory,
+} from "@/lib/activityHistoryService";
 
 type SectionKey =
   | "personal-details"
@@ -14,6 +19,7 @@ type SectionKey =
   | "delete-account";
 
 type HistoryAction = {
+  id: string;
   title: string;
   time: string;
   description: string;
@@ -33,71 +39,194 @@ const sections: Array<{ key: SectionKey; label: string; href?: string }> = [
   { key: "delete-account", label: "Delete account" },
 ];
 
-const historyGroups: HistoryGroup[] = [
-  {
-    date: "Thursday, 16 April 2026",
-    actions: [
-      {
-        title: "Change password",
-        time: "10:36 AM",
-        description: "You have been changed your password.",
-      },
-      {
-        title: "Change profile",
-        time: "09:00 AM",
-        description: "You have been changed your profile.",
-      },
-    ],
-  },
-  {
-    date: "Wednesday, 15 April 2026",
-    actions: [
-      {
-        title: "Change password",
-        time: "10:36 AM",
-        description: "You have been changed your password.",
-      },
-    ],
-  },
-  {
-    date: "Tuesday, 14 April 2026",
-    actions: [
-      {
-        title: "Change password",
-        time: "10:36 AM",
-        description: "You have been changed your password.",
-      },
-      {
-        title: "Change profile",
-        time: "09:00 AM",
-        description: "You have been changed your profile.",
-      },
-    ],
-  },
-  {
-    date: "Tuesday, 14 April 2026",
-    actions: [
-      {
-        title: "Change password",
-        time: "10:36 AM",
-        description: "You have been changed your password.",
-      },
-      {
-        title: "Change profile",
-        time: "09:00 AM",
-        description: "You have been changed your profile.",
-      },
-      {
-        title: "Change password",
-        time: "10:36 AM",
-        description: "You have been changed your password.",
-      },
-    ],
-  },
-];
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  weekday: "long",
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+});
+
+const timeFormatter = new Intl.DateTimeFormat("en-US", {
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
+const actionLabels: Record<string, string> = {
+  page_access: "Page access",
+  download: "File download",
+  download_blocked: "Download blocked",
+  login: "Login",
+  logout: "Logout",
+  signup: "Sign up",
+  login_failed: "Login failed",
+  password_reset_requested: "Password reset requested",
+  signup_provider_unavailable: "Sign up provider unavailable",
+};
+
+const asString = (value: unknown): string | undefined => {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+};
+
+const toTitleCase = (value: string) =>
+  value.replace(/\b\w/g, (character) => character.toUpperCase());
+
+const humanizeAction = (action: string) =>
+  actionLabels[action] || toTitleCase(action.replace(/[_-]+/g, " "));
+
+const formatPagePath = (value?: string) => {
+  if (!value) {
+    return undefined;
+  }
+
+  let path = value;
+  try {
+    path = new URL(value, "https://moxlite.com").pathname;
+  } catch {
+    path = value.split("?")[0];
+  }
+
+  const cleanedPath = path.split("?")[0].replace(/^\/+|\/+$/g, "");
+  if (!cleanedPath) {
+    return "Homepage";
+  }
+
+  return toTitleCase(cleanedPath.replace(/[-_]/g, " ").replace(/\//g, " / "));
+};
+
+const getActivityDisplay = (activity: ActivityHistory): HistoryAction => {
+  const details = activity.actionDetails || {};
+  const page = formatPagePath(
+    asString(details.page) || asString(details.currentPath)
+  );
+  const fileName = asString(details.fileName);
+  const documentType = asString(details.documentType);
+  const productName = asString(details.productName);
+  const providerId = asString(details.providerId);
+  const timestamp = new Date(activity.timestamp || Date.now());
+
+  switch (activity.action) {
+    case "page_access":
+      return {
+        id: activity.id,
+        title: page ? `Visited ${page}` : "Page access",
+        time: timeFormatter.format(timestamp),
+        description: page ? `Opened ${page}.` : "Opened a page.",
+      };
+    case "download":
+      return {
+        id: activity.id,
+        title: fileName ? `Downloaded ${fileName}` : "File download",
+        time: timeFormatter.format(timestamp),
+        description: `${documentType || "Document"} downloaded${
+          productName ? ` for ${productName}` : ""
+        }.`,
+      };
+    case "download_blocked":
+      return {
+        id: activity.id,
+        title: fileName ? `Tried downloading ${fileName}` : "Download blocked",
+        time: timeFormatter.format(timestamp),
+        description: "The download was blocked because login was required.",
+      };
+    case "login":
+      return {
+        id: activity.id,
+        title: "Login",
+        time: timeFormatter.format(timestamp),
+        description: `Signed in${providerId ? ` using ${providerId}` : ""}.`,
+      };
+    case "logout":
+      return {
+        id: activity.id,
+        title: "Logout",
+        time: timeFormatter.format(timestamp),
+        description: "Signed out from your account.",
+      };
+    case "signup":
+      return {
+        id: activity.id,
+        title: "Account created",
+        time: timeFormatter.format(timestamp),
+        description: `Created account${providerId ? ` using ${providerId}` : ""}.`,
+      };
+    case "password_reset_requested":
+      return {
+        id: activity.id,
+        title: "Password reset requested",
+        time: timeFormatter.format(timestamp),
+        description: "Requested a password reset email.",
+      };
+    default:
+      return {
+        id: activity.id,
+        title: humanizeAction(activity.action),
+        time: timeFormatter.format(timestamp),
+        description: page ? `Activity recorded on ${page}.` : "Activity recorded.",
+      };
+  }
+};
+
+const groupActivitiesByDate = (
+  activities: ActivityHistory[]
+): HistoryGroup[] => {
+  const groups = new Map<string, HistoryAction[]>();
+
+  activities.forEach((activity) => {
+    const timestamp = new Date(activity.timestamp || Date.now());
+    const date = dateFormatter.format(timestamp);
+    const actions = groups.get(date) || [];
+    actions.push(getActivityDisplay(activity));
+    groups.set(date, actions);
+  });
+
+  return Array.from(groups.entries()).map(([date, actions]) => ({
+    date,
+    actions,
+  }));
+};
 
 const AccountSettingsHistoryPage: NextPage = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const { user } = useAuth();
+  const [activities, setActivities] = useState<ActivityHistory[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user?.uid) {
+      setActivities([]);
+      setIsLoadingHistory(false);
+      return;
+    }
+
+    setIsLoadingHistory(true);
+    setHistoryError(null);
+
+    const unsubscribe = ActivityHistoryService.onUserActivitiesChange(
+      user.uid,
+      (nextActivities) => {
+        setActivities(nextActivities);
+        setIsLoadingHistory(false);
+      },
+      () => {
+        setActivities([]);
+        setHistoryError("We couldn't load your activity history right now.");
+        setIsLoadingHistory(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [user?.uid]);
+
+  const historyGroups = useMemo(
+    () => groupActivitiesByDate(activities),
+    [activities]
+  );
 
   const handleSectionClick = () => {
     enqueueSnackbar("Section coming soon!", { variant: "info" });
@@ -172,7 +301,26 @@ const AccountSettingsHistoryPage: NextPage = () => {
               <div className="relative mt-5 pl-9">
                 <div className="absolute left-[9px] top-4 h-[calc(100%-14px)] w-px bg-[#e4e7ec]" />
 
-                <div className="space-y-16">
+                {isLoadingHistory && (
+                  <div className="rounded-[2px] border border-[#e2e6eb] bg-white px-4 py-5 text-[12px] text-[#626b78]">
+                    Loading your history...
+                  </div>
+                )}
+
+                {!isLoadingHistory && historyError && (
+                  <div className="rounded-[2px] border border-[#f1c6c6] bg-[#fff7f7] px-4 py-5 text-[12px] text-[#8a3030]">
+                    {historyError}
+                  </div>
+                )}
+
+                {!isLoadingHistory && !historyError && historyGroups.length === 0 && (
+                  <div className="rounded-[2px] border border-[#e2e6eb] bg-white px-4 py-5 text-[12px] leading-relaxed text-[#626b78]">
+                    No activity history yet.
+                  </div>
+                )}
+
+                {!isLoadingHistory && !historyError && historyGroups.length > 0 && (
+                  <div className="space-y-16">
                   {historyGroups.map((group, groupIndex) => (
                     <div key={`${group.date}-${groupIndex}`} className="relative">
                       <span className="absolute -left-[33px] top-[5px] h-2 w-2 rounded-full bg-[#45a39d]" />
@@ -183,7 +331,7 @@ const AccountSettingsHistoryPage: NextPage = () => {
                       <div className="mt-4 grid gap-3 md:grid-cols-2">
                         {group.actions.map((action, actionIndex) => (
                           <article
-                            key={`${action.title}-${action.time}-${actionIndex}`}
+                            key={`${action.id}-${actionIndex}`}
                             className="min-h-[58px] rounded-[2px] border border-[#e2e6eb] bg-white px-3 py-2"
                           >
                             <div className="flex items-start justify-between gap-4">
@@ -202,7 +350,8 @@ const AccountSettingsHistoryPage: NextPage = () => {
                       </div>
                     </div>
                   ))}
-                </div>
+                  </div>
+                )}
               </div>
             </section>
           </div>

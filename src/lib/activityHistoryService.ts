@@ -247,28 +247,36 @@ export class ActivityHistoryService {
    */
   static onUserActivitiesChange(
     userId: string,
-    callback: (activities: ActivityHistory[]) => void
+    callback: (activities: ActivityHistory[]) => void,
+    onError?: (error: Error) => void
   ): Unsubscribe {
     const userActivitiesRef = ref(rtdb, `users/${userId}/activities`);
 
-    const unsubscribe = onValue(userActivitiesRef, (snapshot) => {
-      if (!snapshot.exists()) {
-        callback([]);
-        return;
-      }
+    const unsubscribe = onValue(
+      userActivitiesRef,
+      (snapshot) => {
+        if (!snapshot.exists()) {
+          callback([]);
+          return;
+        }
 
-      const activities: ActivityHistory[] = [];
-      snapshot.forEach((childSnapshot) => {
-        activities.push({
-          id: childSnapshot.key || "",
-          ...(childSnapshot.val() as UserActivity),
+        const activities: ActivityHistory[] = [];
+        snapshot.forEach((childSnapshot) => {
+          activities.push({
+            id: childSnapshot.key || "",
+            ...(childSnapshot.val() as UserActivity),
+          });
         });
-      });
 
-      // Sort by timestamp descending
-      activities.sort((a, b) => b.timestamp - a.timestamp);
-      callback(activities);
-    });
+        // Sort by timestamp descending
+        activities.sort((a, b) => b.timestamp - a.timestamp);
+        callback(activities);
+      },
+      (error) => {
+        console.error("Error listening to user activities:", error);
+        onError?.(error);
+      }
+    );
 
     return unsubscribe;
   }

@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useSnackbar } from "notistack";
+import { updateProfile } from "firebase/auth";
+import { get, ref, update } from "firebase/database";
 import ProtectedRoute from "@/lib/protectedRoute";
+import { useAuth } from "@/lib/authContext";
+import { rtdb } from "@/lib/firebase";
 
 type SettingsForm = {
   salutation: string;
@@ -52,8 +56,61 @@ const initialForm: SettingsForm = {
   country: "",
 };
 
+const profileFields: Array<keyof SettingsForm> = [
+  "salutation",
+  "firstName",
+  "lastName",
+  "email",
+  "company",
+  "position",
+  "landline",
+  "mobile",
+  "street",
+  "postcode",
+  "town",
+  "country",
+];
+
 const fieldClassName =
   "h-9 w-full rounded-[4px] border border-[#dfe4ea] bg-white px-3 text-[12px] text-[#111319] outline-none transition placeholder:text-[#a0a7b2] focus:border-[#1f2329] focus:ring-2 focus:ring-[#1f2329]/10";
+
+const splitDisplayName = (displayName?: string | null) => {
+  const parts = (displayName || "").trim().split(/\s+/).filter(Boolean);
+
+  if (parts.length === 0) {
+    return { firstName: "", lastName: "" };
+  }
+
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(" "),
+  };
+};
+
+const getProfileFormValues = (profile: unknown): Partial<SettingsForm> => {
+  if (!profile || typeof profile !== "object") {
+    return {};
+  }
+
+  return profileFields.reduce<Partial<SettingsForm>>((values, field) => {
+    const value = (profile as Partial<Record<keyof SettingsForm, unknown>>)[field];
+
+    if (typeof value === "string") {
+      values[field] = value;
+    }
+
+    return values;
+  }, {});
+};
+
+const trimFormValues = (form: SettingsForm): SettingsForm =>
+  profileFields.reduce<SettingsForm>(
+    (values, field) => ({
+      ...values,
+      [field]: form[field].trim(),
+    }),
+    initialForm
+  );
 
 const Label = ({
   children,
@@ -69,7 +126,59 @@ const Label = ({
 
 const AccountSettingsPage: NextPage = () => {
   const [form, setForm] = useState<SettingsForm>(initialForm);
+  const [isSaving, setIsSaving] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!user) {
+      setForm(initialForm);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    const { firstName, lastName } = splitDisplayName(user.displayName);
+
+    const authFormValues: Partial<SettingsForm> = {
+      firstName,
+      lastName,
+      email: user.email || "",
+    };
+
+    setForm((prev) => ({
+      ...prev,
+      ...authFormValues,
+    }));
+
+    const loadProfile = async () => {
+      try {
+        const profileSnapshot = await get(ref(rtdb, `users/${user.uid}/profile`));
+
+        if (!isMounted || !profileSnapshot.exists()) {
+          return;
+        }
+
+        setForm((prev) => ({
+          ...prev,
+          ...getProfileFormValues(profileSnapshot.val()),
+        }));
+      } catch (error) {
+        console.error("Failed to load account profile:", error);
+        enqueueSnackbar("Failed to load saved profile details.", {
+          variant: "warning",
+        });
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [enqueueSnackbar, user]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -85,9 +194,45 @@ const AccountSettingsPage: NextPage = () => {
     enqueueSnackbar("Section coming soon!", { variant: "info" });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    enqueueSnackbar("Account settings saved locally.", { variant: "success" });
+
+    if (!user?.uid) {
+      enqueueSnackbar("Please log in before saving your profile.", {
+        variant: "error",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const profile = trimFormValues(form);
+      const fullName = `${profile.firstName} ${profile.lastName}`.trim();
+
+      await update(ref(rtdb, `users/${user.uid}/profile`), {
+        ...profile,
+        uid: user.uid,
+        updatedAt: Date.now(),
+      });
+
+      if (fullName && fullName !== user.displayName) {
+        await updateProfile(user, { displayName: fullName });
+      }
+
+      setForm(profile);
+      enqueueSnackbar("Account settings saved.", { variant: "success" });
+    } catch (error) {
+      console.error("Failed to save account profile:", error);
+      enqueueSnackbar(
+        error instanceof Error
+          ? error.message
+          : "Failed to save account settings.",
+        { variant: "error" }
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -334,9 +479,10 @@ const AccountSettingsPage: NextPage = () => {
 
                 <button
                   type="submit"
-                  className="mt-2 h-9 w-full max-w-[182px] rounded-[4px] bg-[#1f1f21] text-[12px] font-medium text-white transition hover:bg-[#343437]"
+                  disabled={isSaving}
+                  className="mt-2 h-9 w-full max-w-[182px] rounded-[4px] bg-[#1f1f21] text-[12px] font-medium text-white transition hover:bg-[#343437] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Save Change
+                  {isSaving ? "Saving..." : "Save Change"}
                 </button>
               </form>
             </div>
