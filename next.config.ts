@@ -64,12 +64,17 @@ const nextConfig: NextConfig = {
     return config;
   },
 
-  // 🔧 FIX API SSR ERROR
   async rewrites() {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+
+    if (!apiBaseUrl) {
+      return [];
+    }
+
     return [
       {
         source: "/api/:path*",
-        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/:path*`,
+        destination: `${apiBaseUrl.replace(/\/$/, "")}/api/:path*`,
       },
     ];
   },
