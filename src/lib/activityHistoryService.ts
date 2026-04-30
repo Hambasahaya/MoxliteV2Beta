@@ -1,11 +1,9 @@
 import {
   ref,
   query,
-  orderByChild,
   limitToLast,
   get,
   onValue,
-  off,
   Unsubscribe,
 } from "firebase/database";
 import { rtdb } from "./firebase";
@@ -285,28 +283,38 @@ export class ActivityHistoryService {
    * Listen to real-time all activities (admin only)
    */
   static onAllActivitiesChange(
-    callback: (activities: ActivityHistory[]) => void
+    callback: (activities: ActivityHistory[]) => void,
+    onError?: (error: Error) => void,
+    limit: number = 1000
   ): Unsubscribe {
     const activitiesRef = ref(rtdb, "user_activities");
+    const activitiesQuery = query(activitiesRef, limitToLast(limit));
 
-    const unsubscribe = onValue(activitiesRef, (snapshot) => {
-      if (!snapshot.exists()) {
-        callback([]);
-        return;
-      }
+    const unsubscribe = onValue(
+      activitiesQuery,
+      (snapshot) => {
+        if (!snapshot.exists()) {
+          callback([]);
+          return;
+        }
 
-      const activities: ActivityHistory[] = [];
-      snapshot.forEach((childSnapshot) => {
-        activities.push({
-          id: childSnapshot.key || "",
-          ...(childSnapshot.val() as UserActivity),
+        const activities: ActivityHistory[] = [];
+        snapshot.forEach((childSnapshot) => {
+          activities.push({
+            id: childSnapshot.key || "",
+            ...(childSnapshot.val() as UserActivity),
+          });
         });
-      });
 
-      // Sort by timestamp descending
-      activities.sort((a, b) => b.timestamp - a.timestamp);
-      callback(activities);
-    });
+        // Sort by timestamp descending
+        activities.sort((a, b) => b.timestamp - a.timestamp);
+        callback(activities);
+      },
+      (error) => {
+        console.error("Error listening to all activities:", error);
+        onError?.(error);
+      }
+    );
 
     return unsubscribe;
   }

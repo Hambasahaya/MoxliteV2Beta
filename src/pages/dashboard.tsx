@@ -4,7 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import ProtectedRoute from "@/lib/protectedRoute";
 import { useAuth } from "@/lib/authContext";
-
+import router from "next/router";
 type DashboardAction = {
   title: string;
   description: string;
@@ -76,21 +76,21 @@ const actions: DashboardAction[] = [
     title: "Catalog",
     description: "Explore Moxlite Partners for sales, rental, service and solutions",
     href: "/product",
-    tone: "dark",
+    tone: "teal",
     icon: <CatalogIcon />,
   },
   {
     title: "Software",
     description: "Find your recent downloads and available updates",
     href: "/dashboard#software",
-    tone: "dark",
+    tone: "teal",
     icon: <SoftwareIcon />,
   },
   {
     title: "Support",
     description: "Looking for help or information? Get in touch!",
     href: "/contact",
-    tone: "dark",
+    tone: "teal",
     icon: <SupportIcon />,
   },
   {
@@ -115,9 +115,15 @@ const DashboardPage: NextPage = () => {
       </Head>
 
       <main className="min-h-screen bg-white text-[#05070f]">
-        <header className="flex h-[72px] items-center justify-center bg-black px-6">
+        <header className="flex h-[72px] items-center justify-between bg-black px-6">
+          <button
+            onClick={() => router.push("/")}
+            className="text-center text-[16px] font-bold leading-none text-white sm:text-[18px] hover:text-white/90 transition"
+          >
+           <i className="mr-1 text-[20px]">←</i> Back To Home
+          </button>
           <h1 className="text-center text-[26px] font-bold leading-none text-white sm:text-[30px]">
-            Dashboard Profile
+          Dashboard Profile
           </h1>
         </header>
 

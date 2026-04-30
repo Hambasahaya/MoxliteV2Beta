@@ -134,12 +134,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       >
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-y-0 left-[42%] z-[3] hidden w-[44%] origin-left transition-all duration-700 lg:block ${
+          className={`pointer-events-none absolute inset-y-0 z-[3] hidden w-[44%] origin-left transition-all duration-700 lg:block ${
             showPassword ? "opacity-100 delay-700" : "opacity-0 delay-0"
           }`}
+          style={{ left: '50%', transform: 'translateX(-50%)' }}
         >
-          <div className="absolute left-[-68px] top-[50.8%] z-[1] h-[108px] w-[416px] -translate-y-1/2 rotate-[-4deg] bg-[linear-gradient(90deg,rgba(253,255,218,0.78),rgba(154,255,235,0.42)_40%,rgba(255,255,255,0)_100%)] blur-[9px] [clip-path:polygon(0_46.9%,100%_4%,100%_66%,0_53.1%)]" />
-          <div className="absolute left-[228px] top-[50.4%] h-[86px] w-[269px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,224,0.58)_0%,rgba(122,255,233,0.22)_44%,rgba(255,255,255,0)_70%)] blur-[9px]" />
+          <div className="absolute left-[-68px] z-[1] h-[108px] w-[516px] rotate-[-4deg] bg-[linear-gradient(90deg,rgba(253,255,218,0.78),rgba(154,255,235,0.42)_40%,rgba(255,255,255,0)_100%)] blur-[9px] [clip-path:polygon(0_23.9%,100%_4%,100%_66%,0_53.1%)]" style={{ top: '50.8%', transform: 'translateY(-50%)' }} />
+          <div className="absolute left-[228px] h-[86px] w-[269px] rounded-full bg-[radial-gradient(circle,rgba(255,255,224,0.58)_0%,rgba(122,255,233,0.22)_44%,rgba(255,255,255,0)_70%)] blur-[9px]" style={{ top: '50.4%', transform: 'translateY(-50%)' }} />
         </div>
 
         <aside
@@ -152,7 +153,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
             aria-hidden="true"
             className={`absolute bottom-0 left-0 right-0 h-[62%] transition-opacity duration-700 ${
               showPassword ? "opacity-100 delay-700" : "opacity-0 delay-0"
-            } bg-[radial-gradient(circle_at_72%_42%,rgba(247,255,203,0.36),transparent_13%),radial-gradient(circle_at_80%_48%,rgba(65,244,220,0.24),transparent_22%)]`}
+            } bg-[radial-gradient(circle_at_72%_42%,rgba(247,255,203,0.36),transparent_13%)`}
           />
           <div className="relative px-9 py-9">
             <img
@@ -163,20 +164,26 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           </div>
           <div
             aria-hidden="true"
-            className={`absolute right-[55px] top-[68%] z-[2] w-[280px] scale-x-[-1] rotate-[-6deg] transition-all duration-700 ${
+            className={`absolute right-[260px] z-[8] w-[280px] scale-x-[-1] rotate-[-4deg] transition-all duration-700 ${
               showPassword
-                ? "-translate-y-1/2 scale-100 opacity-100 delay-300 ]"
-                : "-translate-y-[42%] scale-90 opacity-0 delay-0"
+                ? "scale-100 opacity-100 delay-300"
+                : "scale-90 opacity-0 delay-0"
             }`}
+            style={{
+              top: '50.2%',
+              transform: showPassword
+                ? 'translateY(-50%)'
+                : 'translateY(calc(-42% - 50%))'
+            }}
           >
             <img
-              src="/image/product_1.png"
+              src="/image/studio_basic_plus2.png"
               alt=""
               className="h-auto w-full select-none"
               draggable={false}
             />
             <span
-              className={`absolute right-[38px] top-[36px] h-10 w-10 rounded-full bg-[radial-gradient(circle,rgba(255,255,219,1),rgba(122,255,232,0.68)_48%,rgba(255,255,255,0)_74%)] blur-sm transition-opacity duration-500 ${
+              className={`absolute right-[20px] top-[8px] h-10 w-10 rounded-full bg-[radial-gradient(circle,rgba(255,255,219,1),rgba(122,255,232,0.68)_48%,rgba(255,255,255,0)_74%)] blur-sm transition-opacity duration-500 ${
                 showPassword ? "opacity-100 delay-700" : "opacity-0 delay-0"
               }`}
             />

@@ -17,6 +17,16 @@ import { activityTracker } from "@/lib/activityTracker";
 // initialize i18next (detection + react bindings)
 import "@/i18n";
 
+const EXCLUDED_ACTIVITY_TRACKING_PATHS = new Set(["/admin/activity-history"]);
+
+const getPathnameFromRoute = (url: string) => {
+  try {
+    return new URL(url, "http://localhost").pathname;
+  } catch {
+    return url.split("?")[0].split("#")[0];
+  }
+};
+
 const ProgressBar = dynamic(
   () => import("@/components/common/ProgressBar"),
   {
@@ -47,6 +57,10 @@ const GlobalActivityTracker = () => {
     }
 
     const trackPage = (url: string) => {
+      if (EXCLUDED_ACTIVITY_TRACKING_PATHS.has(getPathnameFromRoute(url))) {
+        return;
+      }
+
       const key = `${user?.uid || "anonymous"}:${url}`;
 
       if (trackedRef.current.has(key)) {
